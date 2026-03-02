@@ -154,6 +154,14 @@ export async function POST(request: Request) {
       }
     }
 
+    // Log preset info for debugging
+    if (preset) {
+      const opts = preset === 'custom'
+        ? { flagAiWriting, readabilityLevel, formality: presetFormality, locale: presetLocale, includeLongform: presetIncludeLongform, hasVoice: !!presetVoiceSummary }
+        : {}
+      console.log(`[API] Preset: ${preset}`, preset === 'custom' ? opts : '')
+    }
+
     // Check if mock data mode is enabled
     const useMockData = process.env.USE_MOCK_DATA === 'true'
     

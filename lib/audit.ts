@@ -810,9 +810,9 @@ export async function parallelMiniAudit(
         // Brand voice result
         if (result.status === "fulfilled") {
           const bvIssues = (result as PromiseFulfilledResult<AuditResult["issues"]>).value
-          Logger.debug(`[ParallelAudit] Brand voice: ${bvIssues.length} issues`)
+          Logger.debug(`[ParallelAudit] Content checks (readability/AI/voice): ${bvIssues.length} issues`)
         } else {
-          Logger.warn(`[ParallelAudit] Brand voice failed:`, (result as PromiseRejectedResult).reason)
+          Logger.warn(`[ParallelAudit] Content checks failed:`, (result as PromiseRejectedResult).reason)
         }
       }
     }
@@ -836,7 +836,7 @@ export async function parallelMiniAudit(
     const issues = [...categoryIssues, ...brandVoiceIssues, ...linkValidationIssues]
     const totalDurationMs = Date.now() - startTime
 
-    Logger.info(`[ParallelAudit] Completed: ${issues.length} issues from ${successfulResults.length}/${categoryResultCount} categories${brandVoicePromise ? " + brand voice" : ""} in ${(totalDurationMs / 1000).toFixed(1)}s`)
+    Logger.info(`[ParallelAudit] Completed: ${issues.length} issues from ${successfulResults.length}/${categoryResultCount} categories${brandVoicePromise ? " + content checks" : ""} in ${(totalDurationMs / 1000).toFixed(1)}s`)
     Logger.info(`[ParallelAudit] Pages audited: ${pagesToAudit.length} (exact)`)
     if (failedCategories.length > 0) {
       Logger.warn(`[ParallelAudit] Partial results - failed categories: ${failedCategories.join(", ")}`)
@@ -972,9 +972,9 @@ export async function parallelProAudit(
         // Brand voice result
         if (result.status === "fulfilled") {
           const bvIssues = (result as PromiseFulfilledResult<AuditResult["issues"]>).value
-          Logger.debug(`[ParallelProAudit] Brand voice: ${bvIssues.length} issues`)
+          Logger.debug(`[ParallelProAudit] Content checks (readability/AI/voice): ${bvIssues.length} issues`)
         } else {
-          Logger.warn(`[ParallelProAudit] Brand voice failed:`, (result as PromiseRejectedResult).reason)
+          Logger.warn(`[ParallelProAudit] Content checks failed:`, (result as PromiseRejectedResult).reason)
         }
       }
     }
@@ -996,7 +996,7 @@ export async function parallelProAudit(
     const issues = [...categoryIssuesPro, ...brandVoiceIssuesPro, ...linkValidationIssuesPro]
     const totalDurationMs = Date.now() - startTime
 
-    Logger.info(`[ParallelProAudit] Completed: ${issues.length} issues from ${successfulResultsPro.length}/${categoryResultCountPro} categories${brandVoicePromisePro ? " + brand voice" : ""} in ${(totalDurationMs / 1000).toFixed(1)}s`)
+    Logger.info(`[ParallelProAudit] Completed: ${issues.length} issues from ${successfulResultsPro.length}/${categoryResultCountPro} categories${brandVoicePromisePro ? " + content checks" : ""} in ${(totalDurationMs / 1000).toFixed(1)}s`)
     Logger.info(`[ParallelProAudit] Pages audited: ${pagesToAudit.length} (exact)`)
     if (failedCategoriesPro.length > 0) {
       Logger.warn(`[ParallelProAudit] Partial results - failed categories: ${failedCategoriesPro.join(", ")}`)
@@ -1238,7 +1238,7 @@ export async function auditSite(
 
     // Extract content using Firecrawl (bot-protected crawling)
     Logger.debug(`[AuditSite] Crawling website with Firecrawl...`)
-    const firecrawlManifest = await extractWithFirecrawl(normalizedDomain, tier === 'PAID' || tier === 'PRO' ? 'PAID' : 'FREE')
+    const firecrawlManifest = await extractWithFirecrawl(normalizedDomain, tier === 'PAID' || (tier as string) === 'PRO' ? 'PAID' : 'FREE')
     const manifestText = formatFirecrawlForPrompt(firecrawlManifest)
     const pagesFound = countPagesFound(firecrawlManifest)
     const discoveredPagesList = getDiscoveredPages(firecrawlManifest)
