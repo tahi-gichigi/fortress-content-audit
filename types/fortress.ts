@@ -2,6 +2,8 @@ import { Database } from './database.types'
 
 // Application-specific types for Fortress
 
+// Audit preset selection (intent picker before audit starts)
+export type AuditPreset = 'quick' | 'full' | 'custom'
 
 // Audits
 export type AuditRun = Database['public']['Tables']['brand_audit_runs']['Row']
@@ -42,7 +44,7 @@ export interface AuditResult {
 // Plans
 export type PlanType = 'free' | 'pro' // 'Tier 1' | 'Tier 2' in UI
 
-export interface UserProfile extends Database['public']['Tables']['profiles']['Row'] {
+export type UserProfile = Database['public']['Tables']['profiles']['Row'] & {
   plan: PlanType
 }
 

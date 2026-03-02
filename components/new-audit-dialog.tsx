@@ -17,6 +17,9 @@ import { Label } from "@/components/ui/label"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { useToast } from "@/hooks/use-toast"
 import { Loader2, AlertCircle } from "lucide-react"
+import { AuditIntentPicker } from "@/components/audit-intent-picker"
+import type { CustomAuditOptions } from "@/components/audit-intent-picker"
+import type { AuditPreset } from "@/types/fortress"
 
 interface NewAuditDialogProps {
   open: boolean
@@ -38,6 +41,8 @@ export function NewAuditDialog({ open, onOpenChange, onSuccess }: NewAuditDialog
   const [usageInfo, setUsageInfo] = useState<UsageInfo | null>(null)
   const [plan, setPlan] = useState<string>("free")
   const [error, setError] = useState<string | null>(null)
+  // 2-step flow: 1 = enter URL, 2 = pick preset
+  const [step, setStep] = useState<1 | 2>(1)
 
   // Poll for audit completion (runs after dialog closes)
   const pollForCompletion = useCallback(async (runId: string, domainName: string) => {
@@ -147,6 +152,7 @@ export function NewAuditDialog({ open, onOpenChange, onSuccess }: NewAuditDialog
       // Reset states when dialog opens
       setDomain("")
       setError(null)
+      setStep(1)
     }
   }, [open, loadUsageInfo])
 
@@ -161,18 +167,24 @@ export function NewAuditDialog({ open, onOpenChange, onSuccess }: NewAuditDialog
     }
   }, [loadUsageInfo])
 
+  // Step 1: Validate domain and go to preset picker
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    
+
     if (!domain.trim()) {
       setError("Please enter a website URL")
       return
     }
 
+    setError(null)
+    setStep(2)
+  }
+
+  // Step 2: Run audit with selected preset
+  const handleRunWithPreset = async (preset: AuditPreset, options?: CustomAuditOptions) => {
     setLoading(true)
     setError(null)
 
-    // Normalize domain for display
     const inputDomain = domain.trim()
     const normalizedDomain = inputDomain
       .replace(/^https?:\/\//, '')
@@ -192,13 +204,22 @@ export function NewAuditDialog({ open, onOpenChange, onSuccess }: NewAuditDialog
         ? window.location.origin
         : process.env.NEXT_PUBLIC_APP_URL || ''
 
+      // Build POST body with preset info
+      const postBody: Record<string, unknown> = { domain: inputDomain, preset }
+      if (options?.flagAiWriting !== undefined) postBody.flagAiWriting = options.flagAiWriting
+      if (options?.readabilityLevel) postBody.readabilityLevel = options.readabilityLevel
+      if (options?.formality) postBody.formality = options.formality
+      if (options?.locale) postBody.locale = options.locale
+      if (options?.includeLongform !== undefined) postBody.includeLongform = options.includeLongform
+      if (options?.voiceSummary) postBody.voiceSummary = options.voiceSummary
+
       const response = await fetch(`${baseUrl}/api/audit`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${session.access_token}`
         },
-        body: JSON.stringify({ domain: inputDomain })
+        body: JSON.stringify(postBody)
       })
 
       // If response.ok, validation passed and audit started in background
@@ -269,67 +290,88 @@ export function NewAuditDialog({ open, onOpenChange, onSuccess }: NewAuditDialog
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[500px]">
-        <DialogHeader>
-          <DialogTitle className="font-serif text-2xl font-semibold">New Domain</DialogTitle>
-          <DialogDescription>
-            Start a new content audit for a domain.
-          </DialogDescription>
-        </DialogHeader>
+        {step === 1 ? (
+          /* Step 1: Enter domain */
+          <>
+            <DialogHeader>
+              <DialogTitle className="font-serif text-2xl font-semibold">New Domain</DialogTitle>
+              <DialogDescription>
+                Start a new content audit for a domain.
+              </DialogDescription>
+            </DialogHeader>
 
-        <form onSubmit={handleSubmit}>
-          <div className="space-y-4 py-4">
-            {/* Domain Input */}
-            <div className="space-y-2">
-              <Label htmlFor="domain">Domain</Label>
-              <Input
-                id="domain"
-                placeholder="example.com"
-                value={domain}
-                onChange={(e) => setDomain(e.target.value)}
-                disabled={loading}
-              />
-              <p className="text-xs text-muted-foreground">
-                Enter the domain you want to audit (e.g., example.com)
-              </p>
-            </div>
+            <form onSubmit={handleSubmit}>
+              <div className="space-y-4 py-4">
+                <div className="space-y-2">
+                  <Label htmlFor="domain">Domain</Label>
+                  <Input
+                    id="domain"
+                    placeholder="example.com"
+                    value={domain}
+                    onChange={(e) => setDomain(e.target.value)}
+                    disabled={loading}
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Enter the domain you want to audit (e.g., example.com)
+                  </p>
+                </div>
 
-            {/* Error Message - only show for client-side validation */}
-            {error && (
-              <Alert variant="destructive">
-                <AlertCircle className="h-4 w-4" />
-                <AlertDescription>{error}</AlertDescription>
-              </Alert>
-            )}
-          </div>
+                {error && step === 1 && (
+                  <Alert variant="destructive">
+                    <AlertCircle className="h-4 w-4" />
+                    <AlertDescription>{error}</AlertDescription>
+                  </Alert>
+                )}
+              </div>
 
-          <DialogFooter>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => {
-                onOpenChange(false)
-                setDomain("")
-                setError(null)
-              }}
-              disabled={loading}
-            >
-              Cancel
-            </Button>
-            <Button
-              type="submit"
-              disabled={loading || !domain.trim()}
-            >
-              {loading ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Running audit...
-                </>
-              ) : (
-                "Start Audit"
+              <DialogFooter>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => {
+                    onOpenChange(false)
+                    setDomain("")
+                    setError(null)
+                  }}
+                  disabled={loading}
+                >
+                  Cancel
+                </Button>
+                <Button type="submit" disabled={!domain.trim()}>
+                  Next
+                </Button>
+              </DialogFooter>
+            </form>
+          </>
+        ) : (
+          /* Step 2: Pick audit preset */
+          <>
+            <div className="py-2">
+              {error && (
+                <Alert variant="destructive" className="mb-4">
+                  <AlertCircle className="h-4 w-4" />
+                  <AlertDescription>{error}</AlertDescription>
+                </Alert>
               )}
-            </Button>
-          </DialogFooter>
-        </form>
+
+              {loading ? (
+                <div className="flex flex-col items-center justify-center py-8 gap-3">
+                  <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                  <p className="text-sm text-muted-foreground">Starting audit...</p>
+                </div>
+              ) : (
+                <AuditIntentPicker
+                  isAuthenticated={true}
+                  plan={plan === 'pro' || plan === 'enterprise' ? plan as 'pro' | 'enterprise' : 'free'}
+                  domain={domain.trim().replace(/^https?:\/\//, '').replace(/^www\./, '').replace(/\/$/, '')}
+                  onSelect={handleRunWithPreset}
+                  onBack={() => { setStep(1); setError(null) }}
+                  compact
+                />
+              )}
+            </div>
+          </>
+        )}
       </DialogContent>
     </Dialog>
   )

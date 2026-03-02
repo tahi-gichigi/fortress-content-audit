@@ -10,6 +10,9 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { CheckCircle2, Globe, Lightbulb, TrendingUp } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 import { InterstitialLoader } from "@/components/ui/interstitial-loader"
+import { AuditIntentPicker } from "@/components/audit-intent-picker"
+import type { CustomAuditOptions } from "@/components/audit-intent-picker"
+import type { AuditPreset } from "@/types/fortress"
 import { createClient } from "@/lib/supabase-browser"
 import { AuditTable } from "@/components/audit-table"
 import { useAuditIssues } from "@/hooks/use-audit-issues"
@@ -92,6 +95,9 @@ export default function Home() {
     pagesFound: null
   })
   const [severityFilter, setSeverityFilter] = useState<'all' | 'critical'>('all')
+  const [showIntentPicker, setShowIntentPicker] = useState(false)
+  const [validatedUrl, setValidatedUrl] = useState<string | null>(null)
+  const [auditPreset, setAuditPreset] = useState<AuditPreset | null>(null)
   
   // For authenticated users, use the hook to fetch from database
   // For unauthenticated users, use issues directly from API response
@@ -273,25 +279,33 @@ export default function Home() {
     }
   }
 
-  const handleAudit = async () => {
-    // Set loading immediately for better UX
-    setLoading(true)
+  // Step 1: Validate URL and show intent picker
+  const handleValidateAndShowPicker = () => {
     setTouched(true)
-    setApiError(null) // Clear API errors on new submission
-    
-    // Validate URL client-side first
+    setApiError(null)
+
     const validation = validateUrlClient(url)
     if (!validation.isValid) {
       setValidationError(validation.error || "Invalid URL")
-      setLoading(false) // Reset loading on validation error
       return
     }
 
     setValidationError(null)
+    const normalized = validation.normalizedUrl || url.trim()
+    setValidatedUrl(normalized)
+    setShowIntentPicker(true)
+  }
+
+  // Step 2: Run audit with selected preset
+  const handleAuditWithPreset = async (preset: AuditPreset, options?: CustomAuditOptions) => {
+    setShowIntentPicker(false)
+    setAuditPreset(preset)
+    setLoading(true)
     setApiError(null)
     setAuditResults(null)
-    // Clear previous audit from localStorage when starting new one
     localStorage.removeItem('last_audit_id')
+
+    const domainToSubmit = validatedUrl || url.trim()
 
     try {
       const supabase = createClient()
@@ -304,8 +318,14 @@ export default function Home() {
           ? window.location.origin
           : process.env.NEXT_PUBLIC_APP_URL || ''
 
-      // Use normalized URL if available, otherwise use original
-      const domainToSubmit = validation.normalizedUrl || url.trim()
+      // Build POST body with preset info
+      const postBody: Record<string, unknown> = { domain: domainToSubmit, preset }
+      if (options?.flagAiWriting !== undefined) postBody.flagAiWriting = options.flagAiWriting
+      if (options?.readabilityLevel) postBody.readabilityLevel = options.readabilityLevel
+      if (options?.formality) postBody.formality = options.formality
+      if (options?.locale) postBody.locale = options.locale
+      if (options?.includeLongform !== undefined) postBody.includeLongform = options.includeLongform
+      if (options?.voiceSummary) postBody.voiceSummary = options.voiceSummary
 
       const response = await fetch(`${baseUrl}/api/audit`, {
         method: 'POST',
@@ -313,7 +333,7 @@ export default function Home() {
           'Content-Type': 'application/json',
           ...(token && { 'Authorization': `Bearer ${token}` })
         },
-        body: JSON.stringify({ domain: domainToSubmit })
+        body: JSON.stringify(postBody)
       })
 
       // Check content type before parsing
@@ -528,99 +548,110 @@ export default function Home() {
       {/* Hero Section */}
       <section className="container mx-auto px-6 py-24 md:py-32">
         <div className="max-w-4xl mx-auto text-center">
-          <h1 className="font-serif text-6xl md:text-7xl lg:text-8xl font-light tracking-tight text-balance mb-8 animate-in fade-in slide-in-from-bottom-4 duration-1000">
-            Get a full content audit of your website
-          </h1>
-          <p className="text-xl md:text-2xl text-muted-foreground leading-relaxed text-balance mb-12 max-w-2xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-200">
-            Content issues kill conversion rates. Uncover the hidden errors and inconsistencies across your site. 
-          </p>
-          
-          {!isAuthenticated ? (
-            <div className="flex flex-col gap-4 max-w-xl mx-auto mb-12">
-              <div className="flex flex-col md:flex-row gap-4">
-                <div className="flex-1 space-y-2">
-                  <Input 
-                    placeholder="example.com" 
-                    className={`h-14 px-6 text-lg bg-background shadow-sm transition-colors ${
-                      validationError && touched 
-                        ? 'border-destructive focus-visible:ring-destructive' 
-                        : 'border-input'
-                    }`}
-                    value={url}
-                    onChange={(e) => {
-                      setUrl(e.target.value)
-                      // Clear validation error when user starts typing
-                      if (validationError) setValidationError(null)
-                      // Clear API error when user starts typing
-                      if (apiError) setApiError(null)
-                    }}
-                    onBlur={handleBlur}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter') {
-                        e.preventDefault()
-                        handleAudit()
-                      }
-                    }}
-                    aria-invalid={!!validationError && touched}
-                    aria-describedby={validationError && touched ? "url-error" : undefined}
-                    id="url-input"
-                  />
-                  {/* Inline validation error message */}
-                  {validationError && touched && (
-                    <p 
-                      id="url-error" 
-                      className="text-sm text-destructive mt-1 animate-in fade-in slide-in-from-top-1"
-                      role="alert"
-                    >
-                      {validationError}
-                    </p>
-                  )}
-                </div>
-                <Button 
-                  size="lg" 
-                  className="h-14 px-8 text-lg font-medium shrink-0" 
-                  onClick={handleAudit} 
-                  disabled={loading || (touched && !!validationError)}
-                  aria-busy={loading}
-                >
-                  {loading ? "Starting..." : "Run Audit"}
-                </Button>
-              </div>
+          {showIntentPicker ? (
+            /* Intent picker replaces hero content after URL validation */
+            <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+              <AuditIntentPicker
+                isAuthenticated={isAuthenticated}
+                domain={displayDomain || undefined}
+                onSelect={handleAuditWithPreset}
+                onBack={() => setShowIntentPicker(false)}
+              />
             </div>
           ) : (
-            <div className="flex flex-col sm:flex-row gap-4 max-w-xl mx-auto mb-12 justify-center">
-              <Button 
-                size="lg" 
-                className="h-14 px-8 text-lg font-medium" 
-                onClick={() => router.push('/dashboard')}
-              >
-                Go to Dashboard
-              </Button>
-              <Button 
-                size="lg" 
-                variant="outline"
-                className="h-14 px-8 text-lg font-medium" 
-                onClick={() => router.push('/pricing')}
-              >
-                View Pricing
-              </Button>
-            </div>
+            <>
+              <h1 className="font-serif text-6xl md:text-7xl lg:text-8xl font-light tracking-tight text-balance mb-8 animate-in fade-in slide-in-from-bottom-4 duration-1000">
+                Get a full content audit of your website
+              </h1>
+              <p className="text-xl md:text-2xl text-muted-foreground leading-relaxed text-balance mb-12 max-w-2xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-200">
+                Content issues kill conversion rates. Uncover the hidden errors and inconsistencies across your site.
+              </p>
+
+              {!isAuthenticated ? (
+                <div className="flex flex-col gap-4 max-w-xl mx-auto mb-12">
+                  <div className="flex flex-col md:flex-row gap-4">
+                    <div className="flex-1 space-y-2">
+                      <Input
+                        placeholder="example.com"
+                        className={`h-14 px-6 text-lg bg-background shadow-sm transition-colors ${
+                          validationError && touched
+                            ? 'border-destructive focus-visible:ring-destructive'
+                            : 'border-input'
+                        }`}
+                        value={url}
+                        onChange={(e) => {
+                          setUrl(e.target.value)
+                          if (validationError) setValidationError(null)
+                          if (apiError) setApiError(null)
+                        }}
+                        onBlur={handleBlur}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') {
+                            e.preventDefault()
+                            handleValidateAndShowPicker()
+                          }
+                        }}
+                        aria-invalid={!!validationError && touched}
+                        aria-describedby={validationError && touched ? "url-error" : undefined}
+                        id="url-input"
+                      />
+                      {validationError && touched && (
+                        <p
+                          id="url-error"
+                          className="text-sm text-destructive mt-1 animate-in fade-in slide-in-from-top-1"
+                          role="alert"
+                        >
+                          {validationError}
+                        </p>
+                      )}
+                    </div>
+                    <Button
+                      size="lg"
+                      className="h-14 px-8 text-lg font-medium shrink-0"
+                      onClick={handleValidateAndShowPicker}
+                      disabled={loading || (touched && !!validationError)}
+                      aria-busy={loading}
+                    >
+                      {loading ? "Starting..." : "Run Audit"}
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <div className="flex flex-col sm:flex-row gap-4 max-w-xl mx-auto mb-12 justify-center">
+                  <Button
+                    size="lg"
+                    className="h-14 px-8 text-lg font-medium"
+                    onClick={() => router.push('/dashboard')}
+                  >
+                    Go to Dashboard
+                  </Button>
+                  <Button
+                    size="lg"
+                    variant="outline"
+                    className="h-14 px-8 text-lg font-medium"
+                    onClick={() => router.push('/pricing')}
+                  >
+                    View Pricing
+                  </Button>
+                </div>
+              )}
+
+              <div className="flex items-center justify-center gap-8 text-sm text-muted-foreground">
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="h-4 w-4 text-green-600" />
+                  <span>Find issues in minutes</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="h-4 w-4 text-green-600" />
+                  <span>Audit your up to 10 pages</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="h-4 w-4 text-green-600" />
+                  <span>Download reports in PDF or JSON</span>
+                </div>
+              </div>
+            </>
           )}
-          
-          <div className="flex items-center justify-center gap-8 text-sm text-muted-foreground">
-            <div className="flex items-center gap-2">
-              <CheckCircle2 className="h-4 w-4 text-green-600" />
-              <span>Find issues in minutes</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <CheckCircle2 className="h-4 w-4 text-green-600" />
-              <span>Audit your up to 10 pages</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <CheckCircle2 className="h-4 w-4 text-green-600" />
-              <span>Download reports in PDF or JSON</span>
-            </div>
-          </div>
         </div>
       </section>
 
@@ -634,6 +665,7 @@ export default function Home() {
         pagesFound={progressInfo.pagesFound}
         auditTier={auditTier}
         isAuthenticated={isAuthenticated}
+        preset={auditPreset || undefined}
       />
 
       {/* API Error Message (for errors that occur after submission) */}

@@ -64,7 +64,7 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json().catch(() => ({}))
-    const { domain, guidelineId, session_token } = body || {}
+    const { domain, guidelineId, session_token, preset, flagAiWriting, readabilityLevel, formality: presetFormality, locale: presetLocale, includeLongform: presetIncludeLongform, voiceSummary: presetVoiceSummary } = body || {}
     requestDomain = domain || null // Store for error logging
     if (!domain || typeof domain !== 'string') {
       return NextResponse.json({ error: 'Please enter a website URL to audit.' }, { status: 400 })
@@ -260,6 +260,66 @@ export async function POST(request: Request) {
         }
       }
 
+      // =================================================================
+      // Preset handling: build synthetic brand voice profile when preset
+      // is provided, even for unauthed users. This lets the "full" preset
+      // enable AI pattern detection + readability without a DB row.
+      // =================================================================
+      if (preset && !brandVoiceProfile) {
+        if (preset === 'full') {
+          // Synthetic profile for full audit preset
+          brandVoiceProfile = {
+            enabled: false,
+            voice_summary: null,
+            readability_level: 'grade_10_12',
+            formality: null,
+            locale: null,
+            flag_keywords: [],
+            ignore_keywords: [],
+            flag_ai_writing: true,
+            include_longform_full_audit: false,
+          }
+        } else if (preset === 'custom') {
+          // Build from explicit options sent by the client
+          const hasVoice = typeof presetVoiceSummary === 'string' && presetVoiceSummary.trim().length > 0
+          const hasCustomChecks = flagAiWriting === true || !!readabilityLevel || !!presetFormality || hasVoice
+          if (hasCustomChecks) {
+            brandVoiceProfile = {
+              enabled: hasVoice, // enable guidelines mode when voice summary provided
+              voice_summary: hasVoice ? presetVoiceSummary.trim() : null,
+              readability_level: readabilityLevel || null,
+              formality: presetFormality || null,
+              locale: presetLocale || null,
+              flag_keywords: [],
+              ignore_keywords: [],
+              flag_ai_writing: flagAiWriting ?? false,
+              include_longform_full_audit: presetIncludeLongform ?? false,
+            }
+          }
+        }
+        // preset === 'quick': no synthetic profile, brandVoiceProfile stays null
+      } else if (preset === 'full' && brandVoiceProfile) {
+        // Authed user with existing profile + full preset:
+        // Augment with defaults if the user hasn't set these yet
+        if (!brandVoiceProfile.flag_ai_writing) {
+          brandVoiceProfile = { ...brandVoiceProfile, flag_ai_writing: true }
+        }
+        if (!brandVoiceProfile.readability_level) {
+          brandVoiceProfile = { ...brandVoiceProfile, readability_level: 'grade_10_12' }
+        }
+      } else if (preset === 'quick' && brandVoiceProfile) {
+        // Quick preset overrides: disable brand voice checks entirely
+        brandVoiceProfile = null
+      }
+
+      // Apply includeLongform from preset if the synthetic profile set it,
+      // or if the custom preset sent it directly without brand voice checks
+      if (brandVoiceProfile?.include_longform_full_audit) {
+        includeLongformFullAudit = true
+      } else if (preset === 'custom' && presetIncludeLongform === true) {
+        includeLongformFullAudit = true
+      }
+
       // Build brand voice config (computed once, used for audit + snapshot)
       const flagKeywords = Array.isArray(brandVoiceProfile?.flag_keywords)
         ? (brandVoiceProfile.flag_keywords as string[])
@@ -276,7 +336,8 @@ export async function POST(request: Request) {
           brandVoiceProfile?.flag_ai_writing === true
       )
       const useGuidelines = brandVoiceProfile?.enabled === true
-      const shouldRunBrandVoice = userId && brandVoiceProfile && (hasContentChecks || useGuidelines)
+      // Allow brand voice pass for preset-driven profiles (no userId required)
+      const shouldRunBrandVoice = brandVoiceProfile && (hasContentChecks || useGuidelines)
       const brandVoiceOption = shouldRunBrandVoice
         ? {
             profile: {
@@ -346,9 +407,9 @@ export async function POST(request: Request) {
         }
       }
 
-      // Store brand voice config snapshot (only for real audits with brand voice)
+      // Store brand voice config snapshot (only for authed users with real DB profiles, not synthetic presets)
       const brandVoiceConfigSnapshot: Record<string, unknown> | null =
-        !useMockData && shouldRunBrandVoice
+        !useMockData && shouldRunBrandVoice && userId
           ? {
               enabled: useGuidelines,
               voice_summary: useGuidelines ? brandVoiceProfile!.voice_summary : null,

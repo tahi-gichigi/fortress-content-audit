@@ -77,15 +77,12 @@ function PageDiscoveryListInner({
   return (
     <>
       <div
-        className={`max-h-48 overflow-y-auto rounded-md border border-border bg-muted/30 p-3 w-full ${className ?? ""}`}
+        className={`max-h-60 overflow-y-auto rounded-md border border-border bg-muted/30 p-3 w-full ${className ?? ""}`}
       >
         <div
-          className="grid gap-x-4 gap-y-1.5"
-          style={{
-            gridTemplateColumns: isDesktop
-              ? 'repeat(auto-fill, minmax(180px, 1fr))'
-              : '1fr'
-          }}
+          className={`grid gap-x-6 gap-y-1.5 ${
+            isDesktop ? 'grid-cols-4' : 'grid-cols-1'
+          }`}
         >
           {sortedPages.map((url, i) => {
             const audited = isAudited(url, auditedUrls)
@@ -95,7 +92,7 @@ function PageDiscoveryListInner({
                 href={url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`flex items-center gap-2 text-sm py-0.5 rounded hover:bg-muted transition-colors group/link ${
+                className={`flex items-center gap-2 text-sm py-0.5 rounded hover:bg-muted transition-colors group/link min-w-0 ${
                   audited ? 'text-foreground' : 'text-muted-foreground'
                 }`}
                 title={`Open ${url} in new tab`}
@@ -105,7 +102,7 @@ function PageDiscoveryListInner({
                 ) : (
                   <Circle className="h-4 w-4 text-muted-foreground/50 shrink-0" />
                 )}
-                <span className="font-mono text-xs">{formatUrl(url)}</span>
+                <span className="font-mono text-xs truncate">{formatUrl(url)}</span>
                 <ExternalLink className="h-3 w-3 opacity-0 group-hover/link:opacity-50 transition-opacity shrink-0" />
               </a>
             )

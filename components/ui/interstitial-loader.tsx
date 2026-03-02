@@ -3,6 +3,7 @@
 import * as React from "react"
 import { Loader2, CheckCircle2 } from "lucide-react"
 import { cn } from "@/lib/utils"
+import type { AuditPreset } from "@/types/fortress"
 
 export interface InterstitialLoaderProps extends React.HTMLAttributes<HTMLDivElement> {
   /**
@@ -49,6 +50,10 @@ export interface InterstitialLoaderProps extends React.HTMLAttributes<HTMLDivEle
    * Number of pages found on the site (from manifest extraction)
    */
   pagesFound?: number | null
+  /**
+   * Audit preset (affects time estimate messaging)
+   */
+  preset?: AuditPreset
 }
 
 const InterstitialLoader = React.forwardRef<HTMLDivElement, InterstitialLoaderProps>(
@@ -66,6 +71,7 @@ const InterstitialLoader = React.forwardRef<HTMLDivElement, InterstitialLoaderPr
       auditTier,
       isAuthenticated = false,
       pagesFound,
+      preset,
       children,
       ...props
     },
@@ -183,10 +189,17 @@ const InterstitialLoader = React.forwardRef<HTMLDivElement, InterstitialLoaderPr
           {title && (
             <h2 className="font-serif text-3xl font-light tracking-tight mb-4">{title}</h2>
           )}
-          {description && <p className="text-muted-foreground mb-4">{description}</p>}
+          {/* Show preset-aware time estimate, or fallback to description prop */}
+          <p className="text-muted-foreground mb-4">
+            {preset === 'quick'
+              ? 'This should take about a minute'
+              : preset === 'full'
+                ? 'This may take a few minutes'
+                : description || 'This may take a few minutes'}
+          </p>
 
           {/* Pages found/auditing info - only show when pages found is available */}
-          {pagesFound !== null && pagesFound > 0 && (
+          {pagesFound != null && pagesFound > 0 && (
             <div className="mt-6 mb-8 mx-auto max-w-sm animate-in fade-in slide-in-from-bottom-3 duration-700 ease-out">
               <div className="bg-muted/30 border border-border/50 rounded-lg px-6 py-4 space-y-2.5">
                 <p className="text-sm text-foreground flex items-center justify-center gap-2">
@@ -195,7 +208,7 @@ const InterstitialLoader = React.forwardRef<HTMLDivElement, InterstitialLoaderPr
                 </p>
                 {auditTier && (
                   <p className="text-sm text-muted-foreground text-center">
-                    → Auditing up to {maxPagesAudited} {maxPagesAudited === 1 ? 'page' : 'pages'}{auditTier === 'free' ? ' (Free)' : ''}
+                    → Auditing up to {maxPagesAudited} {(maxPagesAudited as number) === 1 ? 'page' : 'pages'}{auditTier === 'free' ? ' (Free)' : ''}
                   </p>
                 )}
               </div>
