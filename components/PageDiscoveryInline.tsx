@@ -179,7 +179,7 @@ export function PageDiscoveryInline({
       {/* Summary line with toggle */}
       <button
         onClick={() => setExpanded(!isExpanded)}
-        className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors group"
+        className="flex items-center flex-wrap gap-x-2 gap-y-1 text-muted-foreground hover:text-foreground transition-colors group"
       >
         <span>
           <span className="text-foreground font-medium">{auditedCount}</span>
