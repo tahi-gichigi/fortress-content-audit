@@ -314,7 +314,7 @@ export function AuditIntentPicker({
           {/* --- Pro-gated options --- */}
 
           {/* Formality - Pro only */}
-          <div className={cn("px-4 py-3", !isPaid && "opacity-50")}>
+          <div className="px-4 py-3">
             <label htmlFor="formality-check" className={cn(
               "flex items-center justify-between",
               isPaid ? "cursor-pointer" : "cursor-not-allowed"
@@ -349,7 +349,7 @@ export function AuditIntentPicker({
             htmlFor="include-longform"
             className={cn(
               "flex items-center justify-between px-4 py-3",
-              isPaid ? "cursor-pointer" : "cursor-not-allowed opacity-50"
+              isPaid ? "cursor-pointer" : "cursor-not-allowed"
             )}
           >
             <div className="pr-4">
@@ -370,7 +370,7 @@ export function AuditIntentPicker({
           </label>
 
           {/* Brand voice - Pro only */}
-          <div className={cn("px-4 py-3", !isPaid && "opacity-50")}>
+          <div className="px-4 py-3">
             <label htmlFor="brand-voice-check" className={cn(
               "flex items-center justify-between",
               isPaid ? "cursor-pointer" : "cursor-not-allowed"
