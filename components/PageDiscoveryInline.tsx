@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useMemo } from "react"
 import { ChevronDown, ChevronUp, CheckCircle2, Circle, ExternalLink } from "lucide-react"
-import { Button } from "@/components/ui/button"
 
 interface PageDiscoveryInlineProps {
   discoveredPages: string[]

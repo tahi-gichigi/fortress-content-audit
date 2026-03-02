@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { CheckCircle2, Circle, FileDiff } from "lucide-react"
+import { useMemo } from "react"
 
 interface PagesSummaryModalProps {
   open: boolean
@@ -35,16 +36,24 @@ function formatUrl(url: string): string {
   }
 }
 
-function isAudited(url: string, auditedUrls: string[]): boolean {
-  return auditedUrls.some((audited) => {
+function buildAuditedPathSet(auditedUrls: string[]): Set<string> {
+  const set = new Set<string>()
+  for (const url of auditedUrls) {
     try {
-      const a = new URL(audited).pathname.replace(/\/$/, "")
-      const b = new URL(url).pathname.replace(/\/$/, "")
-      return a === b
+      set.add(new URL(url).pathname.replace(/\/$/, ""))
     } catch {
-      return audited === url
+      set.add(url)
     }
-  })
+  }
+  return set
+}
+
+function isAuditedBySet(url: string, auditedSet: Set<string>): boolean {
+  try {
+    return auditedSet.has(new URL(url).pathname.replace(/\/$/, ""))
+  } catch {
+    return auditedSet.has(url)
+  }
 }
 
 function pathHasIssues(url: string, pagePathsWithIssues: Set<string>): boolean {
@@ -67,6 +76,18 @@ export function PagesSummaryModal({
   pagePathsWithIssues,
 }: PagesSummaryModalProps) {
   const totalFound = pagesFound ?? discoveredPages.length
+
+  const auditedSet = useMemo(() => buildAuditedPathSet(auditedUrls), [auditedUrls])
+
+  const sortedPages = useMemo(() => {
+    return [...discoveredPages].sort((a, b) => {
+      const aAudited = isAuditedBySet(a, auditedSet)
+      const bAudited = isAuditedBySet(b, auditedSet)
+      if (aAudited && !bAudited) return -1
+      if (!aAudited && bAudited) return 1
+      return a.localeCompare(b)
+    })
+  }, [discoveredPages, auditedSet])
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -96,22 +117,14 @@ export function PagesSummaryModal({
             </div>
           </div>
 
-          {discoveredPages.length > 0 && (
+          {sortedPages.length > 0 && (
             <div className="flex flex-col min-h-0">
               <p className="text-sm font-medium text-muted-foreground mb-2">
                 Page list
               </p>
               <ul className="space-y-1.5 text-sm overflow-y-auto max-h-[220px] pr-1 border rounded-md p-2 bg-muted/20">
-                {[...discoveredPages]
-                  .sort((a, b) => {
-                    const aAudited = isAudited(a, auditedUrls)
-                    const bAudited = isAudited(b, auditedUrls)
-                    if (aAudited && !bAudited) return -1
-                    if (!aAudited && bAudited) return 1
-                    return a.localeCompare(b)
-                  })
-                  .map((url, i) => {
-                    const audited = isAudited(url, auditedUrls)
+                {sortedPages.map((url, i) => {
+                    const audited = isAuditedBySet(url, auditedSet)
                     const hasIssues = pathHasIssues(url, pagePathsWithIssues)
                     return (
                       <li
