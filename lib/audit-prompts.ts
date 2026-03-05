@@ -57,9 +57,9 @@ If you encounter bot protection or a firewall blocking access to either page, im
 
 If a page is still loading or temporarily unavailable, retry loading that page at least three times, with brief pauses in between. Do not skip the page due to delays until all retries have failed; only then skip that page and do not report issues for it.
 
-For every issue found, provide an ultra-concise description. Format the issue description as follows:
-- Start with a category-level impact or theme (e.g., "professionalism," "frustration," "trust," "confidence," "credibility") in lowercase, followed by a colon and a space.
-- Then briefly state the problem, as clear and brief as possible (maximum one short sentence). Avoid unnecessary details.
+For every issue found, provide a scannable, concise description. Format as follows:
+- **issue_description**: impact label (e.g., "professionalism:", "trust:", "clarity:", "credibility:") + the problem in 10 words or fewer. For readability issues use "clarity:" or "accessibility:" — never "readability:" or grade codes. Always name WHERE the issue is: quote the specific text OR name the section (hero, pricing table, footer CTA, nav). Example: "professionalism: 'recieve' in hero headline — should be 'receive'."
+- **suggested_fix**: action verb + fix in 8 words or fewer. Example: "Change to 'receive'."
 
 After completing the single pass over both pages and categories, return as output:
 - If any issues are found, return all issues as a JSON object per the required fields below.
@@ -110,16 +110,16 @@ Example if issues are found:
     {
       "page_url": "https://example.com/home",
       "category": "Language",
-      "issue_description": "professionalism: 'recieve' in the first line of the features section is misspelled—it should be 'receive.'",
+      "issue_description": "professionalism: 'recieve' in features section hero — misspelled",
       "severity": "low",
-      "suggested_fix": "Correct spelling to 'receive.'"
+      "suggested_fix": "Change to 'receive'."
     },
     {
       "page_url": "https://example.com/pricing",
       "category": "Links & Formatting",
-      "issue_description": "frustration: the 'Contact Support' in the footer link leads to a broken page.",
+      "issue_description": "frustration: 'Contact Support' footer link leads to 404",
       "severity": "critical",
-      "suggested_fix": "Update link to the correct support page."
+      "suggested_fix": "Update link to correct support page."
     }
   ],
   "total_issues": 2,
@@ -134,16 +134,17 @@ null
 # Notes
 
 - Audit only the homepage and ONE key additional page, in a single comprehensive pass for all categories.
-- Lead every "issue_description" with a one-word impact or theme for instant understanding.
+- Lead every "issue_description" with an impact label. For readability issues use "clarity:" or "accessibility:" — never "readability:" or grade codes.
+- Always name the location: quote the specific text or name the section (hero, pricing table, footer CTA, nav).
+- Keep issue_description to 10 words or fewer after the label.
+- Keep suggested_fix to 8 words or fewer, starting with an action verb.
 - Severity must be "critical", "medium", or "low".
-- "suggested_fix" should give a direct edit or change, extremely concise.
 - Only count a page as a "page with issues" if at least one issue is found on it.
 - "pages_audited" is the count of the pages actually checked (excluding pages skipped due to loading failure or bot/firewall block; maximum 2).
 - If you encounter bot protection or firewall block on either page, immediately return only BOT_PROTECTION_OR_FIREWALL_BLOCKED (not JSON).
 - If a page cannot load after three attempts, skip that page and log no issues for it.
 - If no issues are found in any category for either page, return null (not an empty object, not an empty array, not any explanation).
 - Use the precise output format above; do not include extraneous notes, explanations, or context.
-- For each issue, be as specific as you can about its location. The user must be able to immediately find and identify the issue. Avoid vague descriptions.
 - DON'T report "/cdn-cgi/l/email-protection" links as broken - Cloudflare decodes these client-side into valid mailto links.
 
 **Important: Audit only the homepage and ONE key additional page. Audit all categories (Language, Facts & Consistency, Links & Formatting) in a single comprehensive pass (not three separate passes). If no issues are found, return null; otherwise, follow all formatting, style, and conciseness rules.**
@@ -212,9 +213,9 @@ For pages that are still loading or temporarily unavailable, retry up to three t
 For every issue, log:
 - page_url: [string]
 - category: "Language", "Facts & Consistency", or "Links & Formatting"
-- issue_description: Begins with a one-word impact/theme (e.g., "professionalism:", "frustration:", "trust:", "credibility:") in lowercase, followed by an ultra-concise, one-sentence problem statement.
+- issue_description: impact label (professionalism:, trust:, clarity:, credibility:, frustration:) + problem in 10 words or fewer. For readability issues use "clarity:" or "accessibility:" — never "readability:" or grade codes. Always name WHERE: quote the text or name the section (hero, pricing table, nav, footer CTA).
 - severity: "critical", "medium", or "low"
-- suggested_fix: Direct, actionable, extremely concise fix
+- suggested_fix: action verb + fix in 8 words or fewer
 
 Output:
 - If issues are found: JSON object with all issues, plus
@@ -257,23 +258,23 @@ Example if issues are found:
     {
       "page_url": "https://example.com/home",
       "category": "Language",
-      "issue_description": "professionalism: 'recieve' in the features section is misspelled—it should be 'receive.'",
+      "issue_description": "professionalism: 'recieve' in features section — misspelled",
       "severity": "low",
-      "suggested_fix": "Correct spelling to 'receive.'"
+      "suggested_fix": "Change to 'receive'."
     },
     {
       "page_url": "https://example.com/about",
       "category": "Links & Formatting",
-      "issue_description": "frustration: the 'Contact Us' in the footer link leads to a 404 error.",
+      "issue_description": "frustration: 'Contact Us' footer link leads to 404",
       "severity": "critical",
       "suggested_fix": "Update link to correct contact page."
     },
     {
       "page_url": "https://example.com/pricing",
       "category": "Links & Formatting",
-      "issue_description": "trust: 'Learn More' button in hero banner links to homepage instead of pricing.",
+      "issue_description": "trust: hero 'Learn More' button links to homepage, not pricing",
       "severity": "medium",
-      "suggested_fix": "Change button link to pricing details."
+      "suggested_fix": "Change button href to pricing page."
     }
   ],
   "total_issues": 3,
@@ -286,13 +287,14 @@ null
 
 # Notes
 
-- Lead every issue_description with a one-word impact or theme.
+- Lead every issue_description with an impact label. For readability issues use "clarity:" or "accessibility:" — never "readability:" or grade codes.
+- Always name the location in issue_description: quote the specific text or name the section.
+- Keep issue_description to 10 words or fewer after the label.
+- Keep suggested_fix to 8 words or fewer, starting with an action verb.
 - Only "critical", "medium", or "low" are valid for severity.
-- "suggested_fix" should be an extremely concise edit or change.
 - Only count a page as "with issues" if at least one issue is on it.
 - Do not count skipped or blocked pages in pages_audited.
-- Never include extra notes, explanations, or context outside the specified JSON or null/null-string outputs.
-- For each issue, be as specific as you can about its location. The user must be able to immediately find and identify the issue. Avoid vague descriptions.
+- Never include extra notes, explanations, or context outside the specified JSON or null outputs.
 - DON'T report "/cdn-cgi/l/email-protection" links as broken - Cloudflare decodes these client-side into valid mailto links.
 
 Reminder: Always condense instructions, return outputs in the precise format, and avoid redundant or unnecessary information.
@@ -397,9 +399,9 @@ If you encounter bot protection, return: BOT_PROTECTION_OR_FIREWALL_BLOCKED
 For every issue, provide:
 - page_url: The URL where issue was found
 - category: "${category}" (always this category)
-- issue_description: Start with impact word (professionalism:, frustration:, trust:, credibility:) then concise problem
+- issue_description: impact label (professionalism:, trust:, clarity:, credibility:, frustration:) + problem in 10 words or fewer. For readability issues use "clarity:" or "accessibility:" — never "readability:" or grade codes. Always name WHERE: quote the specific text or name the section (hero, pricing table, nav, footer CTA).
 - severity: "critical", "medium", or "low"
-- suggested_fix: Direct, actionable fix
+- suggested_fix: action verb + fix in 8 words or fewer
 
 Output format:
 {
