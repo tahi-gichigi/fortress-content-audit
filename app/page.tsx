@@ -659,7 +659,7 @@ export default function Home() {
       <InterstitialLoader
         open={loading}
         title="Running Audit"
-        description="This may take a few minutes"
+        domain={displayDomain || undefined}
         pagesAudited={progressInfo.pagesAudited}
         pagesBeingCrawled={progressInfo.pagesBeingCrawled}
         pagesFound={progressInfo.pagesFound}

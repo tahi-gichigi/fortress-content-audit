@@ -54,6 +54,10 @@ export interface InterstitialLoaderProps extends React.HTMLAttributes<HTMLDivEle
    * Audit preset (affects time estimate messaging)
    */
   preset?: AuditPreset
+  /**
+   * Domain being audited, shown below the title
+   */
+  domain?: string
 }
 
 const InterstitialLoader = React.forwardRef<HTMLDivElement, InterstitialLoaderProps>(
@@ -72,15 +76,41 @@ const InterstitialLoader = React.forwardRef<HTMLDivElement, InterstitialLoaderPr
       isAuthenticated = false,
       pagesFound,
       preset,
+      domain,
       children,
       ...props
     },
     ref
   ) => {
     const [shownSummaries, setShownSummaries] = React.useState<{ message: string; completed: boolean }[]>([])
+    // Show the status box after a short delay so it doesn't feel instant/jarring
+    const [statusBoxVisible, setStatusBoxVisible] = React.useState(false)
+    // Separate state for the count so we can animate the transition scanning → found
+    const [countRevealed, setCountRevealed] = React.useState(false)
 
     // Calculate max pages audited based on tier
     const maxPagesAudited = auditTier === 'free' ? 5 : auditTier === 'pro' ? 20 : 60
+
+    // Show status box ~1s after the interstitial opens; reset when it closes
+    React.useEffect(() => {
+      if (!open) {
+        setStatusBoxVisible(false)
+        setCountRevealed(false)
+        return
+      }
+      const t = setTimeout(() => setStatusBoxVisible(true), 900)
+      return () => clearTimeout(t)
+    }, [open])
+
+    // When pagesFound arrives (and box is visible), reveal the count in-place.
+    // statusBoxVisible is included as a dep so that if pagesFound came in before
+    // the box appeared, count still reveals once the box becomes visible.
+    React.useEffect(() => {
+      if (pagesFound != null && pagesFound > 0 && statusBoxVisible && !countRevealed) {
+        const t = setTimeout(() => setCountRevealed(true), 300)
+        return () => clearTimeout(t)
+      }
+    }, [pagesFound, statusBoxVisible, countRevealed])
 
     // Canned reasoning summaries in the same style as model output
     const cannedSummaries = [
@@ -96,79 +126,50 @@ const InterstitialLoader = React.forwardRef<HTMLDivElement, InterstitialLoaderPr
       "Compiling findings and recommendations",
     ]
 
-    // Use canned summaries instead of reasoningSummaries prop
-    const summaries = cannedSummaries
-
-    // Add summaries one by one, accumulating them on screen
-    // Only start after pages found appears (or after 20s timeout if manifest extraction fails)
+    // Add summaries one by one after pages are found (or after 15s fallback)
     React.useEffect(() => {
-      if (!open || summaries.length === 0) {
+      if (!open || cannedSummaries.length === 0) {
         setShownSummaries([])
         return
       }
 
-      // Don't show progress messages until pages found appears
-      // (or after 20s timeout in case manifest extraction fails)
-      const shouldShowMessages = pagesFound !== null && pagesFound !== undefined
-
-      // If pages not found yet, set timeout to show messages anyway after 20s
+      const hasPages = pagesFound != null && pagesFound > 0
       const timeouts: NodeJS.Timeout[] = []
       let startTimeout: NodeJS.Timeout | null = null
 
-      if (!shouldShowMessages) {
-        // Wait up to 20 seconds for pages found, then show messages anyway
+      const startSummaries = (initialDelaySecs: number) => {
         startTimeout = setTimeout(() => {
-          // Start showing messages if still open
           if (!open) return
-          setShownSummaries([{ message: summaries[0], completed: false }])
-
-          // Add remaining summaries
-          for (let i = 1; i < summaries.length; i++) {
-            const summaryToAdd = summaries[i]
-            const timeout = setTimeout(() => {
+          setShownSummaries([{ message: cannedSummaries[0], completed: false }])
+          for (let i = 1; i < cannedSummaries.length; i++) {
+            const msg = cannedSummaries[i]
+            const t = setTimeout(() => {
               setShownSummaries((prev) => {
-                if (prev.length < summaries.length) {
-                  const updated = prev.map((item, idx) =>
-                    idx === prev.length - 1 ? { ...item, completed: true } : item
-                  )
-                  return [...updated, { message: summaryToAdd, completed: false }]
-                }
-                return prev
+                if (prev.length >= cannedSummaries.length) return prev
+                const updated = prev.map((item, idx) =>
+                  idx === prev.length - 1 ? { ...item, completed: true } : item
+                )
+                return [...updated, { message: msg, completed: false }]
               })
             }, i * 25000)
-            timeouts.push(timeout)
+            timeouts.push(t)
           }
-        }, 20000)
+        }, initialDelaySecs * 1000)
+      }
+
+      if (hasPages) {
+        // Pages found — start summaries 2s later
+        startSummaries(2)
       } else {
-        // Pages found - wait 2 seconds, then show first message
-        const initialDelay = setTimeout(() => {
-          setShownSummaries([{ message: summaries[0], completed: false }])
-
-          // Add remaining summaries one by one with delay
-          for (let i = 1; i < summaries.length; i++) {
-            const summaryToAdd = summaries[i]
-            const timeout = setTimeout(() => {
-              setShownSummaries((prev) => {
-                if (prev.length < summaries.length) {
-                  const updated = prev.map((item, idx) =>
-                    idx === prev.length - 1 ? { ...item, completed: true } : item
-                  )
-                  return [...updated, { message: summaryToAdd, completed: false }]
-                }
-                return prev
-              })
-            }, i * 25000)
-            timeouts.push(timeout)
-          }
-        }, 2000) // 2 second delay after pages found appears
-        timeouts.push(initialDelay)
+        // Still scanning — start summaries after 15s regardless
+        startSummaries(15)
       }
 
       return () => {
         if (startTimeout) clearTimeout(startTimeout)
-        timeouts.forEach((timeout) => clearTimeout(timeout))
+        timeouts.forEach((t) => clearTimeout(t))
       }
-    }, [open, pagesFound]) // Trigger when open changes or pages found becomes available
+    }, [open, pagesFound])
 
     if (!open) return null
 
@@ -176,7 +177,7 @@ const InterstitialLoader = React.forwardRef<HTMLDivElement, InterstitialLoaderPr
       <div
         ref={ref}
         className={cn(
-          "fixed inset-0 bg-background z-50 flex items-center justify-center animate-in fade-in duration-300",
+          "fixed inset-0 bg-background z-50 flex items-start justify-center pt-[28vh] animate-in fade-in duration-300",
           className
         )}
         style={{ zIndex }}
@@ -187,29 +188,34 @@ const InterstitialLoader = React.forwardRef<HTMLDivElement, InterstitialLoaderPr
             <Loader2 className="h-12 w-12 animate-spin text-primary mx-auto mb-6" />
           )}
           {title && (
-            <h2 className="font-serif text-3xl font-light tracking-tight mb-4">{title}</h2>
+            <h2 className="font-serif text-3xl font-light tracking-tight mb-1">{title}</h2>
           )}
-          {/* Show preset-aware time estimate, or fallback to description prop */}
-          <p className="text-muted-foreground mb-4">
-            {preset === 'quick'
-              ? 'This should take about a minute'
-              : preset === 'full'
-                ? 'This may take a few minutes'
-                : description || 'This may take a few minutes'}
-          </p>
-
-          {/* Pages found/auditing info - only show when pages found is available */}
-          {pagesFound != null && pagesFound > 0 && (
-            <div className="mt-6 mb-8 mx-auto max-w-sm animate-in fade-in slide-in-from-bottom-3 duration-700 ease-out">
+          {domain && (
+            <p className="text-muted-foreground font-medium mb-3">{domain}</p>
+          )}
+          {/* Status box: appears ~1s after open, transitions from scanning → found in-place */}
+          {statusBoxVisible && (
+            <div className="mt-6 mb-8 mx-auto max-w-sm animate-in fade-in slide-in-from-bottom-2 duration-500 ease-out">
               <div className="bg-muted/30 border border-border/50 rounded-lg px-6 py-4 space-y-2.5">
-                <p className="text-sm text-foreground flex items-center justify-center gap-2">
-                  <CheckCircle2 className="h-4 w-4 text-green-600 shrink-0" />
-                  <span>Found {pagesFound} {pagesFound === 1 ? 'page' : 'pages'} on your site</span>
-                </p>
-                {auditTier && (
-                  <p className="text-sm text-muted-foreground text-center">
-                    → Auditing up to {maxPagesAudited} {(maxPagesAudited as number) === 1 ? 'page' : 'pages'}{auditTier === 'free' ? ' (Free)' : ''}
+                {!countRevealed ? (
+                  // Scanning state
+                  <p className="text-sm text-muted-foreground flex items-center justify-center gap-2">
+                    <Loader2 className="h-3.5 w-3.5 animate-spin shrink-0" />
+                    <span>Scanning pages...</span>
                   </p>
+                ) : (
+                  // Found state — fades in over the scanning state
+                  <>
+                    <p className="text-sm text-foreground flex items-center justify-center gap-2 animate-in fade-in duration-400">
+                      <CheckCircle2 className="h-4 w-4 text-green-600 shrink-0" />
+                      <span>Found {pagesFound} {pagesFound === 1 ? 'page' : 'pages'} on your site</span>
+                    </p>
+                    {auditTier && (
+                      <p className="text-sm text-muted-foreground text-center animate-in fade-in duration-400" style={{ animationDelay: '150ms', animationFillMode: 'backwards' }}>
+                        Auditing up to {maxPagesAudited} {maxPagesAudited === 1 ? 'page' : 'pages'}{auditTier === 'free' ? ' (Free)' : ''}
+                      </p>
+                    )}
+                  </>
                 )}
               </div>
             </div>
@@ -242,7 +248,6 @@ const InterstitialLoader = React.forwardRef<HTMLDivElement, InterstitialLoaderPr
               ))}
             </div>
           )}
-          
 
           {children}
         </div>
