@@ -25,6 +25,8 @@ interface NewAuditDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   onSuccess?: (newDomain: string) => void
+  /** Pre-fill the domain and skip straight to the audit settings step */
+  defaultDomain?: string
 }
 
 interface UsageInfo {
@@ -34,7 +36,7 @@ interface UsageInfo {
   limit: number
 }
 
-export function NewAuditDialog({ open, onOpenChange, onSuccess }: NewAuditDialogProps) {
+export function NewAuditDialog({ open, onOpenChange, onSuccess, defaultDomain }: NewAuditDialogProps) {
   const { toast } = useToast()
   const [domain, setDomain] = useState("")
   const [loading, setLoading] = useState(false)
@@ -42,7 +44,8 @@ export function NewAuditDialog({ open, onOpenChange, onSuccess }: NewAuditDialog
   const [plan, setPlan] = useState<string>("free")
   const [error, setError] = useState<string | null>(null)
   // 2-step flow: 1 = enter URL, 2 = pick preset
-  const [step, setStep] = useState<1 | 2>(1)
+  // If a defaultDomain is provided, skip straight to step 2
+  const [step, setStep] = useState<1 | 2>(defaultDomain ? 2 : 1)
 
   // Poll for audit completion (runs after dialog closes)
   const pollForCompletion = useCallback(async (runId: string, domainName: string) => {
@@ -149,12 +152,12 @@ export function NewAuditDialog({ open, onOpenChange, onSuccess }: NewAuditDialog
   useEffect(() => {
     if (open) {
       loadUsageInfo()
-      // Reset states when dialog opens
-      setDomain("")
+      // Reset states when dialog opens; if defaultDomain given, pre-fill and skip to step 2
+      setDomain(defaultDomain ?? "")
       setError(null)
-      setStep(1)
+      setStep(defaultDomain ? 2 : 1)
     }
-  }, [open, loadUsageInfo])
+  }, [open, loadUsageInfo, defaultDomain])
 
   // Listen for payment success to refresh plan data
   useEffect(() => {
@@ -365,7 +368,11 @@ export function NewAuditDialog({ open, onOpenChange, onSuccess }: NewAuditDialog
                   plan={plan === 'pro' || plan === 'enterprise' ? plan as 'pro' | 'enterprise' : 'free'}
                   domain={domain.trim().replace(/^https?:\/\//, '').replace(/^www\./, '').replace(/\/$/, '')}
                   onSelect={handleRunWithPreset}
-                  onBack={() => { setStep(1); setError(null) }}
+                  // If we pre-filled the domain (rerun flow), back closes the dialog; otherwise go to step 1
+                  onBack={defaultDomain
+                    ? () => { onOpenChange(false); setError(null) }
+                    : () => { setStep(1); setError(null) }
+                  }
                   compact
                 />
               )}

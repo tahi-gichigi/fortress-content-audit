@@ -78,11 +78,12 @@ export default function DashboardPage() {
   const [authToken, setAuthToken] = useState<string | null>(null)
   const [exportLoading, setExportLoading] = useState<string | null>(null) // Track which format is loading
   const [startingAudit, setStartingAudit] = useState(false)
-  const [rerunningAuditId, setRerunningAuditId] = useState<string | null>(null)
   const [pendingAuditId, setPendingAuditId] = useState<string | null>(null)
   const [auditProgress, setAuditProgress] = useState(0)
   const [severityFilter, setSeverityFilter] = useState<'all' | 'critical'>('all')
   const [newAuditDialogOpen, setNewAuditDialogOpen] = useState(false)
+  // Domain to pre-fill when reopening the audit dialog from "Rerun audit"
+  const [rerunDefaultDomain, setRerunDefaultDomain] = useState<string | undefined>(undefined)
   const [pageListExpanded, setPageListExpanded] = useState(false)
 
   // Modal states for audit notifications
@@ -721,49 +722,10 @@ export default function DashboardPage() {
     }
   }
 
-  const handleRerunAudit = async (auditId: string, domain: string) => {
-    setRerunningAuditId(auditId) // Set loading state
-    try {
-      const supabase = createClient()
-      const { data: { session } } = await supabase.auth.getSession()
-      if (!session) return
-
-      const response = await fetch(`/api/audit/${auditId}/rerun`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${session.access_token}`
-        }
-      })
-
-      if (!response.ok) {
-        const error = await response.json()
-        throw new Error(error.error || 'Failed to rerun audit')
-      }
-
-      toast({
-        title: "Audit rerun",
-        description: "New audit run started"
-      })
-
-      await loadAudits(session.access_token, selectedDomain)
-      
-      // Reload health score after rerun
-      if (plan === 'pro' || plan === 'enterprise') {
-        const supabase = createClient()
-        const { data: { session } } = await supabase.auth.getSession()
-        if (session) {
-          await loadHealthScore(session.access_token)
-        }
-      }
-    } catch (error) {
-      toast({
-        title: "Unable to rerun audit",
-        description: error instanceof Error ? error.message : "Please try again in a moment.",
-        variant: "error",
-      })
-    } finally {
-      setRerunningAuditId(null) // Clear loading state
-    }
+  // Open the new-audit dialog pre-filled with the domain so the user can choose audit settings
+  const handleRerunAudit = (_auditId: string, domain: string) => {
+    setRerunDefaultDomain(domain)
+    setNewAuditDialogOpen(true)
   }
 
   const handleStartAudit = async () => {
@@ -1438,20 +1400,18 @@ export default function DashboardPage() {
                       </DropdownMenu>
                     )}
                     <Button
-                      onClick={handleStartAudit}
-                      disabled={startingAudit}
+                      onClick={() => {
+                        // Open audit dialog pre-filled with current domain so user can pick settings
+                        if (selectedDomain) {
+                          setRerunDefaultDomain(selectedDomain)
+                          setNewAuditDialogOpen(true)
+                        }
+                      }}
                       variant="default"
                       size="sm"
                       className="sm:size-default"
                     >
-                      {startingAudit ? (
-                        <>
-                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                          Running audit...
-                        </>
-                      ) : (
-                        'Rerun audit'
-                      )}
+                      Rerun audit
                     </Button>
                   </div>
                 </div>
@@ -1615,10 +1575,15 @@ export default function DashboardPage() {
         </AlertDialogContent>
       </AlertDialog>
 
-      {/* New Audit Dialog */}
+      {/* New Audit Dialog - also used for rerun flow (pre-filled domain, skips to step 2) */}
       <NewAuditDialog
         open={newAuditDialogOpen}
-        onOpenChange={setNewAuditDialogOpen}
+        onOpenChange={(open) => {
+          setNewAuditDialogOpen(open)
+          // Clear rerun domain when dialog closes so next open is a fresh new-domain flow
+          if (!open) setRerunDefaultDomain(undefined)
+        }}
+        defaultDomain={rerunDefaultDomain}
         onSuccess={async (newDomain: string) => {
           // Normalize domain
           const normalizedDomain = newDomain.replace(/^https?:\/\//, '').replace(/^www\./, '').replace(/\/$/, '')
