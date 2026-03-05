@@ -164,24 +164,27 @@ export function HealthScoreCards({
         onClick={onPagesWithIssuesClick ?? undefined}
       >
         <CardHeader className="relative">
-          <CardDescription>Pages with Issues</CardDescription>
+          <CardDescription>
+            {/* X/Y format makes the card self-explanatory at a glance */}
+            Pages audited with issues
+          </CardDescription>
           <CardTitle className="@[250px]/card:text-3xl text-2xl font-semibold tabular-nums">
-            {pagesAudited !== null && pagesAudited !== undefined 
-              ? `${metrics.pagesWithIssues || 0}/${pagesAudited}`
+            {pagesAudited !== null && pagesAudited !== undefined
+              ? `${metrics.pagesWithIssues || 0} of ${pagesAudited}`
               : (metrics.pagesWithIssues || 0)
             }
           </CardTitle>
         </CardHeader>
         <CardFooter className="flex-col items-start gap-1 text-sm">
           <div className="line-clamp-1 flex gap-2 font-medium">
-            Pages requiring content fixes
+            {pagesAudited !== null && pagesAudited !== undefined
+              ? `${pagesAudited} pages audited`
+              : 'Pages audited'}
           </div>
           <div className="text-muted-foreground">
             {onPagesWithIssuesClick
-              ? 'Click to view pages summary'
-              : pagesAudited !== null && pagesAudited !== undefined
-                ? `${metrics.pagesWithIssues || 0} pages with issues out of ${pagesAudited} pages audited`
-                : 'Unique pages with active issues'}
+              ? 'Click to see which pages have issues'
+              : `${metrics.pagesWithIssues || 0} had at least one content issue`}
           </div>
         </CardFooter>
       </Card>

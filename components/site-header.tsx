@@ -7,6 +7,12 @@ import { Separator } from "@/components/ui/separator"
 import { SidebarTrigger } from "@/components/ui/sidebar"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import { createClient } from "@/lib/supabase-browser"
 import { PLAN_NAMES } from "@/lib/plans"
 
@@ -80,10 +86,37 @@ export function SiteHeader() {
           )}
         </div>
         <div className="flex items-center gap-4">
-          {isAuthenticated ? null : (
+          {isAuthenticated ? (
+            // Logged-in users get a dashboard link and a sign-out dropdown
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="sm">
+                  Account
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={() => router.push('/dashboard')}>
+                  Dashboard
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => router.push('/account')}>
+                  Account settings
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={async () => {
+                    const supabase = createClient()
+                    await supabase.auth.signOut()
+                    router.push('/')
+                    router.refresh()
+                  }}
+                >
+                  Sign out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
             <>
-              <Button variant="ghost" onClick={() => router.push('/sign-up?mode=sign-in')}>Sign In</Button>
-              <Button onClick={() => router.push('/sign-up?mode=sign-up')}>Sign Up</Button>
+              <Button variant="ghost" onClick={() => router.push('/sign-up?mode=sign-in')}>Sign in</Button>
+              <Button onClick={() => router.push('/sign-up?mode=sign-up')}>Sign up</Button>
             </>
           )}
         </div>
