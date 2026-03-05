@@ -3,7 +3,6 @@ import { NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase-admin'
 import { createClient } from '@supabase/supabase-js'
 import { generateFile } from '@/lib/file-generator'
-import PostHogClient from '@/lib/posthog'
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const supabaseAnon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -124,20 +123,6 @@ export async function GET(
   } catch (e) {
     const duration = Date.now() - startTime
     const error = e instanceof Error ? e : new Error('Unknown error')
-    try {
-      const posthog = PostHogClient()
-      posthog.capture({
-        distinctId: 'server',
-        event: 'error_occurred',
-        properties: {
-          type: 'export',
-          message: error.message,
-          endpoint: '/api/export/[id]',
-          duration_ms: duration,
-        }
-      })
-      posthog.shutdown()
-    } catch {}
     return NextResponse.json(
       { error: error.message },
       { status: 500 }
