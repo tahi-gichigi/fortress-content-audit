@@ -31,7 +31,9 @@ export default function AuditOptionsPage() {
 
   const [readabilityLevel, setReadabilityLevel] = useState<string>("")
   const [formality, setFormality] = useState<string>("")
-  const [locale, setLocale] = useState<string>("en-GB")
+  // locale is null/"" when off (model infers); "en-GB"/"en-US" when on
+  const [locale, setLocale] = useState<string>("")
+  const [localeEnabled, setLocaleEnabled] = useState(false)
   const [readabilityEnabled, setReadabilityEnabled] = useState(false)
   const [formalityEnabled, setFormalityEnabled] = useState(false)
   const [flagKeywords, setFlagKeywords] = useState<string[]>([])
@@ -67,7 +69,10 @@ export default function AuditOptionsPage() {
       }
       setFormality(formalityMap[f] || f || "")
       setFormalityEnabled(!!f)
-      setLocale(data.locale === "en-US" ? "en-US" : "en-GB")
+      // locale is stored as "en-GB" or "en-US"; empty/null means off (model infers)
+      const savedLocale = data.locale || ""
+      setLocale(savedLocale)
+      setLocaleEnabled(!!savedLocale)
       const fk = Array.isArray(data.flag_keywords) ? data.flag_keywords : []
       const ik = Array.isArray(data.ignore_keywords) ? data.ignore_keywords : []
       setFlagKeywords(fk)
@@ -175,7 +180,8 @@ export default function AuditOptionsPage() {
       autoSave({
         readability: readabilityEnabled ? readabilityLevel || null : null,
         formality: formalityEnabled ? formality || null : null,
-        locale: locale || null,
+        // null when off means the auditor infers language from site content
+        locale: localeEnabled ? locale || null : null,
         flagKeywords: flagKeywordsEnabled ? flagKeywords : [],
         ignoreKeywords: ignoreKeywordsEnabled ? ignoreKeywords : [],
         flagAiWriting: flagAiWriting,
@@ -184,7 +190,7 @@ export default function AuditOptionsPage() {
     }, 500)
     setSaveTimeout(timeout)
     return () => clearTimeout(timeout)
-  }, [readabilityLevel, formality, locale, flagKeywords, ignoreKeywords, flagKeywordsEnabled, ignoreKeywordsEnabled, flagAiWriting, includeLongform, readabilityEnabled, formalityEnabled, loading, autoSave])
+  }, [readabilityLevel, formality, locale, localeEnabled, flagKeywords, ignoreKeywords, flagKeywordsEnabled, ignoreKeywordsEnabled, flagAiWriting, includeLongform, readabilityEnabled, formalityEnabled, loading, autoSave])
 
   const toggleAutoWeekly = async (enabled: boolean) => {
     if (!authToken || !domain) return
@@ -259,7 +265,7 @@ export default function AuditOptionsPage() {
     <div className="container mx-auto max-w-4xl px-6 py-8">
       <div className="mb-8">
         <p className="text-muted-foreground mb-1">{domain}</p>
-        <h1 className="font-serif text-4xl font-semibold tracking-tight">Audit options</h1>
+        <h1 className="font-serif text-4xl font-semibold tracking-tight">Audit settings</h1>
         <p className="text-sm text-muted-foreground mt-2">Scope and writing style to check during audits</p>
       </div>
 
@@ -325,19 +331,52 @@ export default function AuditOptionsPage() {
           <h2 className="font-serif text-2xl font-semibold mb-4">Writing standards</h2>
           <p className="text-sm text-muted-foreground mb-6">Intended style to audit against</p>
 
-          <div className="flex items-center justify-between gap-4 rounded-md border border-border p-4 mb-6">
-            <div>
-              <Label htmlFor="locale_toggle" className="cursor-pointer font-medium">British English</Label>
-              <p className="text-sm text-muted-foreground mt-0.5">Flags US spelling when on; flags British spelling when off.</p>
+          {/* Spelling standard — off means model infers from site content */}
+          <div className="rounded-md border border-border p-4 mb-6">
+            <div className="flex items-center justify-between gap-4">
+              <div>
+                <Label htmlFor="locale_toggle" className="cursor-pointer font-medium">Spelling standard</Label>
+                <p className="text-sm text-muted-foreground mt-0.5">
+                  {localeEnabled
+                    ? "Audit against the chosen English variant"
+                    : "Off - model infers from site content"}
+                </p>
+              </div>
+              <Switch
+                id="locale_toggle"
+                checked={localeEnabled}
+                onCheckedChange={(v) => {
+                  userChangedSomething.current = true
+                  setLocaleEnabled(v)
+                  // Default to British when first enabling
+                  if (v && !locale) setLocale("en-GB")
+                }}
+              />
             </div>
-            <Switch
-              id="locale_toggle"
-              checked={locale === "en-GB"}
-              onCheckedChange={(v) => {
-                userChangedSomething.current = true
-                setLocale(v ? "en-GB" : "en-US")
-              }}
-            />
+            {localeEnabled && (
+              <div className="mt-4 flex flex-wrap gap-2">
+                {[
+                  { value: "en-GB", label: "British" },
+                  { value: "en-US", label: "American" },
+                ].map(({ value, label }) => (
+                  <button
+                    key={value}
+                    type="button"
+                    onClick={() => {
+                      userChangedSomething.current = true
+                      setLocale(value)
+                    }}
+                    className={`rounded-md border px-3 py-1.5 text-sm transition-colors ${
+                      locale === value
+                        ? "border-primary bg-primary text-primary-foreground"
+                        : "border-border hover:bg-muted"
+                    }`}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
           <div className="space-y-6">
