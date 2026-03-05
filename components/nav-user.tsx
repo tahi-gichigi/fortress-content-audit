@@ -90,8 +90,9 @@ export function NavUser() {
   const handleLogout = async () => {
     const supabase = createClient()
     await supabase.auth.signOut()
-    router.push('/')
-    router.refresh()
+    // Hard redirect: clears all React state and re-reads cookies from scratch.
+    // router.push + router.refresh() races and can leave a stale auth state.
+    window.location.href = '/'
   }
 
   if (loading || !user) {

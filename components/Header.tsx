@@ -59,8 +59,7 @@ export default function Header({ rightContent }: HeaderProps) {
               ) : (
                 <>
                   <Button variant="ghost" onClick={() => router.push('/pricing')}>Pricing</Button>
-                  <Button variant="ghost" onClick={() => router.push('/sign-up?mode=sign-in')}>Sign In</Button>
-                  <Button onClick={() => router.push('/sign-up?mode=sign-up')}>Sign Up</Button>
+                  <Button onClick={() => router.push('/sign-up?mode=sign-in')}>Sign in</Button>
                 </>
               )}
             </>
