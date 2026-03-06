@@ -305,6 +305,23 @@ export async function POST(request: Request) {
           }
         }
         // preset === 'quick': no synthetic profile, brandVoiceProfile stays null
+      } else if (preset === 'custom' && brandVoiceProfile) {
+        // Authed user with existing DB profile + custom picker options.
+        // Picker wins for fields it controls (readability, locale, AI detection, formality for paid).
+        // Fields the picker can't set (voice_summary, enabled, flag_keywords, ignore_keywords) are
+        // preserved from the DB profile so saved guidelines still apply.
+        brandVoiceProfile = {
+          ...brandVoiceProfile,
+          flag_ai_writing: flagAiWriting ?? brandVoiceProfile.flag_ai_writing,
+          readability_level: readabilityLevel || null,
+          locale: presetLocale || null,
+          // presetFormality only sent by paid users; fall back to DB value for free users
+          formality: presetFormality || brandVoiceProfile.formality,
+          // Pro picker voice summary (if provided) overrides DB
+          ...(typeof presetVoiceSummary === 'string' && presetVoiceSummary.trim().length > 0
+            ? { voice_summary: presetVoiceSummary.trim(), enabled: true }
+            : {}),
+        }
       } else if (preset === 'full' && brandVoiceProfile) {
         // Authed user with existing profile + full preset:
         // Augment with defaults if the user hasn't set these yet
