@@ -33,7 +33,8 @@ Content audit SaaS platform built with Next.js, Supabase, and AI integrations. H
 - **Backend:** Next.js API routes, Supabase (PostgreSQL), Supabase Auth
 - **PDF Export:** Client-side html2pdf.js
 - **Analytics:** PostHog
-- **AI:** OpenAI API via ai SDK
+- **AI:** OpenAI API (gpt-5.1-2025-11-13 via Responses API)
+- **Tracing:** LangSmith (`aicontentaudit` project) — enabled on production via Vercel env vars
 
 ## Project Structure
 - `/app` - Next.js app router pages and API routes
@@ -55,7 +56,34 @@ Content audit SaaS platform built with Next.js, Supabase, and AI integrations. H
 Recorded in `docs/decisions/` as numbered ADRs. Check these before making changes to the content extraction pipeline.
 - [ADR-001](docs/decisions/001-strip-hidden-elements-before-extraction.md) — Strip hidden DOM elements before Firecrawl markdown extraction
 
+## Audit Architecture
+
+### Tiers
+- **FREE** → `parallelMiniAudit` — 3 category models + optional brand voice, 5 pages, 10 tool calls
+- **PAID** → `parallelProAudit` — same structure, 20 pages, 30 tool calls
+- **ENTERPRISE** → `auditSite` sequential + brand voice pass, 60 tool calls
+
+### Issue Persistence (cross-audit context)
+Each re-audit feeds two context blocks into the model prompts:
+- **`# Active Issues`** — active issues from the most recent prior audit (via `getActiveIssues`). Model verifies if they still exist.
+- **`# Previously Resolved/Ignored Issues`** — resolved/ignored issues across all prior audits (via `getExcludedIssues`). Model is told not to report these again.
+
+Both are filtered by category before being injected (so the Language model only sees Language context). Confirmed working end-to-end via LangSmith token delta (Language prompt is ~190 tokens larger than Facts/Links due to category-filtered excluded issues).
+
+### Preset → Brand Voice Profile Handling (`app/api/audit/route.ts`)
+The `preset` param from the picker controls how the brand voice profile is built:
+- **No DB profile** → synthetic profile built from picker options
+- **`preset=custom` + existing DB profile** → picker options OVERRIDE the DB profile for fields the picker controls (`flag_ai_writing`, `readability_level`, `locale`, `formality`). Voice summary, enabled, keywords preserved from DB.
+- **`preset=full` + existing DB profile** → augment with readability + AI detection defaults if not set
+- **`preset=quick`** → disable brand voice pass entirely
+
+### Test Scripts
+- `test-issue-persistence.ts` — DB-level verification of getExcludedIssues/getActiveIssues queries
+- `test-e2e-persistence.ts` — Full E2E: marks issues resolved, runs real prod audit, verifies context in traces
+  - Uses `supabase.auth.admin.generateLink` + `anonClient.auth.verifyOtp` to get a bearer token without a password
+
 ## Important URLs
-- Production: https://usefortress.vercel.com
+- Production: https://usefortress.vercel.app
 - Supabase Admin URL: Check `.env.local`
+- LangSmith: https://smith.langchain.com → project `aicontentaudit`
 - PostHog Dashboard: Check project settings
