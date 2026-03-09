@@ -8,7 +8,7 @@
 import { createClient } from '@supabase/supabase-js'
 import { config } from 'dotenv'
 import { resolve } from 'path'
-import { miniAudit, getExcludedIssues, getActiveIssues } from './lib/audit'
+import { parallelMiniAudit, getExcludedIssues, getActiveIssues } from './lib/audit'
 
 config({ path: resolve(process.cwd(), '.env.local') })
 
@@ -105,8 +105,8 @@ async function main() {
     console.log('TEST 1: Run First Audit (No Context)')
     console.log('='.repeat(70))
 
-    console.log(`\nCalling miniAudit() directly...`)
-    const result1 = await miniAudit(DOMAIN, undefined, { excluded: [], active: [] })
+    console.log(`\nCalling parallelMiniAudit() directly...`)
+    const result1 = await parallelMiniAudit(DOMAIN, { excluded: [], active: [] })
 
     console.log(`✓ Audit completed`)
     console.log(`  - Issues found: ${result1.issues.length}`)
@@ -184,8 +184,8 @@ async function main() {
     console.log('TEST 4: Run Second Audit WITH Issue Context')
     console.log('='.repeat(70))
 
-    console.log(`\nCalling miniAudit() with issue context...`)
-    const result2 = await miniAudit(DOMAIN, undefined, {
+    console.log(`\nCalling parallelMiniAudit() with issue context...`)
+    const result2 = await parallelMiniAudit(DOMAIN, {
       excluded: excludedIssues,
       active: activeIssues
     })

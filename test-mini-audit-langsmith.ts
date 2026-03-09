@@ -4,7 +4,7 @@
  */
 
 import { config } from "dotenv"
-import { miniAudit } from "./lib/audit"
+import { parallelMiniAudit } from "./lib/audit"
 
 // Load environment variables
 config({ path: ".env.local" })
@@ -20,7 +20,7 @@ async function testMiniAudit() {
   const startTime = Date.now()
 
   try {
-    const result = await miniAudit(testDomain)
+    const result = await parallelMiniAudit(testDomain)
     const duration = Date.now() - startTime
 
     console.log("\n" + "=".repeat(60))
