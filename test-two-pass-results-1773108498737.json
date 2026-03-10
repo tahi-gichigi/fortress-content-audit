@@ -1,0 +1,2424 @@
+[
+  {
+    "domain": "https://secondhome.io",
+    "pagesAudited": 6,
+    "crawlDurationMs": 19728,
+    "variantA": {
+      "format": "html",
+      "auditDurationMs": 13284,
+      "checkerDurationMs": 6424,
+      "auditTokens": {
+        "input": 83982,
+        "output": 2115,
+        "reasoning": 0,
+        "cacheRead": 12672
+      },
+      "checkerTokens": {
+        "input": 20578,
+        "output": 2150,
+        "reasoning": 359,
+        "cacheRead": 10752
+      },
+      "auditCostUsd": 0,
+      "checkerCostUsd": 0,
+      "rawIssues": [
+        {
+          "page_url": "https://secondhome.io",
+          "category": "Language",
+          "issue_description": "clarity: Mobile header “Contact Us” links to “tel:” placeholder.",
+          "severity": "medium",
+          "suggested_fix": "Add the missing phone number."
+        },
+        {
+          "page_url": "https://secondhome.io/venues",
+          "category": "Language",
+          "issue_description": "clarity: Mobile header “Contact Us” links to “tel:” placeholder.",
+          "severity": "medium",
+          "suggested_fix": "Add the missing phone number."
+        },
+        {
+          "page_url": "https://secondhome.io/member-benefits-london",
+          "category": "Language",
+          "issue_description": "clarity: Mobile header “Contact Us” links to “tel:” placeholder.",
+          "severity": "medium",
+          "suggested_fix": "Add the missing phone number."
+        },
+        {
+          "page_url": "https://secondhome.io/meeting-rooms-london",
+          "category": "Language",
+          "issue_description": "clarity: Mobile header “Contact Us” links to “tel:” placeholder.",
+          "severity": "medium",
+          "suggested_fix": "Add the missing phone number."
+        },
+        {
+          "page_url": "https://secondhome.io/meeting-rooms-london/west-london",
+          "category": "Language",
+          "issue_description": "clarity: Mobile header “Contact Us” links to “tel:” placeholder.",
+          "severity": "medium",
+          "suggested_fix": "Add the missing phone number."
+        },
+        {
+          "page_url": "https://secondhome.io",
+          "category": "Facts & Consistency",
+          "issue_description": "trust: Mobile header “Contact Us” uses empty tel: link.",
+          "severity": "medium",
+          "suggested_fix": "Add correct phone number to tel:."
+        },
+        {
+          "page_url": "https://secondhome.io/venues",
+          "category": "Facts & Consistency",
+          "issue_description": "trust: Mobile header “Contact Us” uses empty tel: link.",
+          "severity": "medium",
+          "suggested_fix": "Add correct phone number to tel:."
+        },
+        {
+          "page_url": "https://secondhome.io/member-benefits-london",
+          "category": "Facts & Consistency",
+          "issue_description": "trust: Mobile header “Contact Us” uses empty tel: link.",
+          "severity": "medium",
+          "suggested_fix": "Add correct phone number to tel:."
+        },
+        {
+          "page_url": "https://secondhome.io/meeting-rooms-london",
+          "category": "Facts & Consistency",
+          "issue_description": "clarity: Room link includes fixed date “2025-06-09T12:00”.",
+          "severity": "medium",
+          "suggested_fix": "Remove hardcoded date; use dynamic booking."
+        },
+        {
+          "page_url": "https://secondhome.io/meeting-rooms-london",
+          "category": "Facts & Consistency",
+          "issue_description": "trust: Mobile header “Contact Us” uses empty tel: link.",
+          "severity": "medium",
+          "suggested_fix": "Add correct phone number to tel:."
+        },
+        {
+          "page_url": "https://secondhome.io/meeting-rooms-london/west-london",
+          "category": "Facts & Consistency",
+          "issue_description": "clarity: Room link includes fixed date “2025-06-09T12:00”.",
+          "severity": "medium",
+          "suggested_fix": "Remove hardcoded date; use dynamic booking."
+        },
+        {
+          "page_url": "https://secondhome.io/meeting-rooms-london/west-london",
+          "category": "Facts & Consistency",
+          "issue_description": "trust: Mobile header “Contact Us” uses empty tel: link.",
+          "severity": "medium",
+          "suggested_fix": "Add correct phone number to tel:."
+        },
+        {
+          "page_url": "https://secondhome.io/coworking-space-lisbon",
+          "category": "Facts & Consistency",
+          "issue_description": "trust: Mobile header “Contact Us” uses empty tel: link.",
+          "severity": "medium",
+          "suggested_fix": "Add correct phone number to tel:."
+        },
+        {
+          "page_url": "https://secondhome.io",
+          "category": "Links & Formatting",
+          "issue_description": "clarity: Header logo link shows “[no text]” in nav.",
+          "severity": "low",
+          "suggested_fix": "Add visible text label near logo."
+        },
+        {
+          "page_url": "https://secondhome.io",
+          "category": "Links & Formatting",
+          "issue_description": "clarity: Mobile menu “Contact Us” shows phone icon, tel:.",
+          "severity": "medium",
+          "suggested_fix": "Display phone number beside “Contact Us”."
+        },
+        {
+          "page_url": "https://secondhome.io/venues",
+          "category": "Links & Formatting",
+          "issue_description": "clarity: Header logo link shows “[no text]” in nav.",
+          "severity": "low",
+          "suggested_fix": "Add visible text label near logo."
+        },
+        {
+          "page_url": "https://secondhome.io/venues",
+          "category": "Links & Formatting",
+          "issue_description": "clarity: Mobile menu “Contact Us” shows phone icon, tel:.",
+          "severity": "medium",
+          "suggested_fix": "Display phone number beside “Contact Us”."
+        },
+        {
+          "page_url": "https://secondhome.io/member-benefits-london",
+          "category": "Links & Formatting",
+          "issue_description": "accessibility: Subnav desktop items are <li>, not links.",
+          "severity": "medium",
+          "suggested_fix": "Convert items to <a> elements."
+        },
+        {
+          "page_url": "https://secondhome.io/member-benefits-london",
+          "category": "Links & Formatting",
+          "issue_description": "clarity: Duplicate “Privacy Policy” entries in footer area.",
+          "severity": "low",
+          "suggested_fix": "Remove one duplicate footer item."
+        },
+        {
+          "page_url": "https://secondhome.io/member-benefits-london",
+          "category": "Links & Formatting",
+          "issue_description": "clarity: Mobile menu “Contact Us” shows phone icon, tel:.",
+          "severity": "medium",
+          "suggested_fix": "Display phone number beside “Contact Us”."
+        },
+        {
+          "page_url": "https://secondhome.io/meeting-rooms-london",
+          "category": "Links & Formatting",
+          "issue_description": "clarity: Mixed CTA casing “Book now” vs “Book Now”.",
+          "severity": "low",
+          "suggested_fix": "Standardize CTA capitalization sitewide."
+        },
+        {
+          "page_url": "https://secondhome.io/meeting-rooms-london",
+          "category": "Links & Formatting",
+          "issue_description": "clarity: Mobile menu “Contact Us” shows phone icon, tel:.",
+          "severity": "medium",
+          "suggested_fix": "Display phone number beside “Contact Us”."
+        },
+        {
+          "page_url": "https://secondhome.io/meeting-rooms-london/west-london",
+          "category": "Links & Formatting",
+          "issue_description": "clarity: Mobile menu “Contact Us” shows phone icon, tel:.",
+          "severity": "medium",
+          "suggested_fix": "Display phone number beside “Contact Us”."
+        },
+        {
+          "page_url": "https://secondhome.io/meeting-rooms-london/west-london",
+          "category": "Links & Formatting",
+          "issue_description": "clarity: Room card text includes truncated “Book no”.",
+          "severity": "medium",
+          "suggested_fix": "Fix card text overflow/truncation styling."
+        },
+        {
+          "page_url": "https://secondhome.io/coworking-space-lisbon",
+          "category": "Links & Formatting",
+          "issue_description": "accessibility: Subnav desktop items are <li>, not links.",
+          "severity": "medium",
+          "suggested_fix": "Convert items to <a> elements."
+        },
+        {
+          "page_url": "https://secondhome.io/coworking-space-lisbon",
+          "category": "Links & Formatting",
+          "issue_description": "clarity: “Get directions(opens in a new tab)” lacks spacing.",
+          "severity": "low",
+          "suggested_fix": "Insert space before parenthetical text."
+        },
+        {
+          "page_url": "https://secondhome.io/coworking-space-lisbon",
+          "category": "Links & Formatting",
+          "issue_description": "clarity: Mobile menu “Contact Us” shows phone icon, tel:.",
+          "severity": "medium",
+          "suggested_fix": "Display phone number beside “Contact Us”."
+        }
+      ],
+      "verifiedIssues": [
+        {
+          "page_url": "https://secondhome.io",
+          "category": "Language",
+          "issue_description": "clarity: Mobile header “Contact Us” links to “tel:” placeholder.",
+          "severity": "medium",
+          "suggested_fix": "Add the missing phone number.",
+          "confirmed": true,
+          "confidence": 0.98,
+          "evidence": "<a class=\"psMainMenu__contactLink psMainMenu__contactLink--mobile psFlex\" href=\"tel:\">"
+        },
+        {
+          "page_url": "https://secondhome.io",
+          "category": "Facts & Consistency",
+          "issue_description": "trust: Mobile header “Contact Us” uses empty tel: link.",
+          "severity": "medium",
+          "suggested_fix": "Add correct phone number to tel:.",
+          "confirmed": true,
+          "confidence": 0.98,
+          "evidence": "<a class=\"psMainMenu__contactLink psMainMenu__contactLink--mobile psFlex\" href=\"tel:\">"
+        },
+        {
+          "page_url": "https://secondhome.io",
+          "category": "Links & Formatting",
+          "issue_description": "clarity: Mobile menu “Contact Us” shows phone icon, tel:.",
+          "severity": "medium",
+          "suggested_fix": "Display phone number beside “Contact Us”.",
+          "confirmed": true,
+          "confidence": 0.93,
+          "evidence": "<a class=\"psMainMenu__contactLink psMainMenu__contactLink--mobile psFlex\" href=\"tel:\"><svg/><span>Contact Us</span></a>"
+        },
+        {
+          "page_url": "https://secondhome.io/venues",
+          "category": "Language",
+          "issue_description": "clarity: Mobile header “Contact Us” links to “tel:” placeholder.",
+          "severity": "medium",
+          "suggested_fix": "Add the missing phone number.",
+          "confirmed": true,
+          "confidence": 0.98,
+          "evidence": "<a class=\"psMainMenu__contactLink psMainMenu__contactLink--mobile psFlex\" href=\"tel:\">"
+        },
+        {
+          "page_url": "https://secondhome.io/venues",
+          "category": "Facts & Consistency",
+          "issue_description": "trust: Mobile header “Contact Us” uses empty tel: link.",
+          "severity": "medium",
+          "suggested_fix": "Add correct phone number to tel:.",
+          "confirmed": true,
+          "confidence": 0.98,
+          "evidence": "<a class=\"psMainMenu__contactLink psMainMenu__contactLink--mobile psFlex\" href=\"tel:\">"
+        },
+        {
+          "page_url": "https://secondhome.io/venues",
+          "category": "Links & Formatting",
+          "issue_description": "clarity: Header logo link shows “[no text]” in nav.",
+          "severity": "low",
+          "suggested_fix": "Add visible text label near logo.",
+          "confirmed": true,
+          "confidence": 0.9,
+          "evidence": "<a class=\"header__logo\" href=\"https://secondhome.io/\" aria-label=\"Homepage\"> <img src=\"https://secondhome.io/wp-content/themes/secondhome/assets/img/logo.svg\" alt=\"Secondhome Logo\""
+        },
+        {
+          "page_url": "https://secondhome.io/venues",
+          "category": "Links & Formatting",
+          "issue_description": "clarity: Mobile menu “Contact Us” shows phone icon, tel:.",
+          "severity": "medium",
+          "suggested_fix": "Display phone number beside “Contact Us”.",
+          "confirmed": true,
+          "confidence": 0.95,
+          "evidence": "<a class=\"psMainMenu__contactLink psMainMenu__contactLink--mobile psFlex\" href=\"tel:\"> <svg/> <span>Contact Us</span> </a>"
+        },
+        {
+          "page_url": "https://secondhome.io/member-benefits-london",
+          "category": "Language",
+          "issue_description": "clarity: Mobile header “Contact Us” links to “tel:” placeholder.",
+          "severity": "medium",
+          "suggested_fix": "Add the missing phone number.",
+          "confirmed": true,
+          "confidence": 0.98,
+          "evidence": "<a class=\"psMainMenu__contactLink psMainMenu__contactLink--mobile psFlex\" href=\"tel:\">"
+        },
+        {
+          "page_url": "https://secondhome.io/member-benefits-london",
+          "category": "Facts & Consistency",
+          "issue_description": "trust: Mobile header “Contact Us” uses empty tel: link.",
+          "severity": "medium",
+          "suggested_fix": "Add correct phone number to tel:.",
+          "confirmed": true,
+          "confidence": 0.98,
+          "evidence": "<a class=\"psMainMenu__contactLink psMainMenu__contactLink--mobile psFlex\" href=\"tel:\">"
+        },
+        {
+          "page_url": "https://secondhome.io/member-benefits-london",
+          "category": "Links & Formatting",
+          "issue_description": "accessibility: Subnav desktop items are <li>, not links.",
+          "severity": "medium",
+          "suggested_fix": "Convert items to <a> elements.",
+          "confirmed": true,
+          "confidence": 0.97,
+          "evidence": "<ul class=\"subNav__scrollLinks\"> ... <li class=\"JS--subNav__desktopLink\" data-scroll-to=\"experience\">Experience</li>"
+        },
+        {
+          "page_url": "https://secondhome.io/member-benefits-london",
+          "category": "Links & Formatting",
+          "issue_description": "clarity: Mobile menu “Contact Us” shows phone icon, tel:.",
+          "severity": "medium",
+          "suggested_fix": "Display phone number beside “Contact Us”.",
+          "confirmed": true,
+          "confidence": 0.92,
+          "evidence": "<a class=\"psMainMenu__contactLink psMainMenu__contactLink--mobile psFlex\" href=\"tel:\"> <svg/> <span>Contact Us</span> </a>"
+        },
+        {
+          "page_url": "https://secondhome.io/meeting-rooms-london",
+          "category": "Language",
+          "issue_description": "clarity: Mobile header “Contact Us” links to “tel:” placeholder.",
+          "severity": "medium",
+          "suggested_fix": "Add the missing phone number.",
+          "confirmed": true,
+          "confidence": 0.98,
+          "evidence": "<a class=\"psMainMenu__contactLink psMainMenu__contactLink--mobile psFlex\" href=\"tel:\">"
+        },
+        {
+          "page_url": "https://secondhome.io/meeting-rooms-london",
+          "category": "Facts & Consistency",
+          "issue_description": "trust: Mobile header “Contact Us” uses empty tel: link.",
+          "severity": "medium",
+          "suggested_fix": "Add correct phone number to tel:.",
+          "confirmed": true,
+          "confidence": 0.98,
+          "evidence": "<a class=\"psMainMenu__contactLink psMainMenu__contactLink--mobile psFlex\" href=\"tel:\">"
+        },
+        {
+          "page_url": "https://secondhome.io/meeting-rooms-london",
+          "category": "Links & Formatting",
+          "issue_description": "clarity: Mobile menu “Contact Us” shows phone icon, tel:.",
+          "severity": "medium",
+          "suggested_fix": "Display phone number beside “Contact Us”.",
+          "confirmed": true,
+          "confidence": 0.96,
+          "evidence": "<a class=\"psMainMenu__contactLink psMainMenu__contactLink--mobile psFlex\" href=\"tel:\">\\n                    <svg/>\\n                    <span>Contact Us</span>"
+        },
+        {
+          "page_url": "https://secondhome.io/meeting-rooms-london/west-london",
+          "category": "Language",
+          "issue_description": "clarity: Mobile header “Contact Us” links to “tel:” placeholder.",
+          "severity": "medium",
+          "suggested_fix": "Add the missing phone number.",
+          "confirmed": true,
+          "confidence": 0.98,
+          "evidence": "<a class=\"psMainMenu__contactLink psMainMenu__contactLink--mobile psFlex\" href=\"tel:\">"
+        },
+        {
+          "page_url": "https://secondhome.io/meeting-rooms-london/west-london",
+          "category": "Facts & Consistency",
+          "issue_description": "trust: Mobile header “Contact Us” uses empty tel: link.",
+          "severity": "medium",
+          "suggested_fix": "Add correct phone number to tel:.",
+          "confirmed": true,
+          "confidence": 0.98,
+          "evidence": "<a class=\"psMainMenu__contactLink psMainMenu__contactLink--mobile psFlex\" href=\"tel:\">"
+        },
+        {
+          "page_url": "https://secondhome.io/meeting-rooms-london/west-london",
+          "category": "Links & Formatting",
+          "issue_description": "clarity: Mobile menu “Contact Us” shows phone icon, tel:.",
+          "severity": "medium",
+          "suggested_fix": "Display phone number beside “Contact Us”.",
+          "confirmed": true,
+          "confidence": 0.93,
+          "evidence": "<a class=\"psMainMenu__contactLink psMainMenu__contactLink--mobile psFlex\" href=\"tel:\">\n                    <svg/>\n                    <span>Contact Us</span>\n                </a>"
+        },
+        {
+          "page_url": "https://secondhome.io/coworking-space-lisbon",
+          "category": "Facts & Consistency",
+          "issue_description": "trust: Mobile header “Contact Us” uses empty tel: link.",
+          "severity": "medium",
+          "suggested_fix": "Add correct phone number to tel:.",
+          "confirmed": true,
+          "confidence": 0.98,
+          "evidence": "<a class=\"psMainMenu__contactLink psMainMenu__contactLink--mobile psFlex\" href=\"tel:\">"
+        },
+        {
+          "page_url": "https://secondhome.io/coworking-space-lisbon",
+          "category": "Links & Formatting",
+          "issue_description": "accessibility: Subnav desktop items are <li>, not links.",
+          "severity": "medium",
+          "suggested_fix": "Convert items to <a> elements.",
+          "confirmed": true,
+          "confidence": 0.97,
+          "evidence": "<ul class=\"subNav__scrollLinks\"> ... <li class=\"JS--subNav__desktopLink\" data-scroll-to=\"products\">Products</li>"
+        },
+        {
+          "page_url": "https://secondhome.io/coworking-space-lisbon",
+          "category": "Links & Formatting",
+          "issue_description": "clarity: Mobile menu “Contact Us” shows phone icon, tel:.",
+          "severity": "medium",
+          "suggested_fix": "Display phone number beside “Contact Us”.",
+          "confirmed": true,
+          "confidence": 0.9,
+          "evidence": "<a class=\"psMainMenu__contactLink psMainMenu__contactLink--mobile psFlex\" href=\"tel:\"> <svg/> <span>Contact Us</span> </a>"
+        }
+      ]
+    },
+    "variantB": {
+      "format": "markdown",
+      "auditDurationMs": 84763,
+      "checkerDurationMs": 0,
+      "auditTokens": {
+        "input": 0,
+        "output": 0,
+        "reasoning": 0,
+        "cacheRead": 0
+      },
+      "checkerTokens": {
+        "input": 0,
+        "output": 0,
+        "reasoning": 0,
+        "cacheRead": 0
+      },
+      "auditCostUsd": 0,
+      "checkerCostUsd": 0,
+      "rawIssues": [],
+      "verifiedIssues": []
+    }
+  },
+  {
+    "domain": "https://justcancel.io",
+    "pagesAudited": 18,
+    "crawlDurationMs": 14651,
+    "variantA": {
+      "format": "html",
+      "auditDurationMs": 22083,
+      "checkerDurationMs": 11586,
+      "auditTokens": {
+        "input": 265446,
+        "output": 2712,
+        "reasoning": 0,
+        "cacheRead": 8448
+      },
+      "checkerTokens": {
+        "input": 62078,
+        "output": 4271,
+        "reasoning": 1406,
+        "cacheRead": 25088
+      },
+      "auditCostUsd": 0,
+      "checkerCostUsd": 0,
+      "rawIssues": [
+        {
+          "page_url": "https://www.justcancel.io",
+          "category": "Language",
+          "issue_description": "professionalism: Hero H1 uses profanity: \"just fucking cancel\".",
+          "severity": "medium",
+          "suggested_fix": "Replace with \"Just Cancel\"."
+        },
+        {
+          "page_url": "https://www.justcancel.io",
+          "category": "Language",
+          "issue_description": "professionalism: Testimonial quote includes profanity: \"sneaky fuckers\".",
+          "severity": "low",
+          "suggested_fix": "Replace profanity with \"sneaky charges\"."
+        },
+        {
+          "page_url": "https://www.justcancel.io",
+          "category": "Language",
+          "issue_description": "professionalism: Testimonial quote: \"That son of aaaaaa\".",
+          "severity": "low",
+          "suggested_fix": "Replace with \"That company\"."
+        },
+        {
+          "page_url": "https://www.justcancel.io",
+          "category": "Language",
+          "issue_description": "credibility: Testimonial quote casing: \"But i am\".",
+          "severity": "low",
+          "suggested_fix": "Capitalize \"I\" in quote."
+        },
+        {
+          "page_url": "https://www.justcancel.io/tools/subscription-calculator",
+          "category": "Language",
+          "issue_description": "clarity: Tip uses vague percent range: \"15-20% cheaper\".",
+          "severity": "low",
+          "suggested_fix": "Add spaces: \"15–20%\"."
+        },
+        {
+          "page_url": "https://www.justcancel.io",
+          "category": "Facts & Consistency",
+          "issue_description": "trust: Hero “Cancel links for 440+ services” conflicts sitewide.",
+          "severity": "medium",
+          "suggested_fix": "Align all guide/link counts everywhere."
+        },
+        {
+          "page_url": "https://www.justcancel.io",
+          "category": "Facts & Consistency",
+          "issue_description": "credibility: Hero “1,100+ cancel guides” conflicts with 1,189+.",
+          "severity": "medium",
+          "suggested_fix": "Standardize the cancel guide count."
+        },
+        {
+          "page_url": "https://www.justcancel.io",
+          "category": "Facts & Consistency",
+          "issue_description": "credibility: Hero “Files deleted after scan” vs localStorage 48 hours.",
+          "severity": "medium",
+          "suggested_fix": "Clarify file deletion vs results retention."
+        },
+        {
+          "page_url": "https://www.justcancel.io/compare",
+          "category": "Facts & Consistency",
+          "issue_description": "trust: Intro “Cancel links for 440+ services” conflicts with guides count.",
+          "severity": "medium",
+          "suggested_fix": "Differentiate “links” vs “guides” explicitly."
+        },
+        {
+          "page_url": "https://www.justcancel.io/faq",
+          "category": "Facts & Consistency",
+          "issue_description": "trust: Privacy Q1 “auto-delete after 48 hours” missing from home claim.",
+          "severity": "low",
+          "suggested_fix": "Add 48-hour retention detail to homepage."
+        },
+        {
+          "page_url": "https://www.justcancel.io/faq",
+          "category": "Facts & Consistency",
+          "issue_description": "credibility: CTA says “Takes 30 seconds” vs homepage “under 90 seconds”.",
+          "severity": "low",
+          "suggested_fix": "Use one consistent scan-time claim."
+        },
+        {
+          "page_url": "https://www.justcancel.io/faq",
+          "category": "Facts & Consistency",
+          "issue_description": "trust: CTA “1,000+ people” conflicts with homepage “1,100+ cancel guides”.",
+          "severity": "low",
+          "suggested_fix": "Replace with a single, consistent usage metric."
+        },
+        {
+          "page_url": "https://www.justcancel.io/transparency",
+          "category": "Facts & Consistency",
+          "issue_description": "trust: “Your data never touches our database” contradicts “Database” section.",
+          "severity": "medium",
+          "suggested_fix": "Specify “no financial data” touches database."
+        },
+        {
+          "page_url": "https://www.justcancel.io/transparency",
+          "category": "Facts & Consistency",
+          "issue_description": "trust: Diagram says server relays file; FAQ says file never touches servers.",
+          "severity": "critical",
+          "suggested_fix": "Rewrite both to one accurate data flow."
+        },
+        {
+          "page_url": "https://www.justcancel.io/tools/subscription-calculator",
+          "category": "Facts & Consistency",
+          "issue_description": "credibility: Quick add “Netflix ($15.49)” mismatches quiz “$15”.",
+          "severity": "low",
+          "suggested_fix": "Use one price source or label estimates."
+        },
+        {
+          "page_url": "https://www.justcancel.io/tools/subscription-calculator",
+          "category": "Facts & Consistency",
+          "issue_description": "credibility: “Average American spends $219/month” lacks consistency elsewhere.",
+          "severity": "low",
+          "suggested_fix": "Cite source and reuse across pages."
+        },
+        {
+          "page_url": "https://www.justcancel.io/how-to-cancel-subscriptions",
+          "category": "Facts & Consistency",
+          "issue_description": "trust: Header “1,189+ services” conflicts with “1,100+” claim.",
+          "severity": "medium",
+          "suggested_fix": "Update all pages to 1,189+."
+        },
+        {
+          "page_url": "https://www.justcancel.io/how-to-cancel-subscriptions",
+          "category": "Facts & Consistency",
+          "issue_description": "clarity: “Direct cancel URLs for 1,100+” conflicts with 1,189+ services.",
+          "severity": "low",
+          "suggested_fix": "Split metrics: URLs count vs services count."
+        },
+        {
+          "page_url": "https://www.justcancel.io/cancel",
+          "category": "Facts & Consistency",
+          "issue_description": "trust: “1189+ services” conflicts with search placeholder “1,100+”.",
+          "severity": "medium",
+          "suggested_fix": "Update placeholder to match 1189+."
+        },
+        {
+          "page_url": "https://www.justcancel.io/cancel",
+          "category": "Facts & Consistency",
+          "issue_description": "credibility: Adobe link text “Adobe Creative Cloud” points to /cancel/adobe.",
+          "severity": "low",
+          "suggested_fix": "Rename to Adobe or change slug."
+        },
+        {
+          "page_url": "https://www.justcancel.io/vs-trim",
+          "category": "Facts & Consistency",
+          "issue_description": "trust: Page says Trim acquired by OneMain; /compare says “Now Rocket Money”.",
+          "severity": "critical",
+          "suggested_fix": "Correct Trim ownership statement sitewide."
+        },
+        {
+          "page_url": "https://www.justcancel.io/vs-truebill",
+          "category": "Facts & Consistency",
+          "issue_description": "trust: Says Rocket Money needs “Plaid bank login” implying credential sharing.",
+          "severity": "medium",
+          "suggested_fix": "Rephrase to “connect via Plaid” accurately."
+        },
+        {
+          "page_url": "https://www.justcancel.io",
+          "category": "Links & Formatting",
+          "issue_description": "clarity: Hero H1 “just fucking cancel” may distract users.",
+          "severity": "medium",
+          "suggested_fix": "Add optional clean-title toggle."
+        },
+        {
+          "page_url": "https://www.justcancel.io",
+          "category": "Links & Formatting",
+          "issue_description": "clarity: Mixed emoji density in “mobile-helper” instructions section.",
+          "severity": "low",
+          "suggested_fix": "Reduce emojis; keep one per block."
+        },
+        {
+          "page_url": "https://www.justcancel.io/faq",
+          "category": "Links & Formatting",
+          "issue_description": "clarity: “localStorage” appears unformatted jargon in Privacy answers.",
+          "severity": "low",
+          "suggested_fix": "Wrap jargon in inline code styling."
+        },
+        {
+          "page_url": "https://www.justcancel.io/terms",
+          "category": "Links & Formatting",
+          "issue_description": "clarity: Invisible Stripe metrics iframe markup may clutter DOM.",
+          "severity": "low",
+          "suggested_fix": "Lazy-load metrics only after interaction."
+        },
+        {
+          "page_url": "https://www.justcancel.io/transparency",
+          "category": "Links & Formatting",
+          "issue_description": "clarity: Code blocks are dense; “The Code” section feels cramped.",
+          "severity": "low",
+          "suggested_fix": "Increase line-height and add collapsible blocks."
+        },
+        {
+          "page_url": "https://www.justcancel.io/tools/subscription-calculator",
+          "category": "Links & Formatting",
+          "issue_description": "clarity: Quick-add buttons use low-contrast text color “#ccc”.",
+          "severity": "medium",
+          "suggested_fix": "Increase contrast to meet accessibility."
+        },
+        {
+          "page_url": "https://www.justcancel.io/tools/subscription-calculator",
+          "category": "Links & Formatting",
+          "issue_description": "frustration: Empty <select> next to price input looks broken.",
+          "severity": "critical",
+          "suggested_fix": "Populate select with billing period options."
+        },
+        {
+          "page_url": "https://www.justcancel.io/tools/subscription-quiz",
+          "category": "Links & Formatting",
+          "issue_description": "navigation UX: No visible “Back” navigation at top.",
+          "severity": "medium",
+          "suggested_fix": "Add back-to-tools breadcrumb header."
+        },
+        {
+          "page_url": "https://www.justcancel.io/tools/subscription-quiz",
+          "category": "Links & Formatting",
+          "issue_description": "clarity: Many small pill buttons may overwhelm on mobile.",
+          "severity": "medium",
+          "suggested_fix": "Group into collapsible categories on mobile."
+        },
+        {
+          "page_url": "https://www.justcancel.io/cancel",
+          "category": "Links & Formatting",
+          "issue_description": "clarity: “1189+ services” wall-of-links lacks scannable grouping cues.",
+          "severity": "medium",
+          "suggested_fix": "Add sticky category index and jump menu."
+        },
+        {
+          "page_url": "https://www.justcancel.io/vs-truebill",
+          "category": "Links & Formatting",
+          "issue_description": "clarity: Repeated “More Comparisons” blocks feel visually duplicative.",
+          "severity": "medium",
+          "suggested_fix": "Consolidate into one reusable accordion section."
+        },
+        {
+          "page_url": "https://www.justcancel.io/vs-trim",
+          "category": "Links & Formatting",
+          "issue_description": "clarity: Repeated “More Comparisons” blocks feel visually duplicative.",
+          "severity": "medium",
+          "suggested_fix": "Consolidate into one reusable accordion section."
+        },
+        {
+          "page_url": "https://www.justcancel.io/vs-rocket-money",
+          "category": "Links & Formatting",
+          "issue_description": "clarity: Blockquote-style quotes lack clear citation styling separation.",
+          "severity": "low",
+          "suggested_fix": "Add quote card styling with source label."
+        }
+      ],
+      "verifiedIssues": [
+        {
+          "page_url": "https://www.justcancel.io",
+          "category": "Language",
+          "issue_description": "professionalism: Hero H1 uses profanity: \"just fucking cancel\".",
+          "severity": "medium",
+          "suggested_fix": "Replace with \"Just Cancel\".",
+          "confirmed": true,
+          "confidence": 0.99,
+          "evidence": "<h1>just fucking cancel</h1>"
+        },
+        {
+          "page_url": "https://www.justcancel.io",
+          "category": "Language",
+          "issue_description": "professionalism: Testimonial quote includes profanity: \"sneaky fuckers\".",
+          "severity": "low",
+          "suggested_fix": "Replace profanity with \"sneaky charges\".",
+          "confirmed": true,
+          "confidence": 0.98,
+          "evidence": "there were some sneaky fuckers hiding in my statements"
+        },
+        {
+          "page_url": "https://www.justcancel.io",
+          "category": "Language",
+          "issue_description": "professionalism: Testimonial quote: \"That son of aaaaaa\".",
+          "severity": "low",
+          "suggested_fix": "Replace with \"That company\".",
+          "confirmed": true,
+          "confidence": 0.97,
+          "evidence": "\"That son of aaaaaa got me to give him $5. But i am saving $5735 a year, so i cant be too mad.\""
+        },
+        {
+          "page_url": "https://www.justcancel.io",
+          "category": "Language",
+          "issue_description": "credibility: Testimonial quote casing: \"But i am\".",
+          "severity": "low",
+          "suggested_fix": "Capitalize \"I\" in quote.",
+          "confirmed": true,
+          "confidence": 0.96,
+          "evidence": "But i am saving $5735 a year"
+        },
+        {
+          "page_url": "https://www.justcancel.io",
+          "category": "Links & Formatting",
+          "issue_description": "clarity: Mixed emoji density in “mobile-helper” instructions section.",
+          "severity": "low",
+          "suggested_fix": "Reduce emojis; keep one per block.",
+          "confirmed": true,
+          "confidence": 0.74,
+          "evidence": "<div class=\"mobile-helper\"><p><strong>📱 On your phone?</strong> You can still scan — here's how:</p><ol ...><li>Open your bank app (Chase, BofA, etc.)</li>..."
+        },
+        {
+          "page_url": "https://www.justcancel.io/tools/subscription-calculator",
+          "category": "Language",
+          "issue_description": "clarity: Tip uses vague percent range: \"15-20% cheaper\".",
+          "severity": "low",
+          "suggested_fix": "Add spaces: \"15–20%\".",
+          "confirmed": true,
+          "confidence": 0.97,
+          "evidence": "Switch from monthly to annual billing (usually 15-20% cheaper)"
+        },
+        {
+          "page_url": "https://www.justcancel.io/tools/subscription-calculator",
+          "category": "Links & Formatting",
+          "issue_description": "clarity: Quick-add buttons use low-contrast text color “#ccc”.",
+          "severity": "medium",
+          "suggested_fix": "Increase contrast to meet accessibility.",
+          "confirmed": true,
+          "confidence": 0.96,
+          "evidence": "<button style=\"...background:transparent;color:#ccc;cursor:pointer\">+ Netflix ($15.49)</button>"
+        },
+        {
+          "page_url": "https://www.justcancel.io/tools/subscription-calculator",
+          "category": "Links & Formatting",
+          "issue_description": "frustration: Empty <select> next to price input looks broken.",
+          "severity": "critical",
+          "suggested_fix": "Populate select with billing period options.",
+          "confirmed": true,
+          "confidence": 0.93,
+          "evidence": "<select style=\"padding:8px 12px;border-radius:6px;border:1px solid var(--border);background:#111;color:#fff;font-size:0.9rem\"></select>"
+        },
+        {
+          "page_url": "https://www.justcancel.io/faq",
+          "category": "Links & Formatting",
+          "issue_description": "clarity: “localStorage” appears unformatted jargon in Privacy answers.",
+          "severity": "low",
+          "suggested_fix": "Wrap jargon in inline code styling.",
+          "confirmed": true,
+          "confidence": 0.96,
+          "evidence": "\"The analysis results live in your browser's localStorage and auto-delete after 48 hours.\""
+        },
+        {
+          "page_url": "https://www.justcancel.io/how-to-cancel-subscriptions",
+          "category": "Facts & Consistency",
+          "issue_description": "trust: Header “1,189+ services” conflicts with “1,100+” claim.",
+          "severity": "medium",
+          "suggested_fix": "Update all pages to 1,189+.",
+          "confirmed": true,
+          "confidence": 0.97,
+          "evidence": "Step-by-step cancellation guides for <strong>1,189+ services</strong>... We have direct cancel URLs for 1,100+ services"
+        },
+        {
+          "page_url": "https://www.justcancel.io/how-to-cancel-subscriptions",
+          "category": "Facts & Consistency",
+          "issue_description": "clarity: “Direct cancel URLs for 1,100+” conflicts with 1,189+ services.",
+          "severity": "low",
+          "suggested_fix": "Split metrics: URLs count vs services count.",
+          "confirmed": true,
+          "confidence": 0.97,
+          "evidence": "Step-by-step cancellation guides for <strong>1,189+ services</strong>... <p...>We have direct cancel URLs for 1,100+ services that skip the runaround.</p>"
+        },
+        {
+          "page_url": "https://www.justcancel.io/cancel",
+          "category": "Facts & Consistency",
+          "issue_description": "trust: “1189+ services” conflicts with search placeholder “1,100+”.",
+          "severity": "medium",
+          "suggested_fix": "Update placeholder to match 1189+.",
+          "confirmed": true,
+          "confidence": 0.98,
+          "evidence": "“Step-by-step guides for 1189+ services...” and placeholder=\"Search 1,100+ cancel guides (e.g. Netflix, Xfinity, gym...)\""
+        },
+        {
+          "page_url": "https://www.justcancel.io/cancel",
+          "category": "Facts & Consistency",
+          "issue_description": "credibility: Adobe link text “Adobe Creative Cloud” points to /cancel/adobe.",
+          "severity": "low",
+          "suggested_fix": "Rename to Adobe or change slug.",
+          "confirmed": true,
+          "confidence": 0.97,
+          "evidence": "<a ... href=\"https://www.justcancel.io/cancel/adobe\"><span>Adobe Creative Cloud</span>"
+        },
+        {
+          "page_url": "https://www.justcancel.io/vs-trim",
+          "category": "Links & Formatting",
+          "issue_description": "clarity: Repeated “More Comparisons” blocks feel visually duplicative.",
+          "severity": "medium",
+          "suggested_fix": "Consolidate into one reusable accordion section.",
+          "confirmed": true,
+          "confidence": 0.98,
+          "evidence": "The \"More Comparisons\" block is repeated multiple times, e.g. appears, then later appears again: \"<h2 style=\\\"font-size:1.25rem;margin-bottom:1rem\\\">More Comparisons</h2>\" ... and again \"<h2 style=\\\"font-size:1.25rem;margin-bottom:1rem\\\">More Comparisons</h2>\""
+        },
+        {
+          "page_url": "https://www.justcancel.io/vs-truebill",
+          "category": "Facts & Consistency",
+          "issue_description": "trust: Says Rocket Money needs “Plaid bank login” implying credential sharing.",
+          "severity": "medium",
+          "suggested_fix": "Rephrase to “connect via Plaid” accurately.",
+          "confirmed": true,
+          "confidence": 0.98,
+          "evidence": "“Truebill/Rocket Money requires Plaid bank login. Many users aren't comfortable giving a third party access to their bank credentials.”"
+        },
+        {
+          "page_url": "https://www.justcancel.io/vs-truebill",
+          "category": "Links & Formatting",
+          "issue_description": "clarity: Repeated “More Comparisons” blocks feel visually duplicative.",
+          "severity": "medium",
+          "suggested_fix": "Consolidate into one reusable accordion section.",
+          "confirmed": true,
+          "confidence": 0.97,
+          "evidence": "The page includes multiple identical sections: “<h2 style=\\\"font-size:1.25rem;margin-bottom:1rem\\\">More Comparisons</h2>” (repeated several times with the same set of links)."
+        },
+        {
+          "page_url": "https://www.justcancel.io/terms",
+          "category": "Links & Formatting",
+          "issue_description": "clarity: Invisible Stripe metrics iframe markup may clutter DOM.",
+          "severity": "low",
+          "suggested_fix": "Lazy-load metrics only after interaction.",
+          "confirmed": true,
+          "confidence": 0.93,
+          "evidence": "<div name=\"__privateStripeMetricsController3060\" ... src=\"https://js.stripe.com/v3/m-outer-3437aaddcdf6922d623e172c2d6f9278.html#url=https%3A%2F%2Fwww.justcancel.io%2Fterms\" ... style=\"... visibility: hidden !important; position: fixed !important; height: 1px !important; pointer-events: none !important;\" data-original-tag=\"iframe\"><div ... data-original-tag=\"iframe\"></div></div>"
+        },
+        {
+          "page_url": "https://www.justcancel.io/tools/subscription-quiz",
+          "category": "Links & Formatting",
+          "issue_description": "navigation UX: No visible “Back” navigation at top.",
+          "severity": "medium",
+          "suggested_fix": "Add back-to-tools breadcrumb header.",
+          "confirmed": true,
+          "confidence": 0.93,
+          "evidence": "<h1 style=\"font-size:2rem;margin-bottom:0.5rem\">💸 How Much Are You Wasting?</h1> ... (no top nav/back link); back link appears only later: <div style=\"margin-top:2rem;text-align:center\"><a ... href=\"https://www.justcancel.io/tools\">← All free tools</a>"
+        },
+        {
+          "page_url": "https://www.justcancel.io/tools/subscription-quiz",
+          "category": "Links & Formatting",
+          "issue_description": "clarity: Many small pill buttons may overwhelm on mobile.",
+          "severity": "medium",
+          "suggested_fix": "Group into collapsible categories on mobile.",
+          "confirmed": true,
+          "confidence": 0.72,
+          "evidence": "Multiple sections with many small pill-style buttons: <div style=\"display:flex;flex-wrap:wrap;gap:0.5rem\"><button style=\"...font-size:0.85rem...padding:0.5rem 0.75rem;border-radius:8px...\">...Netflix...</button> <button style=\"...\">...Hulu...</button> ...</div>"
+        },
+        {
+          "page_url": "https://www.justcancel.io/vs-rocket-money",
+          "category": "Links & Formatting",
+          "issue_description": "clarity: Blockquote-style quotes lack clear citation styling separation.",
+          "severity": "low",
+          "suggested_fix": "Add quote card styling with source label.",
+          "confirmed": true,
+          "confidence": 0.78,
+          "evidence": "<p style=\"font-style:italic;color:var(--muted);...\">“We have tried to cancel this for a year and been unsuccessful!”<span style=\"font-style:normal;font-size:0.875rem\"> — Trustpilot review</span></p>"
+        }
+      ]
+    },
+    "variantB": {
+      "format": "markdown",
+      "auditDurationMs": 15584,
+      "checkerDurationMs": 11802,
+      "auditTokens": {
+        "input": 113112,
+        "output": 3148,
+        "reasoning": 0,
+        "cacheRead": 12672
+      },
+      "checkerTokens": {
+        "input": 84256,
+        "output": 4636,
+        "reasoning": 1136,
+        "cacheRead": 47488
+      },
+      "auditCostUsd": 0,
+      "checkerCostUsd": 0,
+      "rawIssues": [
+        {
+          "page_url": "https://www.justcancel.io",
+          "category": "Language",
+          "issue_description": "professionalism: Hero says “just fucking cancel”.",
+          "severity": "medium",
+          "suggested_fix": "Replace with “Just Cancel”."
+        },
+        {
+          "page_url": "https://www.justcancel.io",
+          "category": "Language",
+          "issue_description": "clarity: Metrics line lacks spacing: “guides💰 Avg…”.",
+          "severity": "low",
+          "suggested_fix": "Add spaces between metric items."
+        },
+        {
+          "page_url": "https://www.justcancel.io",
+          "category": "Language",
+          "issue_description": "professionalism: Testimonial includes “sneaky fuckers”.",
+          "severity": "low",
+          "suggested_fix": "Remove profanity or add content filter."
+        },
+        {
+          "page_url": "https://www.justcancel.io/faq",
+          "category": "Language",
+          "issue_description": "clarity: “localStorage” inconsistent with “local storage”.",
+          "severity": "low",
+          "suggested_fix": "Standardize to “localStorage” everywhere."
+        },
+        {
+          "page_url": "https://www.justcancel.io/transparency",
+          "category": "Language",
+          "issue_description": "clarity: Data flow verbs awkward: “upload/relay/analyze/store results”.",
+          "severity": "low",
+          "suggested_fix": "Rewrite as full phrases per step."
+        },
+        {
+          "page_url": "https://www.justcancel.io/refer",
+          "category": "Language",
+          "issue_description": "clarity: Missing space: “Already have a link?Check your stats →”.",
+          "severity": "medium",
+          "suggested_fix": "Insert space after question mark."
+        },
+        {
+          "page_url": "https://www.justcancel.io/refer",
+          "category": "Language",
+          "issue_description": "professionalism: Stray text appears: “StripeM-Inner”.",
+          "severity": "medium",
+          "suggested_fix": "Remove stray UI/debug string."
+        },
+        {
+          "page_url": "https://www.justcancel.io/tools/cancel-or-keep",
+          "category": "Language",
+          "issue_description": "clarity: Question 3 ends with extra word: “more”.",
+          "severity": "low",
+          "suggested_fix": "Remove trailing “more”."
+        },
+        {
+          "page_url": "https://www.justcancel.io/tools/subscription-calculator",
+          "category": "Language",
+          "issue_description": "clarity: Quick add list mashed: “+ Netflix…+ Spotify…”.",
+          "severity": "low",
+          "suggested_fix": "Add line breaks between quick-add items."
+        },
+        {
+          "page_url": "https://www.justcancel.io/tools/subscription-audit",
+          "category": "Language",
+          "issue_description": "clarity: Category row is concatenated: “AllStreamingMusic…”.",
+          "severity": "low",
+          "suggested_fix": "Add separators or spacing between categories."
+        },
+        {
+          "page_url": "https://www.justcancel.io/tools/subscription-quiz",
+          "category": "Language",
+          "issue_description": "clarity: Items run together: “🎬Netflix$15📺Hulu$18”.",
+          "severity": "low",
+          "suggested_fix": "Add spacing or line breaks per item."
+        },
+        {
+          "page_url": "https://www.justcancel.io/cancel",
+          "category": "Language",
+          "issue_description": "credibility: Difficulty labels inconsistent casing: “easy/hard/very hard”.",
+          "severity": "low",
+          "suggested_fix": "Standardize difficulty label capitalization."
+        },
+        {
+          "page_url": "https://www.justcancel.io/cancel",
+          "category": "Language",
+          "issue_description": "clarity: Duplicate entry: “Amazon Kids+” appears twice.",
+          "severity": "low",
+          "suggested_fix": "Remove duplicate service listing."
+        },
+        {
+          "page_url": "https://www.justcancel.io/vs-rocket-money",
+          "category": "Language",
+          "issue_description": "professionalism: Sentence fragment: “A different approach to finding subscriptions”.",
+          "severity": "low",
+          "suggested_fix": "Rewrite as complete sentence."
+        },
+        {
+          "page_url": "https://www.justcancel.io/",
+          "category": "Facts & Consistency",
+          "issue_description": "trust: Hero claims “1,100+ cancel guides”; elsewhere 1,189+.",
+          "severity": "medium",
+          "suggested_fix": "Standardize guide count across all pages."
+        },
+        {
+          "page_url": "https://www.justcancel.io/faq",
+          "category": "Facts & Consistency",
+          "issue_description": "trust: FAQ says “1,000+ people”; site-wide shows 1,100+ guides.",
+          "severity": "low",
+          "suggested_fix": "Update user-count claim or remove it."
+        },
+        {
+          "page_url": "https://www.justcancel.io/faq",
+          "category": "Facts & Consistency",
+          "issue_description": "credibility: FAQ: “file never touches our servers” contradicts relay server.",
+          "severity": "critical",
+          "suggested_fix": "Clarify server relay; remove “never touches”."
+        },
+        {
+          "page_url": "https://www.justcancel.io/transparency",
+          "category": "Facts & Consistency",
+          "issue_description": "trust: Transparency shows DB stores scan token; other pages imply none.",
+          "severity": "medium",
+          "suggested_fix": "Align “no database” wording with token storage."
+        },
+        {
+          "page_url": "https://www.justcancel.io/privacy",
+          "category": "Facts & Consistency",
+          "issue_description": "trust: Privacy says “no database”; transparency shows `pending_scans` table.",
+          "severity": "medium",
+          "suggested_fix": "Replace “no database” with “no financial database”."
+        },
+        {
+          "page_url": "https://www.justcancel.io/terms",
+          "category": "Facts & Consistency",
+          "issue_description": "trust: Terms: “analyzes your CSV files”; site supports PDFs too.",
+          "severity": "medium",
+          "suggested_fix": "Add PDF support to service description."
+        },
+        {
+          "page_url": "https://www.justcancel.io/faq",
+          "category": "Facts & Consistency",
+          "issue_description": "trust: FAQ refund: “full refund”; Terms require within 7 days.",
+          "severity": "medium",
+          "suggested_fix": "Use one refund policy everywhere."
+        },
+        {
+          "page_url": "https://www.justcancel.io/",
+          "category": "Facts & Consistency",
+          "issue_description": "trust: Hero: “files deleted after scan”; FAQ says localStorage 48 hours.",
+          "severity": "medium",
+          "suggested_fix": "Distinguish file deletion vs results retention."
+        },
+        {
+          "page_url": "https://www.justcancel.io/faq",
+          "category": "Facts & Consistency",
+          "issue_description": "trust: FAQ: “auto-delete after 48 hours”; transparency DB expires 24 hours.",
+          "severity": "medium",
+          "suggested_fix": "Explain 24h token vs 48h results."
+        },
+        {
+          "page_url": "https://www.justcancel.io/compare",
+          "category": "Facts & Consistency",
+          "issue_description": "trust: Compare: “Cancel links for 440+”; homepage emphasizes 1,100+ guides.",
+          "severity": "low",
+          "suggested_fix": "Clarify difference: cancel links vs guides."
+        },
+        {
+          "page_url": "https://www.justcancel.io/how-to-cancel-subscriptions",
+          "category": "Facts & Consistency",
+          "issue_description": "trust: Header claims “1,189+ services”; other pages say 1,100+.",
+          "severity": "medium",
+          "suggested_fix": "Update older “1,100+” claims site-wide."
+        },
+        {
+          "page_url": "https://www.justcancel.io/cancel",
+          "category": "Facts & Consistency",
+          "issue_description": "trust: Cancel page says “1189+ services”; homepage says “1,100+”.",
+          "severity": "medium",
+          "suggested_fix": "Use a single services count everywhere."
+        },
+        {
+          "page_url": "https://www.justcancel.io/tools/subscription-calculator",
+          "category": "Facts & Consistency",
+          "issue_description": "credibility: “average American spends $219/month” lacks consistency elsewhere.",
+          "severity": "low",
+          "suggested_fix": "Reference same stat source across tools/pages."
+        },
+        {
+          "page_url": "https://www.justcancel.io/tools/subscription-audit",
+          "category": "Facts & Consistency",
+          "issue_description": "trust: Checklist says “average person has 12”; FAQ says 8–15.",
+          "severity": "low",
+          "suggested_fix": "Unify average subscription-count range."
+        },
+        {
+          "page_url": "https://www.justcancel.io",
+          "category": "Links & Formatting",
+          "issue_description": "clarity: Hero stats run together: \"✅ 1,100+...$273/yr...🔒\"",
+          "severity": "low",
+          "suggested_fix": "Add spacing or line breaks between stats"
+        },
+        {
+          "page_url": "https://www.justcancel.io",
+          "category": "Links & Formatting",
+          "issue_description": "clarity: Lone \"🔍\" icon appears without label (hero).",
+          "severity": "low",
+          "suggested_fix": "Add text label or remove standalone icon"
+        },
+        {
+          "page_url": "https://www.justcancel.io/compare",
+          "category": "Links & Formatting",
+          "issue_description": "clarity: Comparison grid items concatenate: \"Rocket MoneyMost popular\".",
+          "severity": "medium",
+          "suggested_fix": "Insert line breaks between name and descriptor"
+        },
+        {
+          "page_url": "https://www.justcancel.io/tools/cancel-score",
+          "category": "Links & Formatting",
+          "issue_description": "clarity: Lists concatenate: \"ADT9.5/10McAfee9/10\" section.",
+          "severity": "medium",
+          "suggested_fix": "Render as table or bullet list"
+        },
+        {
+          "page_url": "https://www.justcancel.io/tools/subscription-calculator",
+          "category": "Links & Formatting",
+          "issue_description": "clarity: Quick add buttons run together: \"+ Netflix...+ Spotify...\"",
+          "severity": "medium",
+          "suggested_fix": "Display quick adds as spaced chips/buttons"
+        },
+        {
+          "page_url": "https://www.justcancel.io/tools/subscription-audit",
+          "category": "Links & Formatting",
+          "issue_description": "clarity: Category tabs concatenate: \"AllStreamingMusicFitness...\" header.",
+          "severity": "medium",
+          "suggested_fix": "Add separators and consistent tab spacing"
+        },
+        {
+          "page_url": "https://www.justcancel.io/tools/subscription-quiz",
+          "category": "Links & Formatting",
+          "issue_description": "clarity: Subscription items concatenate: \"🎬Netflix$15📺Hulu$18\".",
+          "severity": "medium",
+          "suggested_fix": "Wrap items into cards with padding"
+        },
+        {
+          "page_url": "https://www.justcancel.io/refer",
+          "category": "Links & Formatting",
+          "issue_description": "clarity: Stray text at bottom: \"StripeM-Inner\" footer.",
+          "severity": "medium",
+          "suggested_fix": "Remove unintended debug/embedded text node"
+        },
+        {
+          "page_url": "https://www.justcancel.io/refer",
+          "category": "Links & Formatting",
+          "issue_description": "clarity: Missing spacing: \"Already have a link?Check your stats →\"",
+          "severity": "low",
+          "suggested_fix": "Insert space between sentences"
+        },
+        {
+          "page_url": "https://www.justcancel.io/cancel",
+          "category": "Links & Formatting",
+          "issue_description": "clarity: Entries concatenate: \"1Passwordeasy\" in lists.",
+          "severity": "medium",
+          "suggested_fix": "Separate name and difficulty with badge spacing"
+        },
+        {
+          "page_url": "https://www.justcancel.io/vs-truebill",
+          "category": "Links & Formatting",
+          "issue_description": "frustration: Repeated blocks: \"More Comparisons\" + \"Related Reading\".",
+          "severity": "medium",
+          "suggested_fix": "Deduplicate repeated sections; keep one instance"
+        },
+        {
+          "page_url": "https://www.justcancel.io/vs-trim",
+          "category": "Links & Formatting",
+          "issue_description": "frustration: Repeated blocks: \"More Comparisons\" + \"Related Reading\".",
+          "severity": "medium",
+          "suggested_fix": "Deduplicate repeated sections; keep one instance"
+        },
+        {
+          "page_url": "https://www.justcancel.io/vs-rocket-money",
+          "category": "Links & Formatting",
+          "issue_description": "frustration: Repeated concern sections with identical link blocks.",
+          "severity": "medium",
+          "suggested_fix": "Collapse into accordions; keep one comparison block"
+        }
+      ],
+      "verifiedIssues": [
+        {
+          "page_url": "https://www.justcancel.io",
+          "category": "Language",
+          "issue_description": "professionalism: Hero says “just fucking cancel”.",
+          "severity": "medium",
+          "suggested_fix": "Replace with “Just Cancel”.",
+          "confirmed": true,
+          "confidence": 0.99,
+          "evidence": "<h1>just fucking cancel</h1>"
+        },
+        {
+          "page_url": "https://www.justcancel.io",
+          "category": "Language",
+          "issue_description": "professionalism: Testimonial includes “sneaky fuckers”.",
+          "severity": "low",
+          "suggested_fix": "Remove profanity or add content filter.",
+          "confirmed": true,
+          "confidence": 0.98,
+          "evidence": "Didn't save as much as Frank but there were some sneaky fuckers hiding in my statements"
+        },
+        {
+          "page_url": "https://www.justcancel.io/faq",
+          "category": "Language",
+          "issue_description": "clarity: “localStorage” inconsistent with “local storage”.",
+          "severity": "low",
+          "suggested_fix": "Standardize to “localStorage” everywhere.",
+          "confirmed": true,
+          "confidence": 0.98,
+          "evidence": "Both variants appear: \"live in your browser's localStorage\" and \"Results exist only in your browser's local storage\""
+        },
+        {
+          "page_url": "https://www.justcancel.io/faq",
+          "category": "Facts & Consistency",
+          "issue_description": "trust: FAQ says “1,000+ people”; site-wide shows 1,100+ guides.",
+          "severity": "low",
+          "suggested_fix": "Update user-count claim or remove it.",
+          "confirmed": true,
+          "confidence": 0.9,
+          "evidence": "\"1,000+ people have used Just Cancel\" and \"Browse 1,100+ Cancel Guides\""
+        },
+        {
+          "page_url": "https://www.justcancel.io/transparency",
+          "category": "Language",
+          "issue_description": "clarity: Data flow verbs awkward: “upload/relay/analyze/store results”.",
+          "severity": "low",
+          "suggested_fix": "Rewrite as full phrases per step.",
+          "confirmed": true,
+          "confidence": 0.9,
+          "evidence": "<div style=\"color:#888;font-size:0.7rem;margin-top:0.25rem\">upload</div> ... <div style=\"color:#888;font-size:0.7rem;margin-top:0.25rem\">relay</div> ... <div style=\"color:#888;font-size:0.7rem;margin-top:0.25rem\">analyze</div> ... <div style=\"color:#888;font-size:0.7rem;margin-top:0.25rem\">store results</div>"
+        },
+        {
+          "page_url": "https://www.justcancel.io/tools/cancel-or-keep",
+          "category": "Language",
+          "issue_description": "clarity: Question 3 ends with extra word: “more”.",
+          "severity": "low",
+          "suggested_fix": "Remove trailing “more”.",
+          "confirmed": true,
+          "confidence": 0.98,
+          "evidence": "Question 3 answer option contains the extra word: \"I'm already using a free alternative more\""
+        },
+        {
+          "page_url": "https://www.justcancel.io/cancel",
+          "category": "Links & Formatting",
+          "issue_description": "clarity: Entries concatenate: \"1Passwordeasy\" in lists.",
+          "severity": "medium",
+          "suggested_fix": "Separate name and difficulty with badge spacing",
+          "confirmed": true,
+          "confidence": 0.93,
+          "evidence": "List items place the name and difficulty in adjacent spans with no separating space: \"<span>1Password</span><span ...>easy</span>\" (text can concatenate as \"1Passwordeasy\" in some extractions)."
+        },
+        {
+          "page_url": "https://www.justcancel.io/vs-rocket-money",
+          "category": "Language",
+          "issue_description": "professionalism: Sentence fragment: “A different approach to finding subscriptions”.",
+          "severity": "low",
+          "suggested_fix": "Rewrite as complete sentence.",
+          "confirmed": true,
+          "confidence": 0.96,
+          "evidence": "<p style=\"color:var(--muted);margin-bottom:2rem\">A different approach to finding subscriptions</p>"
+        },
+        {
+          "page_url": "https://www.justcancel.io/vs-rocket-money",
+          "category": "Links & Formatting",
+          "issue_description": "frustration: Repeated concern sections with identical link blocks.",
+          "severity": "medium",
+          "suggested_fix": "Collapse into accordions; keep one comparison block",
+          "confirmed": true,
+          "confidence": 0.93,
+          "evidence": "The \"More Comparisons\" and \"Related Reading\" link blocks appear repeatedly in multiple concern subsections, e.g. repeated: <h2 style=\"font-size:1.25rem;margin-bottom:1rem\">More Comparisons</h2> ... <a ... href=\"https://www.justcancel.io/vs-monarch-money\">JustCancel vs Monarch Money</a> ... and <h2 ...>Related Reading</h2> ... <a ... href=\"https://www.justcancel.io/blog/subscription-audit\">How to Do a Full Subscription Audit →</a>"
+        },
+        {
+          "page_url": "https://www.justcancel.io/",
+          "category": "Facts & Consistency",
+          "issue_description": "trust: Hero claims “1,100+ cancel guides”; elsewhere 1,189+.",
+          "severity": "medium",
+          "suggested_fix": "Standardize guide count across all pages.",
+          "confirmed": true,
+          "confidence": 0.5,
+          "evidence": "Page HTML not available for verification"
+        },
+        {
+          "page_url": "https://www.justcancel.io/",
+          "category": "Facts & Consistency",
+          "issue_description": "trust: Hero: “files deleted after scan”; FAQ says localStorage 48 hours.",
+          "severity": "medium",
+          "suggested_fix": "Distinguish file deletion vs results retention.",
+          "confirmed": true,
+          "confidence": 0.5,
+          "evidence": "Page HTML not available for verification"
+        },
+        {
+          "page_url": "https://www.justcancel.io/how-to-cancel-subscriptions",
+          "category": "Facts & Consistency",
+          "issue_description": "trust: Header claims “1,189+ services”; other pages say 1,100+.",
+          "severity": "medium",
+          "suggested_fix": "Update older “1,100+” claims site-wide.",
+          "confirmed": true,
+          "confidence": 0.98,
+          "evidence": "Header: \"Step-by-step cancellation guides for <strong>1,189+ services</strong>.\" Later: \"We have direct cancel URLs for 1,100+ services\""
+        },
+        {
+          "page_url": "https://www.justcancel.io/vs-truebill",
+          "category": "Links & Formatting",
+          "issue_description": "frustration: Repeated blocks: \"More Comparisons\" + \"Related Reading\".",
+          "severity": "medium",
+          "suggested_fix": "Deduplicate repeated sections; keep one instance",
+          "confirmed": true,
+          "confidence": 0.99,
+          "evidence": "The page repeats identical sections multiple times, e.g. \"<h2 style=\\\"font-size:1.25rem;margin-bottom:1rem\\\">More Comparisons</h2>\" ... and \"<h2 style=\\\"font-size:1.25rem;margin-bottom:1rem\\\">Related Reading</h2>\" appears repeatedly throughout the HTML."
+        },
+        {
+          "page_url": "https://www.justcancel.io/vs-trim",
+          "category": "Links & Formatting",
+          "issue_description": "frustration: Repeated blocks: \"More Comparisons\" + \"Related Reading\".",
+          "severity": "medium",
+          "suggested_fix": "Deduplicate repeated sections; keep one instance",
+          "confirmed": true,
+          "confidence": 0.98,
+          "evidence": "The page repeats identical section headings multiple times, e.g. \"<h2 style=\\\"font-size:1.25rem;margin-bottom:1rem\\\">More Comparisons</h2>\" and later again \"<h2 style=\\\"font-size:1.25rem;margin-bottom:1rem\\\">More Comparisons</h2>\"; likewise \"<h2 style=\\\"font-size:1.25rem;margin-bottom:1rem\\\">Related Reading</h2>\" appears repeatedly in separate blocks."
+        }
+      ]
+    }
+  },
+  {
+    "domain": "https://youform.com",
+    "pagesAudited": 20,
+    "crawlDurationMs": 30539,
+    "variantA": {
+      "format": "html",
+      "auditDurationMs": 13962,
+      "checkerDurationMs": 6709,
+      "auditTokens": {
+        "input": 274008,
+        "output": 2163,
+        "reasoning": 0,
+        "cacheRead": 12672
+      },
+      "checkerTokens": {
+        "input": 65571,
+        "output": 3424,
+        "reasoning": 981,
+        "cacheRead": 29056
+      },
+      "auditCostUsd": 0,
+      "checkerCostUsd": 0,
+      "rawIssues": [
+        {
+          "page_url": "https://youform.com",
+          "category": "Language",
+          "issue_description": "professionalism: Hero paragraph uses ALL-CAPS “UNLIMITED/FREE”.",
+          "severity": "low",
+          "suggested_fix": "Use sentence case for emphasis."
+        },
+        {
+          "page_url": "https://youform.com/pricing",
+          "category": "Language",
+          "issue_description": "grammar: Tooltip says “represents your brand” (subject-verb).",
+          "severity": "low",
+          "suggested_fix": "Change to “represent your brand”."
+        },
+        {
+          "page_url": "https://youform.com/pricing",
+          "category": "Language",
+          "issue_description": "grammar: Tooltip says “price, score and more” (parallelism).",
+          "severity": "low",
+          "suggested_fix": "Change to “prices, scores, and more”."
+        },
+        {
+          "page_url": "https://youform.com/pricing",
+          "category": "Language",
+          "issue_description": "clarity: Tooltip uses “For e.g” in Hidden fields.",
+          "severity": "low",
+          "suggested_fix": "Replace with “For example,”."
+        },
+        {
+          "page_url": "https://youform.com/about",
+          "category": "Language",
+          "issue_description": "grammar: About text: “AWS servers in EU” missing article.",
+          "severity": "low",
+          "suggested_fix": "Change to “in the EU”."
+        },
+        {
+          "page_url": "https://youform.com/about",
+          "category": "Language",
+          "issue_description": "grammar: About text: “end to end encrypted” missing hyphens.",
+          "severity": "low",
+          "suggested_fix": "Change to “end-to-end encrypted”."
+        },
+        {
+          "page_url": "https://youform.com/about",
+          "category": "Language",
+          "issue_description": "professionalism: About text uses ALL-CAPS “PROFITABLE/WILL”.",
+          "severity": "low",
+          "suggested_fix": "Use sentence case instead of all caps."
+        },
+        {
+          "page_url": "https://youform.com/templates",
+          "category": "Language",
+          "issue_description": "professionalism: FAQ heading says “Frequently Asked Question”.",
+          "severity": "medium",
+          "suggested_fix": "Change to “Frequently Asked Questions”."
+        },
+        {
+          "page_url": "https://youform.com/ai-survey-builder",
+          "category": "Language",
+          "issue_description": "clarity: Error text says “Please login” (CTA message).",
+          "severity": "low",
+          "suggested_fix": "Change to “Please log in”."
+        },
+        {
+          "page_url": "https://youform.com/ai-quiz-maker",
+          "category": "Language",
+          "issue_description": "clarity: Error text says “Please login” (CTA message).",
+          "severity": "low",
+          "suggested_fix": "Change to “Please log in”."
+        },
+        {
+          "page_url": "https://youform.com",
+          "category": "Facts & Consistency",
+          "issue_description": "credibility: Hero says “forever free” but pricing has paid PRO.",
+          "severity": "medium",
+          "suggested_fix": "Clarify “free plan forever” vs paid upgrades."
+        },
+        {
+          "page_url": "https://youform.com/features",
+          "category": "Facts & Consistency",
+          "issue_description": "credibility: “Truly Free, Forever” conflicts with paid PRO elsewhere.",
+          "severity": "medium",
+          "suggested_fix": "Change to “Free plan available forever.”"
+        },
+        {
+          "page_url": "https://youform.com/client-onboarding-forms",
+          "category": "Facts & Consistency",
+          "issue_description": "trust: Stats bar shows 70,000+, 10M+, 4.8/5; unreferenced.",
+          "severity": "low",
+          "suggested_fix": "Add “as of” date or source note."
+        },
+        {
+          "page_url": "https://youform.com/lead-generation-forms",
+          "category": "Facts & Consistency",
+          "issue_description": "trust: Claims “96% of first-time visitors” without source.",
+          "severity": "low",
+          "suggested_fix": "Cite source or remove the statistic."
+        },
+        {
+          "page_url": "https://youform.com/tidycal-forms",
+          "category": "Facts & Consistency",
+          "issue_description": "credibility: “No monthly fees required” depends on tool plans.",
+          "severity": "low",
+          "suggested_fix": "Qualify: “often” or specify assumptions."
+        },
+        {
+          "page_url": "https://youform.com/calendly-forms",
+          "category": "Facts & Consistency",
+          "issue_description": "credibility: “Works with Calendly Free” may change by Calendly plan.",
+          "severity": "low",
+          "suggested_fix": "Add qualifier and “subject to Calendly changes.”"
+        },
+        {
+          "page_url": "https://youform.com/fillout-alternative",
+          "category": "Facts & Consistency",
+          "issue_description": "credibility: Table lists Fillout limits/prices without sources; dated [2026].",
+          "severity": "medium",
+          "suggested_fix": "Add “as of” date and verify numbers."
+        },
+        {
+          "page_url": "https://youform.com/compare",
+          "category": "Facts & Consistency",
+          "issue_description": "credibility: Typeform/Jotform pricing and limits unsourced, possibly outdated.",
+          "severity": "medium",
+          "suggested_fix": "Add “as of” date or remove specifics."
+        },
+        {
+          "page_url": "https://youform.com",
+          "category": "Links & Formatting",
+          "issue_description": "accessibility: Header logo image alt is empty.",
+          "severity": "low",
+          "suggested_fix": "Add descriptive alt text to logo."
+        },
+        {
+          "page_url": "https://youform.com/pricing",
+          "category": "Links & Formatting",
+          "issue_description": "accessibility: Header logo image alt is empty.",
+          "severity": "low",
+          "suggested_fix": "Add descriptive alt text to logo."
+        },
+        {
+          "page_url": "https://youform.com/about",
+          "category": "Links & Formatting",
+          "issue_description": "accessibility: Profile images (Davis/Abhishek) alt is empty.",
+          "severity": "low",
+          "suggested_fix": "Add descriptive alt text to portraits."
+        },
+        {
+          "page_url": "https://youform.com/features",
+          "category": "Links & Formatting",
+          "issue_description": "accessibility: Header logo image alt is empty.",
+          "severity": "low",
+          "suggested_fix": "Add descriptive alt text to logo."
+        },
+        {
+          "page_url": "https://youform.com/support",
+          "category": "Links & Formatting",
+          "issue_description": "frustration: Embedded form uses fullPage; may trap scrolling.",
+          "severity": "medium",
+          "suggested_fix": "Disable fullPage behavior on embedded form."
+        },
+        {
+          "page_url": "https://youform.com/support",
+          "category": "Links & Formatting",
+          "issue_description": "accessibility: Header logo image alt is empty.",
+          "severity": "low",
+          "suggested_fix": "Add descriptive alt text to logo."
+        },
+        {
+          "page_url": "https://youform.com/client-onboarding-forms",
+          "category": "Links & Formatting",
+          "issue_description": "clarity: Long Table of Contents crowds left sidebar.",
+          "severity": "low",
+          "suggested_fix": "Collapse TOC into accordion on desktop."
+        },
+        {
+          "page_url": "https://youform.com/lead-generation-forms",
+          "category": "Links & Formatting",
+          "issue_description": "clarity: Long Table of Contents crowds left sidebar.",
+          "severity": "low",
+          "suggested_fix": "Collapse TOC into accordion on desktop."
+        },
+        {
+          "page_url": "https://youform.com/ai-survey-builder",
+          "category": "Links & Formatting",
+          "issue_description": "clarity: “Try one of these:” suggestions render empty.",
+          "severity": "medium",
+          "suggested_fix": "Render suggestion chips or hide section."
+        },
+        {
+          "page_url": "https://youform.com/ai-quiz-maker",
+          "category": "Links & Formatting",
+          "issue_description": "clarity: “Try one of these:” suggestions render empty.",
+          "severity": "medium",
+          "suggested_fix": "Render suggestion chips or hide section."
+        },
+        {
+          "page_url": "https://youform.com/templates",
+          "category": "Links & Formatting",
+          "issue_description": "clarity: FAQ heading reads singular: “Frequently Asked Question”.",
+          "severity": "low",
+          "suggested_fix": "Change heading to “Frequently Asked Questions”."
+        }
+      ],
+      "verifiedIssues": [
+        {
+          "page_url": "https://youform.com",
+          "category": "Language",
+          "issue_description": "professionalism: Hero paragraph uses ALL-CAPS “UNLIMITED/FREE”.",
+          "severity": "low",
+          "suggested_fix": "Use sentence case for emphasis.",
+          "confirmed": true,
+          "confidence": 0.97,
+          "evidence": "Youform is a form builder that provides UNLIMITED forms and responses for FREE."
+        },
+        {
+          "page_url": "https://youform.com",
+          "category": "Links & Formatting",
+          "issue_description": "accessibility: Header logo image alt is empty.",
+          "severity": "low",
+          "suggested_fix": "Add descriptive alt text to logo.",
+          "confirmed": true,
+          "confidence": 0.98,
+          "evidence": "<img src=\"https://youform.com/assets/images/logo.png\" width=\"170px\" alt=\"\">"
+        },
+        {
+          "page_url": "https://youform.com/pricing",
+          "category": "Language",
+          "issue_description": "grammar: Tooltip says “represents your brand” (subject-verb).",
+          "severity": "low",
+          "suggested_fix": "Change to “represent your brand”.",
+          "confirmed": true,
+          "confidence": 0.93,
+          "evidence": "x-tooltip.raw=\"Customize your forms with colors and fonts that represents your brand. Only Google fonts are supported in FREE plan.\""
+        },
+        {
+          "page_url": "https://youform.com/pricing",
+          "category": "Language",
+          "issue_description": "grammar: Tooltip says “price, score and more” (parallelism).",
+          "severity": "low",
+          "suggested_fix": "Change to “prices, scores, and more”.",
+          "confirmed": true,
+          "confidence": 0.92,
+          "evidence": "x-tooltip.raw=\"Add scoring and calculations to your forms to calculate price, score and more\""
+        },
+        {
+          "page_url": "https://youform.com/pricing",
+          "category": "Language",
+          "issue_description": "clarity: Tooltip uses “For e.g” in Hidden fields.",
+          "severity": "low",
+          "suggested_fix": "Replace with “For example,”.",
+          "confirmed": true,
+          "confidence": 0.95,
+          "evidence": "x-tooltip.raw=\"Add hidden fields to your forms to pass data that you already have. For e.g if you have email then you can pass that as URL parameter.\""
+        },
+        {
+          "page_url": "https://youform.com/pricing",
+          "category": "Links & Formatting",
+          "issue_description": "accessibility: Header logo image alt is empty.",
+          "severity": "low",
+          "suggested_fix": "Add descriptive alt text to logo.",
+          "confirmed": true,
+          "confidence": 0.98,
+          "evidence": "<img src=\"https://youform.com/assets/images/logo.png\" width=\"170px\" alt=\"\">"
+        },
+        {
+          "page_url": "https://youform.com/about",
+          "category": "Language",
+          "issue_description": "grammar: About text: “AWS servers in EU” missing article.",
+          "severity": "low",
+          "suggested_fix": "Change to “in the EU”.",
+          "confirmed": true,
+          "confidence": 0.96,
+          "evidence": "All form data is securely stored with AWS servers in EU, end to end encrypted"
+        },
+        {
+          "page_url": "https://youform.com/about",
+          "category": "Language",
+          "issue_description": "grammar: About text: “end to end encrypted” missing hyphens.",
+          "severity": "low",
+          "suggested_fix": "Change to “end-to-end encrypted”.",
+          "confirmed": true,
+          "confidence": 0.95,
+          "evidence": "All form data is securely stored with AWS servers in EU, end to end encrypted"
+        },
+        {
+          "page_url": "https://youform.com/about",
+          "category": "Language",
+          "issue_description": "professionalism: About text uses ALL-CAPS “PROFITABLE/WILL”.",
+          "severity": "low",
+          "suggested_fix": "Use sentence case instead of all caps.",
+          "confirmed": true,
+          "confidence": 0.98,
+          "evidence": "Financially, we are 100% bootstrapped and PROFITABLE... Youform WILL be around for years and years to come."
+        },
+        {
+          "page_url": "https://youform.com/about",
+          "category": "Links & Formatting",
+          "issue_description": "accessibility: Profile images (Davis/Abhishek) alt is empty.",
+          "severity": "low",
+          "suggested_fix": "Add descriptive alt text to portraits.",
+          "confirmed": true,
+          "confidence": 0.99,
+          "evidence": "<img src=\"https://youform.com/assets/images/davis.jpg\" alt=\"\" class=\"w-56 rounded-full shadow-md\"> ... <img src=\"https://youform.com/assets/images/abhishek.jpg\" alt=\"\" class=\"w-56 rounded-full shadow-md\">"
+        },
+        {
+          "page_url": "https://youform.com/templates",
+          "category": "Language",
+          "issue_description": "professionalism: FAQ heading says “Frequently Asked Question”.",
+          "severity": "medium",
+          "suggested_fix": "Change to “Frequently Asked Questions”.",
+          "confirmed": true,
+          "confidence": 0.98,
+          "evidence": "<p class=\"text-center text-3xl sm:text-5xl xl:text-6xl font-bold mb-6 pt-10\">Frequently Asked Question</p>"
+        },
+        {
+          "page_url": "https://youform.com/templates",
+          "category": "Links & Formatting",
+          "issue_description": "clarity: FAQ heading reads singular: “Frequently Asked Question”.",
+          "severity": "low",
+          "suggested_fix": "Change heading to “Frequently Asked Questions”.",
+          "confirmed": true,
+          "confidence": 0.98,
+          "evidence": "<p class=\"text-center text-3xl sm:text-5xl xl:text-6xl font-bold mb-6 pt-10\">Frequently Asked Question</p>"
+        },
+        {
+          "page_url": "https://youform.com/ai-survey-builder",
+          "category": "Language",
+          "issue_description": "clarity: Error text says “Please login” (CTA message).",
+          "severity": "low",
+          "suggested_fix": "Change to “Please log in”.",
+          "confirmed": true,
+          "confidence": 0.96,
+          "evidence": "if (response.status === 429) {\n                    msg = 'You have generated too many forms. Please login to generate more :)';\n                }"
+        },
+        {
+          "page_url": "https://youform.com/ai-survey-builder",
+          "category": "Links & Formatting",
+          "issue_description": "clarity: “Try one of these:” suggestions render empty.",
+          "severity": "medium",
+          "suggested_fix": "Render suggestion chips or hide section.",
+          "confirmed": true,
+          "confidence": 0.93,
+          "evidence": "<p class=\"text-xs text-gray-600 mb-2.5 font-medium text-center\">Try one of these:</p>\n        <div class=\"flex flex-wrap gap-2 justify-center\">\n            \n        </div>"
+        },
+        {
+          "page_url": "https://youform.com/ai-quiz-maker",
+          "category": "Language",
+          "issue_description": "clarity: Error text says “Please login” (CTA message).",
+          "severity": "low",
+          "suggested_fix": "Change to “Please log in”.",
+          "confirmed": true,
+          "confidence": 0.96,
+          "evidence": "if (response.status === 429) {\n                    msg = 'You have generated too many forms. Please login to generate more :)';\n                }"
+        },
+        {
+          "page_url": "https://youform.com/ai-quiz-maker",
+          "category": "Links & Formatting",
+          "issue_description": "clarity: “Try one of these:” suggestions render empty.",
+          "severity": "medium",
+          "suggested_fix": "Render suggestion chips or hide section.",
+          "confirmed": true,
+          "confidence": 0.93,
+          "evidence": "<p class=\"text-xs text-gray-600 mb-2.5 font-medium text-center\">Try one of these:</p>\n        <div class=\"flex flex-wrap gap-2 justify-center\">\n            \n        </div>"
+        },
+        {
+          "page_url": "https://youform.com/features",
+          "category": "Links & Formatting",
+          "issue_description": "accessibility: Header logo image alt is empty.",
+          "severity": "low",
+          "suggested_fix": "Add descriptive alt text to logo.",
+          "confirmed": true,
+          "confidence": 0.98,
+          "evidence": "<img src=\"https://youform.com/assets/images/logo.png\" width=\"170px\" alt=\"\">"
+        },
+        {
+          "page_url": "https://youform.com/client-onboarding-forms",
+          "category": "Facts & Consistency",
+          "issue_description": "trust: Stats bar shows 70,000+, 10M+, 4.8/5; unreferenced.",
+          "severity": "low",
+          "suggested_fix": "Add “as of” date or source note.",
+          "confirmed": true,
+          "confidence": 0.75,
+          "evidence": "<p class=\"text-3xl font-bold text-aquamarine\">70,000+</p> ... <p class=\"text-3xl font-bold text-aquamarine\">10M+</p> ... <p class=\"text-3xl font-bold text-aquamarine\">4.8/5</p> ... (no nearby citation/source link present in this stats block)"
+        },
+        {
+          "page_url": "https://youform.com/lead-generation-forms",
+          "category": "Facts & Consistency",
+          "issue_description": "trust: Claims “96% of first-time visitors” without source.",
+          "severity": "low",
+          "suggested_fix": "Cite source or remove the statistic.",
+          "confirmed": true,
+          "confidence": 0.78,
+          "evidence": "The page states: \"Research shows that 96% of first-time visitors aren't ready to buy\" and no adjacent citation/link/source is present in the HTML around that claim (e.g., \"Research shows that 96% of first-time visitors aren't ready to buy...\")."
+        },
+        {
+          "page_url": "https://youform.com/tidycal-forms",
+          "category": "Facts & Consistency",
+          "issue_description": "credibility: “No monthly fees required” depends on tool plans.",
+          "severity": "low",
+          "suggested_fix": "Qualify: “often” or specify assumptions.",
+          "confirmed": true,
+          "confidence": 0.86,
+          "evidence": "Hero claim: \"No monthly fees required.\" But the page qualifies it as plan/deal-dependent: \"TidyCal often comes with a lifetime deal (pay once, use forever). Youform's free plan includes unlimited forms and responses.\""
+        },
+        {
+          "page_url": "https://youform.com/calendly-forms",
+          "category": "Facts & Consistency",
+          "issue_description": "credibility: “Works with Calendly Free” may change by Calendly plan.",
+          "severity": "low",
+          "suggested_fix": "Add qualifier and “subject to Calendly changes.”",
+          "confirmed": true,
+          "confidence": 0.98,
+          "evidence": "<span>Works with Calendly Free</span>"
+        },
+        {
+          "page_url": "https://youform.com/fillout-alternative",
+          "category": "Facts & Consistency",
+          "issue_description": "credibility: Table lists Fillout limits/prices without sources; dated [2026].",
+          "severity": "medium",
+          "suggested_fix": "Add “as of” date and verify numbers.",
+          "confirmed": true,
+          "confidence": 0.85,
+          "evidence": "<h1 class=\"text-3xl sm:text-5xl xl:text-6xl font-bold xl:leading-tight\">\n                        Fillout vs Youform: Which is the best form builder? [2026]\n                    </h1> ... <td class=\"px-6 py-4 bg-gray-50\">Free: 1,000/mo; Starter: 2,000/mo; Pro: 5,000/mo; Business: unlimited; Enterprise: custom</td> (no citations/footnotes/links to sources appear around the table)"
+        },
+        {
+          "page_url": "https://youform.com/compare",
+          "category": "Facts & Consistency",
+          "issue_description": "credibility: Typeform/Jotform pricing and limits unsourced, possibly outdated.",
+          "severity": "medium",
+          "suggested_fix": "Add “as of” date or remove specifics.",
+          "confirmed": true,
+          "confidence": 0.85,
+          "evidence": "The comparison table states specific Typeform/Jotform limits and pricing with no citations/footnotes/links to sources, e.g. \"<td class=\\\"px-6 py-4 bg-gray-50\\\">10 responses/month</td>\" and \"<td class=\\\"px-6 py-4 bg-gray-50\\\">Paid plans start ~$25/month; Business ~$99/month</td>\" and \"<td class=\\\"px-6 py-4 bg-gray-50\\\">Bronze ~$34/month; Silver, Gold, Enterprise</td>\"."
+        },
+        {
+          "page_url": "https://youform.com/support",
+          "category": "Links & Formatting",
+          "issue_description": "frustration: Embedded form uses fullPage; may trap scrolling.",
+          "severity": "medium",
+          "suggested_fix": "Disable fullPage behavior on embedded form.",
+          "confirmed": true,
+          "confidence": 0.93,
+          "evidence": "<html ... class=\"h-full fp-enabled\" style=\"overflow: hidden; height: 100%;\">...<body ... style=\"height: 100%; position: relative; overflow: hidden;\"> ... <div id=\"youform\" class=\"fullpage-wrapper\" style=\"height: 100%; position: relative; touch-action: none;\">"
+        },
+        {
+          "page_url": "https://youform.com/support",
+          "category": "Links & Formatting",
+          "issue_description": "accessibility: Header logo image alt is empty.",
+          "severity": "low",
+          "suggested_fix": "Add descriptive alt text to logo.",
+          "confirmed": true,
+          "confidence": 0.99,
+          "evidence": "<a href=\"https://youform.com/\"><img src=\"https://youform.com/assets/images/logo.png\" width=\"170px\" alt=\"\"></a>"
+        }
+      ]
+    },
+    "variantB": {
+      "format": "markdown",
+      "auditDurationMs": 24971,
+      "checkerDurationMs": 11484,
+      "auditTokens": {
+        "input": 166533,
+        "output": 3819,
+        "reasoning": 0,
+        "cacheRead": 12928
+      },
+      "checkerTokens": {
+        "input": 75684,
+        "output": 5319,
+        "reasoning": 1915,
+        "cacheRead": 39936
+      },
+      "auditCostUsd": 0,
+      "checkerCostUsd": 0,
+      "rawIssues": [
+        {
+          "page_url": "https://youform.com",
+          "category": "Language",
+          "issue_description": "professionalism: Nav badge missing space: “Rated 5on Capterra →”.",
+          "severity": "low",
+          "suggested_fix": "Insert space: “Rated 5 on Capterra”."
+        },
+        {
+          "page_url": "https://youform.com",
+          "category": "Language",
+          "issue_description": "professionalism: Error toast capitalization: “Oops! something went wrong.”",
+          "severity": "low",
+          "suggested_fix": "Capitalize: “Oops! Something went wrong.”"
+        },
+        {
+          "page_url": "https://youform.com/pricing",
+          "category": "Language",
+          "issue_description": "professionalism: Heading plural: “Frequently Asked Question”.",
+          "severity": "low",
+          "suggested_fix": "Change to “Frequently Asked Questions”."
+        },
+        {
+          "page_url": "https://youform.com/pricing",
+          "category": "Language",
+          "issue_description": "professionalism: Missing hyphen: “Non English language support”.",
+          "severity": "low",
+          "suggested_fix": "Hyphenate: “Non-English language support”."
+        },
+        {
+          "page_url": "https://youform.com/pricing",
+          "category": "Language",
+          "issue_description": "professionalism: Abbreviation punctuation: “etc.)” in “Pixel etc.)”.",
+          "severity": "low",
+          "suggested_fix": "Add comma: “Pixel, etc.)”."
+        },
+        {
+          "page_url": "https://youform.com/about",
+          "category": "Language",
+          "issue_description": "clarity: Awkward phrasing: “I lead Youform along with…”.",
+          "severity": "low",
+          "suggested_fix": "Rewrite: “I run Youform with my co-founder.”"
+        },
+        {
+          "page_url": "https://youform.com/about",
+          "category": "Language",
+          "issue_description": "professionalism: Grammar: “AWS servers in EU”.",
+          "severity": "low",
+          "suggested_fix": "Change to “AWS servers in the EU”."
+        },
+        {
+          "page_url": "https://youform.com/about",
+          "category": "Language",
+          "issue_description": "professionalism: Missing hyphen: “end to end encrypted”.",
+          "severity": "low",
+          "suggested_fix": "Hyphenate: “end-to-end encrypted”."
+        },
+        {
+          "page_url": "https://youform.com/features",
+          "category": "Language",
+          "issue_description": "professionalism: Title casing inconsistent: “Build Better Forms”.",
+          "severity": "low",
+          "suggested_fix": "Use sentence case: “build better forms”."
+        },
+        {
+          "page_url": "https://youform.com/features",
+          "category": "Language",
+          "issue_description": "professionalism: Grammar in link text: “does…provides”.",
+          "severity": "medium",
+          "suggested_fix": "Change to “does Youform provide”."
+        },
+        {
+          "page_url": "https://youform.com/features",
+          "category": "Language",
+          "issue_description": "professionalism: Grammar: “Does-Youform-provides-brandkit”.",
+          "severity": "medium",
+          "suggested_fix": "Change to “Does Youform provide Brand Kit”."
+        },
+        {
+          "page_url": "https://youform.com/support",
+          "category": "Language",
+          "issue_description": "professionalism: Missing article: “use \"Ask AI\" feature”.",
+          "severity": "low",
+          "suggested_fix": "Add article: “use the \"Ask AI\" feature”."
+        },
+        {
+          "page_url": "https://youform.com/support",
+          "category": "Language",
+          "issue_description": "professionalism: Grammar: “For any support please fill out…”.",
+          "severity": "low",
+          "suggested_fix": "Rewrite: “For support, please fill out…”."
+        },
+        {
+          "page_url": "https://youform.com/support",
+          "category": "Language",
+          "issue_description": "professionalism: Grammar: “This will help us to reach out…”.",
+          "severity": "low",
+          "suggested_fix": "Rewrite: “This will help us reach you.”"
+        },
+        {
+          "page_url": "https://youform.com/support",
+          "category": "Language",
+          "issue_description": "professionalism: Error toast capitalization: “Oops! something went wrong.”",
+          "severity": "low",
+          "suggested_fix": "Capitalize: “Oops! Something went wrong.”"
+        },
+        {
+          "page_url": "https://youform.com/client-onboarding-forms",
+          "category": "Language",
+          "issue_description": "professionalism: Title case inconsistency: “What Is Client Onboarding?”.",
+          "severity": "low",
+          "suggested_fix": "Use sentence case: “What is client onboarding?”."
+        },
+        {
+          "page_url": "https://youform.com/client-onboarding-forms",
+          "category": "Language",
+          "issue_description": "clarity: Awkward contrast: “Unlike intake forms…”.",
+          "severity": "low",
+          "suggested_fix": "Rewrite: “Intake forms capture…; onboarding forms gather…”."
+        },
+        {
+          "page_url": "https://youform.com/lead-generation-forms",
+          "category": "Language",
+          "issue_description": "professionalism: Informal metaphor: “website is a leaky bucket”.",
+          "severity": "low",
+          "suggested_fix": "Replace with more formal wording."
+        },
+        {
+          "page_url": "https://youform.com/ai-survey-builder",
+          "category": "Language",
+          "issue_description": "professionalism: Truncated word: “AI gives you a strong star”.",
+          "severity": "low",
+          "suggested_fix": "Remove fragment; complete sentence in content."
+        },
+        {
+          "page_url": "https://youform.com/ai-quiz-maker",
+          "category": "Language",
+          "issue_description": "professionalism: Stray punctuation at end: “**”.",
+          "severity": "low",
+          "suggested_fix": "Remove stray “**” characters."
+        },
+        {
+          "page_url": "https://youform.com/online-quiz-builder",
+          "category": "Language",
+          "issue_description": "professionalism: Heading plural: “Frequently Asked Question”.",
+          "severity": "low",
+          "suggested_fix": "Change to “Frequently Asked Questions”."
+        },
+        {
+          "page_url": "https://youform.com/fillout-alternative",
+          "category": "Language",
+          "issue_description": "professionalism: Curly quotes inconsistent: “forms that do it all”.",
+          "severity": "low",
+          "suggested_fix": "Standardize quotation style sitewide."
+        },
+        {
+          "page_url": "https://youform.com/tidycal-forms",
+          "category": "Language",
+          "issue_description": "professionalism: Missing space after list number: “1.Visitor…”.",
+          "severity": "low",
+          "suggested_fix": "Add spaces: “1. Visitor…”."
+        },
+        {
+          "page_url": "https://youform.com/calendly-forms",
+          "category": "Language",
+          "issue_description": "professionalism: Informal phrasing: “naked Calendly link”.",
+          "severity": "low",
+          "suggested_fix": "Replace with “plain Calendly link”."
+        },
+        {
+          "page_url": "https://youform.com/compare",
+          "category": "Language",
+          "issue_description": "professionalism: “tradeoffs” should be “trade-offs”.",
+          "severity": "low",
+          "suggested_fix": "Hyphenate: “trade-offs”."
+        },
+        {
+          "page_url": "https://youform.com/templates",
+          "category": "Language",
+          "issue_description": "professionalism: Heading plural: “Frequently Asked Question”.",
+          "severity": "low",
+          "suggested_fix": "Change to “Frequently Asked Questions”."
+        },
+        {
+          "page_url": "https://youform.com/templates/c/quizzes/popular",
+          "category": "Language",
+          "issue_description": "professionalism: Unneeded quotes in card text: “\"Unlock your potential…\"”.",
+          "severity": "low",
+          "suggested_fix": "Remove surrounding quotation marks."
+        },
+        {
+          "page_url": "https://youform.com",
+          "category": "Facts & Consistency",
+          "issue_description": "trust: Hero says “Rated 5on Capterra” missing space.",
+          "severity": "low",
+          "suggested_fix": "Add space: “Rated 5 on Capterra”."
+        },
+        {
+          "page_url": "https://youform.com/support",
+          "category": "Facts & Consistency",
+          "issue_description": "trust: Thank-you link shows encoded “https://%3Cp%3Eyouform.com%3C/p%3E”.",
+          "severity": "critical",
+          "suggested_fix": "Replace with correct “https://youform.com/”."
+        },
+        {
+          "page_url": "https://youform.com/features",
+          "category": "Facts & Consistency",
+          "issue_description": "credibility: Zapier count says “5000+” vs elsewhere “6,000+”.",
+          "severity": "medium",
+          "suggested_fix": "Standardize Zapier count across all pages."
+        },
+        {
+          "page_url": "https://youform.com/ai-survey-builder",
+          "category": "Facts & Consistency",
+          "issue_description": "credibility: NPS template URL includes “scorea” typo in slug.",
+          "severity": "medium",
+          "suggested_fix": "Rename slug to “net-promoter-score-nps-…”."
+        },
+        {
+          "page_url": "https://youform.com/online-quiz-builder",
+          "category": "Facts & Consistency",
+          "issue_description": "credibility: Comparison table: Youform branding “✓” contradicts pricing page.",
+          "severity": "critical",
+          "suggested_fix": "Change to “Paid only” for branding."
+        },
+        {
+          "page_url": "https://youform.com/online-quiz-builder",
+          "category": "Facts & Consistency",
+          "issue_description": "credibility: Comparison table: Youform “Custom branding ✓” conflicts with PRO-only.",
+          "severity": "critical",
+          "suggested_fix": "Mark custom branding as PRO-only."
+        },
+        {
+          "page_url": "https://youform.com/online-quiz-builder",
+          "category": "Facts & Consistency",
+          "issue_description": "credibility: Pricing row says Typeform paid starts $29/mo; elsewhere $25/mo.",
+          "severity": "medium",
+          "suggested_fix": "Align Typeform starting price statement."
+        },
+        {
+          "page_url": "https://youform.com/compare",
+          "category": "Facts & Consistency",
+          "issue_description": "credibility: Pricing row says Youform starts ~$20/mo; pricing page $29/mo.",
+          "severity": "critical",
+          "suggested_fix": "Update to match current PRO pricing."
+        },
+        {
+          "page_url": "https://youform.com/compare",
+          "category": "Facts & Consistency",
+          "issue_description": "credibility: Teams row claims unlimited members on Pro; pricing page says team collaboration PRO.",
+          "severity": "medium",
+          "suggested_fix": "Clarify exact team-member limits by plan."
+        },
+        {
+          "page_url": "https://youform.com/fillout-alternative",
+          "category": "Facts & Consistency",
+          "issue_description": "credibility: Says Youform integrates with PayPal (Pro); pricing page omits PayPal.",
+          "severity": "medium",
+          "suggested_fix": "Add PayPal to pricing or remove claim."
+        },
+        {
+          "page_url": "https://youform.com/fillout-alternative",
+          "category": "Facts & Consistency",
+          "issue_description": "credibility: Fillout “unlimited seats on all plans” may be inaccurate.",
+          "severity": "medium",
+          "suggested_fix": "Verify Fillout seats; update table accordingly."
+        },
+        {
+          "page_url": "https://youform.com/fillout-alternative",
+          "category": "Facts & Consistency",
+          "issue_description": "credibility: Fillout response limits and prices likely time-sensitive.",
+          "severity": "medium",
+          "suggested_fix": "Add “as of” date or source."
+        },
+        {
+          "page_url": "https://youform.com/tidycal-forms",
+          "category": "Facts & Consistency",
+          "issue_description": "credibility: Calendly Standard listed $12/mo; may be outdated.",
+          "severity": "medium",
+          "suggested_fix": "Verify Calendly price; update numbers."
+        },
+        {
+          "page_url": "https://youform.com/calendly-forms",
+          "category": "Facts & Consistency",
+          "issue_description": "credibility: Routing Forms price “$16/user/mo” may be outdated.",
+          "severity": "medium",
+          "suggested_fix": "Verify current Calendly Teams pricing."
+        },
+        {
+          "page_url": "https://youform.com/client-onboarding-forms",
+          "category": "Facts & Consistency",
+          "issue_description": "credibility: “Research shows…3x more likely” lacks citation/source.",
+          "severity": "low",
+          "suggested_fix": "Add citation or remove the statistic."
+        },
+        {
+          "page_url": "https://youform.com/lead-generation-forms",
+          "category": "Facts & Consistency",
+          "issue_description": "credibility: “Research shows…96% aren’t ready to buy” lacks citation.",
+          "severity": "low",
+          "suggested_fix": "Cite source or rephrase without number."
+        },
+        {
+          "page_url": "https://youform.com/lead-generation-forms",
+          "category": "Facts & Consistency",
+          "issue_description": "credibility: “Multi-step forms increase conversions by 86%” lacks citation.",
+          "severity": "low",
+          "suggested_fix": "Add citation or remove the statistic."
+        },
+        {
+          "page_url": "https://youform.com",
+          "category": "Links & Formatting",
+          "issue_description": "clarity: “Rated 5on Capterra” missing space in hero.",
+          "severity": "low",
+          "suggested_fix": "Add space: “Rated 5 on Capterra”."
+        },
+        {
+          "page_url": "https://youform.com",
+          "category": "Links & Formatting",
+          "issue_description": "clarity: Adjacent images “embed form background”“try it arrow” run together.",
+          "severity": "low",
+          "suggested_fix": "Add spacing or line breaks between images."
+        },
+        {
+          "page_url": "https://youform.com/support",
+          "category": "Links & Formatting",
+          "issue_description": "trust: Thank-you CTA shows malformed button label area.",
+          "severity": "medium",
+          "suggested_fix": "Replace CTA with clean text and styling."
+        },
+        {
+          "page_url": "https://youform.com/pricing",
+          "category": "Links & Formatting",
+          "issue_description": "clarity: Feature table cells appear blank for plan availability.",
+          "severity": "medium",
+          "suggested_fix": "Add ✓/— indicators across FREE and PRO."
+        },
+        {
+          "page_url": "https://youform.com/pricing",
+          "category": "Links & Formatting",
+          "issue_description": "professionalism: “Frequently Asked Question” singular heading for FAQs.",
+          "severity": "low",
+          "suggested_fix": "Rename heading to “Frequently Asked Questions”."
+        },
+        {
+          "page_url": "https://youform.com/templates",
+          "category": "Links & Formatting",
+          "issue_description": "professionalism: “Frequently Asked Question” singular heading for FAQs.",
+          "severity": "low",
+          "suggested_fix": "Rename heading to “Frequently Asked Questions”."
+        },
+        {
+          "page_url": "https://youform.com",
+          "category": "Links & Formatting",
+          "issue_description": "professionalism: Footer docs list ends mid-item in Docs.",
+          "severity": "low",
+          "suggested_fix": "Ensure Docs list items render consistently."
+        }
+      ],
+      "verifiedIssues": [
+        {
+          "page_url": "https://youform.com/pricing",
+          "category": "Links & Formatting",
+          "issue_description": "clarity: Feature table cells appear blank for plan availability.",
+          "severity": "medium",
+          "suggested_fix": "Add ✓/— indicators across FREE and PRO.",
+          "confirmed": true,
+          "confidence": 0.9,
+          "evidence": "Availability cells contain only an empty SVG with no text, e.g. “<td ...> <svg/> </td>”"
+        },
+        {
+          "page_url": "https://youform.com/about",
+          "category": "Language",
+          "issue_description": "clarity: Awkward phrasing: “I lead Youform along with…”.",
+          "severity": "low",
+          "suggested_fix": "Rewrite: “I run Youform with my co-founder.”",
+          "confirmed": true,
+          "confidence": 0.98,
+          "evidence": "I lead Youform along with my co-founder Abhishek Chakravarty."
+        },
+        {
+          "page_url": "https://youform.com/about",
+          "category": "Language",
+          "issue_description": "professionalism: Grammar: “AWS servers in EU”.",
+          "severity": "low",
+          "suggested_fix": "Change to “AWS servers in the EU”.",
+          "confirmed": true,
+          "confidence": 0.98,
+          "evidence": "All form data is securely stored with AWS servers in EU, end to end encrypted"
+        },
+        {
+          "page_url": "https://youform.com/about",
+          "category": "Language",
+          "issue_description": "professionalism: Missing hyphen: “end to end encrypted”.",
+          "severity": "low",
+          "suggested_fix": "Hyphenate: “end-to-end encrypted”.",
+          "confirmed": true,
+          "confidence": 0.98,
+          "evidence": "All form data is securely stored with AWS servers in EU, end to end encrypted"
+        },
+        {
+          "page_url": "https://youform.com/features",
+          "category": "Language",
+          "issue_description": "professionalism: Grammar in link text: “does…provides”.",
+          "severity": "medium",
+          "suggested_fix": "Change to “does Youform provide”.",
+          "confirmed": true,
+          "confidence": 0.98,
+          "evidence": "The linked URL contains the ungrammatical phrasing: href=\"https://help.youform.com/p/CNm-1RpM-Uhr4U/What-type-of-form-blocks-does-Youform-provides\""
+        },
+        {
+          "page_url": "https://youform.com/support",
+          "category": "Language",
+          "issue_description": "professionalism: Missing article: “use \"Ask AI\" feature”.",
+          "severity": "low",
+          "suggested_fix": "Add article: “use the \"Ask AI\" feature”.",
+          "confirmed": true,
+          "confidence": 0.98,
+          "evidence": "You can even use \"Ask AI\" feature there to ask questions about Youform's features like you do in ChatGPT."
+        },
+        {
+          "page_url": "https://youform.com/support",
+          "category": "Language",
+          "issue_description": "professionalism: Grammar: “For any support please fill out…”.",
+          "severity": "low",
+          "suggested_fix": "Rewrite: “For support, please fill out…”.",
+          "confirmed": true,
+          "confidence": 0.96,
+          "evidence": "\"title\":\"For any support please fill out this form\""
+        },
+        {
+          "page_url": "https://youform.com/support",
+          "category": "Language",
+          "issue_description": "professionalism: Grammar: “This will help us to reach out…”.",
+          "severity": "low",
+          "suggested_fix": "Rewrite: “This will help us reach you.”",
+          "confirmed": true,
+          "confidence": 0.96,
+          "evidence": "\"description\":\"This will help us to reach out to you.\""
+        },
+        {
+          "page_url": "https://youform.com/client-onboarding-forms",
+          "category": "Language",
+          "issue_description": "professionalism: Title case inconsistency: “What Is Client Onboarding?”.",
+          "severity": "low",
+          "suggested_fix": "Use sentence case: “What is client onboarding?”.",
+          "confirmed": true,
+          "confidence": 0.85,
+          "evidence": "TOC link uses “What Is Client Onboarding?” while the section heading differs: <a ...>What Is Client Onboarding?</a> vs <h2 ...>What Is a Client Onboarding Form?</h2>"
+        },
+        {
+          "page_url": "https://youform.com/client-onboarding-forms",
+          "category": "Language",
+          "issue_description": "clarity: Awkward contrast: “Unlike intake forms…”.",
+          "severity": "low",
+          "suggested_fix": "Rewrite: “Intake forms capture…; onboarding forms gather…”.",
+          "confirmed": true,
+          "confidence": 0.9,
+          "evidence": "Sentence appears in the body text: “Unlike intake forms that capture initial contact details, onboarding forms focus on the practical details needed to start working...”"
+        },
+        {
+          "page_url": "https://youform.com/client-onboarding-forms",
+          "category": "Facts & Consistency",
+          "issue_description": "credibility: “Research shows…3x more likely” lacks citation/source.",
+          "severity": "low",
+          "suggested_fix": "Add citation or remove the statistic.",
+          "confirmed": true,
+          "confidence": 0.9,
+          "evidence": "Claim is present without any adjacent citation/link: “Research shows that customers who have a positive onboarding experience are 3x more likely to become repeat buyers.”"
+        },
+        {
+          "page_url": "https://youform.com/lead-generation-forms",
+          "category": "Language",
+          "issue_description": "professionalism: Informal metaphor: “website is a leaky bucket”.",
+          "severity": "low",
+          "suggested_fix": "Replace with more formal wording.",
+          "confirmed": true,
+          "confidence": 0.99,
+          "evidence": "Without a way to capture leads, your website is a leaky bucket."
+        },
+        {
+          "page_url": "https://youform.com/lead-generation-forms",
+          "category": "Facts & Consistency",
+          "issue_description": "credibility: “Research shows…96% aren’t ready to buy” lacks citation.",
+          "severity": "low",
+          "suggested_fix": "Cite source or rephrase without number.",
+          "confirmed": true,
+          "confidence": 0.98,
+          "evidence": "Research shows that 96% of first-time visitors aren't ready to buy, but many would share their email for the right offer."
+        },
+        {
+          "page_url": "https://youform.com/fillout-alternative",
+          "category": "Facts & Consistency",
+          "issue_description": "credibility: Fillout “unlimited seats on all plans” may be inaccurate.",
+          "severity": "medium",
+          "suggested_fix": "Verify Fillout seats; update table accordingly.",
+          "confirmed": true,
+          "confidence": 0.96,
+          "evidence": "<td class=\"px-6 py-4 bg-gray-50\">Unlimited forms &amp; unlimited seats on all plans, including Free</td>"
+        },
+        {
+          "page_url": "https://youform.com/fillout-alternative",
+          "category": "Facts & Consistency",
+          "issue_description": "credibility: Fillout response limits and prices likely time-sensitive.",
+          "severity": "medium",
+          "suggested_fix": "Add “as of” date or source.",
+          "confirmed": true,
+          "confidence": 0.9,
+          "evidence": "<td class=\"px-6 py-4 bg-gray-50\">Free: 1,000/mo; Starter: 2,000/mo; Pro: 5,000/mo; Business: unlimited; Enterprise: custom</td>"
+        },
+        {
+          "page_url": "https://youform.com/calendly-forms",
+          "category": "Language",
+          "issue_description": "professionalism: Informal phrasing: “naked Calendly link”.",
+          "severity": "low",
+          "suggested_fix": "Replace with “plain Calendly link”.",
+          "confirmed": true,
+          "confidence": 0.98,
+          "evidence": "Calendly is great for scheduling. But sending a naked Calendly link has problems: anyone can book..."
+        },
+        {
+          "page_url": "https://youform.com/compare",
+          "category": "Language",
+          "issue_description": "professionalism: “tradeoffs” should be “trade-offs”.",
+          "severity": "low",
+          "suggested_fix": "Hyphenate: “trade-offs”.",
+          "confirmed": true,
+          "confidence": 0.96,
+          "evidence": "Understanding these tradeoffs helps you choose the right tool without overpaying or hitting unexpected limits."
+        },
+        {
+          "page_url": "https://youform.com/templates",
+          "category": "Language",
+          "issue_description": "professionalism: Heading plural: “Frequently Asked Question”.",
+          "severity": "low",
+          "suggested_fix": "Change to “Frequently Asked Questions”.",
+          "confirmed": true,
+          "confidence": 0.98,
+          "evidence": "<p class=\"text-center text-3xl sm:text-5xl xl:text-6xl font-bold mb-6 pt-10\"> Frequently Asked Question </p>"
+        },
+        {
+          "page_url": "https://youform.com/templates",
+          "category": "Links & Formatting",
+          "issue_description": "professionalism: “Frequently Asked Question” singular heading for FAQs.",
+          "severity": "low",
+          "suggested_fix": "Rename heading to “Frequently Asked Questions”.",
+          "confirmed": true,
+          "confidence": 0.98,
+          "evidence": "<p class=\"text-center text-3xl sm:text-5xl xl:text-6xl font-bold mb-6 pt-10\"> Frequently Asked Question </p>"
+        },
+        {
+          "page_url": "https://youform.com/templates/c/quizzes/popular",
+          "category": "Language",
+          "issue_description": "professionalism: Unneeded quotes in card text: “\"Unlock your potential…\"”.",
+          "severity": "low",
+          "suggested_fix": "Remove surrounding quotation marks.",
+          "confirmed": true,
+          "confidence": 0.98,
+          "evidence": "<p class=\"text-gray-700 mt-2 line-clamp-3\">\n            \"Unlock your potential with our English Placement Test template. Streamline assessment, identify proficiency levels, and customize feedback to enhance learning outcomes. Perfect for educational institutions and language centers.\"\n        </p>"
+        }
+      ]
+    }
+  }
+]

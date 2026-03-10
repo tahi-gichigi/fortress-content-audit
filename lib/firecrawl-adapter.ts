@@ -17,6 +17,25 @@ import {
   extractDiscoveredPagesList
 } from './manifest-extractor'
 
+/**
+ * Strip script tags, HTML comments, and verbose SVGs from raw HTML before
+ * feeding to the model. SVGs are collapsed to a placeholder preserving any
+ * aria-label/role so the model still understands their purpose.
+ */
+function stripHtmlNoise(html: string): string {
+  let cleaned = html
+  cleaned = cleaned.replace(/<script[\s\S]*?<\/script>/gi, '')
+  cleaned = cleaned.replace(/<!--[\s\S]*?-->/g, '')
+  cleaned = cleaned.replace(/<svg([^>]*)>[\s\S]*?<\/svg>/gi, (_match, attrs) => {
+    const ariaLabel = attrs.match(/aria-label="([^"]*)"/)?.[1]
+    const role = attrs.match(/role="([^"]*)"/)?.[1]
+    if (ariaLabel) return `<svg aria-label="${ariaLabel}"/>`
+    if (role) return `<svg role="${role}"/>`
+    return '<svg/>'
+  })
+  return cleaned.trim()
+}
+
 export interface AuditManifest {
   pages: FirecrawlPage[]
   discoveredUrls: string[]
@@ -373,19 +392,19 @@ export function formatFirecrawlForPrompt(manifest: AuditManifest): string {
       output += `**Description:** ${page.metadata.description}\n\n`
     }
 
-    if (page.markdown) {
-      // Clean up responsive duplicate text in markdown (e.g. "Talk to an ExpertTalk to an Expert")
-      let cleaned = page.markdown.replace(/\b(\w[\w\s]{2,30}?)\1\b/g, (_match, p1) => {
-        // Only dedup if the repeated part looks like a label/CTA (not normal prose)
-        return p1.trim().split(/\s+/).length <= 6 ? p1 : _match
-      })
-
-      // Limit content length to avoid token limits
-      const contentPreview = cleaned.length > 8000
-        ? cleaned.substring(0, 8000) + '\n\n[Content truncated...]'
-        : cleaned
-
-      output += `**Content:**\n${contentPreview}\n\n`
+    if (page.html) {
+      // Use cleaned HTML directly — more accurate than markdown (no lossy conversion,
+      // preserves <br>, inline spans, heading levels). stripHtmlNoise removes scripts,
+      // comments, and verbose SVGs to reduce token count without losing content.
+      const cleanedHtml = stripHtmlNoise(page.html)
+      let contentPreview = cleanedHtml
+      if (cleanedHtml.length > 14000) {
+        // Cut at last '>' to avoid truncating inside a tag attribute or element
+        const cutPoint = cleanedHtml.lastIndexOf('>', 14000)
+        contentPreview = cleanedHtml.substring(0, cutPoint > 0 ? cutPoint : 14000)
+          + '\n\n[Content truncated due to length — do not flag truncation as an issue]'
+      }
+      output += `**Content (HTML):**\n${contentPreview}\n\n`
     }
 
     // Append element manifest from HTML if available
@@ -394,6 +413,46 @@ export function formatFirecrawlForPrompt(manifest: AuditManifest): string {
       if (elementManifest) {
         output += `**Element Manifest (from HTML):**\n${elementManifest}\n\n`
       }
+    }
+
+    output += '---\n\n'
+  })
+
+  return output
+}
+
+/**
+ * Format Firecrawl pages for audit prompts using markdown content.
+ * Used by the two-pass test to compare HTML vs markdown audit input.
+ */
+export function formatFirecrawlForPromptMarkdown(manifest: AuditManifest): string {
+  const { pages } = manifest
+
+  if (pages.length === 0) {
+    return '# WEBSITE CONTENT\n\nNo content available (extraction failed).\n'
+  }
+
+  let output = '# WEBSITE CONTENT\n\n'
+  output += `Extracted from ${pages.length} pages using Firecrawl (bot-protected crawling).\n\n`
+
+  pages.forEach((page, index) => {
+    output += `## Page ${index + 1}: ${page.url}\n\n`
+
+    if (page.metadata?.title) {
+      output += `**Title:** ${page.metadata.title}\n\n`
+    }
+
+    if (page.metadata?.description) {
+      output += `**Description:** ${page.metadata.description}\n\n`
+    }
+
+    if (page.markdown) {
+      let content = page.markdown
+      if (content.length > 14000) {
+        content = content.substring(0, 14000)
+          + '\n\n[Content truncated due to length — do not flag truncation as an issue]'
+      }
+      output += `**Content (Markdown):**\n${content}\n\n`
     }
 
     output += '---\n\n'

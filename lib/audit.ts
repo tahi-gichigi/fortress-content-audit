@@ -2,7 +2,7 @@ import OpenAI from "openai"
 import { z } from "zod"
 import Logger from "./logger"
 // Removed: manifest-extractor (replaced with Firecrawl)
-import { extractWithFirecrawl, formatFirecrawlForPrompt, countPagesFound, getDiscoveredPages, getAuditedUrls } from "./firecrawl-adapter"
+import { extractWithFirecrawl, formatFirecrawlForPrompt, countPagesFound, getDiscoveredPages, getAuditedUrls, type AuditManifest } from "./firecrawl-adapter"
 import { buildMiniAuditPrompt, buildFullAuditPrompt, buildCategoryAuditPrompt } from "./audit-prompts"
 import { runBrandVoiceAuditPass, type BrandVoiceProfileForAudit } from "./brand-voice-audit"
 import { createTracedOpenAIClient } from "./langsmith-openai"
@@ -98,6 +98,75 @@ export interface IssueContext {
 export interface AuditIssueContext {
   excluded: IssueContext[]
   active: IssueContext[]
+}
+
+// ============================================================================
+// Post-audit verification: drop issues where quoted text doesn't exist in HTML
+// Catches model hallucinations like "Book no" when the actual HTML says "Book now"
+// ============================================================================
+
+function verifyIssuesAgainstHtml(
+  issues: AuditResult["issues"],
+  manifest: AuditManifest
+): AuditResult["issues"] {
+  // Build a map of page URL -> HTML content for fast lookup
+  const htmlByUrl = new Map<string, string>()
+  for (const page of manifest.pages) {
+    if (page.html) {
+      // Store lowercase for case-insensitive matching
+      htmlByUrl.set(page.url, page.html.toLowerCase())
+    }
+  }
+
+  const verified: AuditResult["issues"] = []
+  let dropped = 0
+
+  for (const issue of issues) {
+    // Extract all quoted strings (single or double) from the issue description
+    // e.g. 'professionalism: "Book no" CTA truncated' -> ["Book no"]
+    const quotedStrings = [...issue.issue_description.matchAll(/['"]([^'"]{3,})['"]/g)]
+      .map(m => m[1])
+
+    // If no quoted strings, keep the issue (nothing to verify)
+    if (quotedStrings.length === 0) {
+      verified.push(issue)
+      continue
+    }
+
+    // Find the page HTML for this issue, stripping HTML comments so the filter
+    // sees the same content as the model (which also has comments stripped)
+    const rawPageHtml = htmlByUrl.get(issue.page_url)
+    if (!rawPageHtml) {
+      // Can't verify without HTML — keep the issue
+      verified.push(issue)
+      continue
+    }
+
+    const pageHtml = rawPageHtml.replace(/<!--[\s\S]*?-->/g, '')
+
+    // Check if ALL quoted strings exist in the page HTML using word-boundary matching
+    // This prevents "Book no" from matching inside "Book now"
+    const existsInHtml = (qs: string): boolean => {
+      const escaped = qs.toLowerCase().replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+      const regex = new RegExp(`(?:^|[\\s>/"'\\t])${escaped}(?:$|[\\s</"'\\t.,;:!?)])`, 'i')
+      return regex.test(pageHtml)
+    }
+
+    const allFound = quotedStrings.every(existsInHtml)
+    if (allFound) {
+      verified.push(issue)
+    } else {
+      const missing = quotedStrings.filter(qs => !existsInHtml(qs))
+      Logger.warn(`[IssueVerification] Dropped hallucinated issue: "${issue.issue_description}" — quoted text not found in HTML: ${missing.map(s => `'${s}'`).join(', ')}`)
+      dropped++
+    }
+  }
+
+  if (dropped > 0) {
+    Logger.info(`[IssueVerification] Dropped ${dropped}/${issues.length} issues (quoted text not in source HTML)`)
+  }
+
+  return verified
 }
 
 // ============================================================================
@@ -577,7 +646,9 @@ export async function parallelMiniAudit(
 
     // Merge all issues: category + brand voice + link validation
     const linkValidationIssues = firecrawlManifest.linkValidationIssues || []
-    const issues = [...categoryIssues, ...brandVoiceIssues, ...linkValidationIssues]
+    const unverifiedIssues = [...categoryIssues, ...brandVoiceIssues]
+    // Verify model-generated issues against source HTML, then add link validation (already verified by crawler)
+    const issues = [...verifyIssuesAgainstHtml(unverifiedIssues, firecrawlManifest), ...linkValidationIssues]
     const totalDurationMs = Date.now() - startTime
 
     Logger.info(`[ParallelAudit] Completed: ${issues.length} issues from ${successfulResults.length}/${categoryResultCount} categories${brandVoicePromise ? " + content checks" : ""} in ${(totalDurationMs / 1000).toFixed(1)}s`)
@@ -737,7 +808,9 @@ export async function parallelProAudit(
 
     // Merge all issues: category + brand voice + link validation
     const linkValidationIssuesPro = firecrawlManifest.linkValidationIssues || []
-    const issues = [...categoryIssuesPro, ...brandVoiceIssuesPro, ...linkValidationIssuesPro]
+    const unverifiedIssuesPro = [...categoryIssuesPro, ...brandVoiceIssuesPro]
+    // Verify model-generated issues against source HTML, then add link validation (already verified by crawler)
+    const issues = [...verifyIssuesAgainstHtml(unverifiedIssuesPro, firecrawlManifest), ...linkValidationIssuesPro]
     const totalDurationMs = Date.now() - startTime
 
     Logger.info(`[ParallelProAudit] Completed: ${issues.length} issues from ${successfulResultsPro.length}/${categoryResultCountPro} categories${brandVoicePromisePro ? " + content checks" : ""} in ${(totalDurationMs / 1000).toFixed(1)}s`)
