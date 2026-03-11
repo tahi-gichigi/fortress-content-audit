@@ -23,14 +23,15 @@ Audit only the homepage and one additional key public-facing page of a website f
 
 **Language detection:** Detect the language of each page from its content. Write all issue descriptions and suggested fixes in that same language. Do not flag intentional foreign-language content — brand names, product terms, proper nouns, or content clearly written in a secondary language on purpose.
 
-**IMPORTANT — Markdown extraction artifacts:**
-The website content below was extracted from HTML and converted to markdown. This process often strips whitespace between adjacent HTML elements, producing false "missing space" issues. Examples:
-- "Thesimple" (actually "The simple" in two separate HTML spans)
-- "Add to your websiteA" or "Add Seline for freeA" (button text + keyboard shortcut letter in a separate element — the trailing letter is NOT part of the button text)
-- "3000events" (number and unit in separate elements)
-- "people.But" (sentence end and next sentence in separate elements)
+**RESPONSIVE DUPLICATES — read before auditing:**
+Modern sites ship BOTH mobile and desktop versions of components in the same HTML. Seeing the same text twice is intentional responsive design, not a content issue.
 
-DO NOT flag spacing issues that look like HTML elements merged together. Only flag spacing issues where the text would genuinely read wrong on the actual rendered page — e.g., real typos like "recieve" or genuinely missing punctuation.
+How to spot them:
+- Tailwind classes: "hidden md:flex", "flex md:hidden", "block lg:hidden", "hidden lg:block", "sm:hidden"
+- Two <nav> elements (mobile drawer + desktop bar) are standard
+- Any two sections with opposite visibility classes are responsive variants — audit the content ONCE
+
+Pages are truncated at an HTML tag boundary and marked with "[Content truncated due to length]". DO NOT flag content near this marker as incomplete — it is an extraction limit, not a real site issue.
 
 Do NOT check or report ANY link issues — broken links, wrong destinations, link text, mailto/tel links, or external links. A separate automated system handles all link validation via HTTP checks.
 
@@ -174,14 +175,15 @@ Audit up to 20 public-facing, top-of-funnel pages of a website for:
 
 **Language detection:** Detect the language of each page from its content. Write all issue descriptions and suggested fixes in that same language. Do not flag intentional foreign-language content — brand names, product terms, proper nouns, or content clearly written in a secondary language on purpose.
 
-**IMPORTANT — Markdown extraction artifacts:**
-The website content below was extracted from HTML and converted to markdown. This process often strips whitespace between adjacent HTML elements, producing false "missing space" issues. Examples:
-- "Thesimple" (actually "The simple" in two separate HTML spans)
-- "Add to your websiteA" or "Add Seline for freeA" (button text + keyboard shortcut letter in a separate element — the trailing letter is NOT part of the button text)
-- "3000events" (number and unit in separate elements)
-- "people.But" (sentence end and next sentence in separate elements)
+**RESPONSIVE DUPLICATES — read before auditing:**
+Modern sites ship BOTH mobile and desktop versions of components in the same HTML. Seeing the same text twice is intentional responsive design, not a content issue.
 
-DO NOT flag spacing issues that look like HTML elements merged together. Only flag spacing issues where the text would genuinely read wrong on the actual rendered page — e.g., real typos like "recieve" or genuinely missing punctuation.
+How to spot them:
+- Tailwind classes: "hidden md:flex", "flex md:hidden", "block lg:hidden", "hidden lg:block", "sm:hidden"
+- Two <nav> elements (mobile drawer + desktop bar) are standard
+- Any two sections with opposite visibility classes are responsive variants — audit the content ONCE
+
+Pages are truncated at an HTML tag boundary and marked with "[Content truncated due to length]". DO NOT flag content near this marker as incomplete — it is an extraction limit, not a real site issue.
 
 Do NOT check or report ANY link issues — broken links, wrong destinations, link text, mailto/tel links, or external links. A separate automated system handles all link validation via HTTP checks.
 
@@ -375,14 +377,15 @@ Do NOT audit any other pages. Focus only on these specific URLs.
 
 **Language detection:** Detect the language of each page from its content. Write all output (issue_description, suggested_fix) in that same language.
 
-**IMPORTANT — Markdown extraction artifacts:**
-The website content below was extracted from HTML and converted to markdown. This process often strips whitespace between adjacent HTML elements, producing false "missing space" issues. Examples:
-- "Thesimple" (actually "The simple" in two separate HTML spans)
-- "Add to your websiteA" or "Add Seline for freeA" (button text + keyboard shortcut letter in a separate element — the trailing letter is NOT part of the button text)
-- "3000events" (number and unit in separate elements)
-- "people.But" (sentence end and next sentence in separate elements)
+**RESPONSIVE DUPLICATES — read before auditing:**
+Modern sites ship BOTH mobile and desktop versions of components in the same HTML. Seeing the same text twice is intentional responsive design, not a content issue.
 
-DO NOT flag spacing issues that look like HTML elements merged together. Only flag spacing issues where the text would genuinely read wrong on the actual rendered page — e.g., real typos like "recieve" or genuinely missing punctuation.
+How to spot them:
+- Tailwind classes: "hidden md:flex", "flex md:hidden", "block lg:hidden", "hidden lg:block", "sm:hidden"
+- Two <nav> elements (mobile drawer + desktop bar) are standard
+- Any two sections with opposite visibility classes are responsive variants — audit the content ONCE
+
+Pages are truncated at an HTML tag boundary and marked with "[Content truncated due to length]". DO NOT flag content near this marker as incomplete — it is an extraction limit, not a real site issue.
 
 Do NOT check or report ANY link issues — broken links, wrong destinations, link text, mailto/tel links, or external links. A separate automated system handles all link validation via HTTP checks.
 
@@ -416,4 +419,162 @@ ${ignoreBlock}
 ${flagBlock}
 ${excludedIssues && excludedIssues !== '[]' ? `\n# Previously Resolved/Ignored Issues\n\nDO NOT report these again:\n${excludedIssues}\n` : ''}
 ${activeIssues && activeIssues !== '[]' ? `\n# Active Issues\n\nVerify if these still exist:\n${activeIssues}\n` : ''}`
+}
+
+/**
+ * Liberal (high-recall) category audit prompt for the Pro two-pass pipeline.
+ * Optimizes for recall — find everything, let the checker sort it out.
+ * Same signature as buildCategoryAuditPrompt so it can be swapped in directly.
+ */
+export function buildLiberalCategoryAuditPrompt(
+  category: "Language" | "Facts & Consistency" | "Links & Formatting",
+  urlsToAudit: string[],
+  manifestText: string,
+  excludedIssues: string,
+  activeIssues: string,
+  ignoreKeywords?: string[],
+  flagKeywords?: string[]
+): string {
+  const categoryInstructions = {
+    "Language": `Focus ONLY on Language issues:
+- Typos and misspellings
+- Grammar errors
+- Punctuation mistakes
+- Spelling inconsistencies
+- Awkward phrasing
+
+DO NOT report Facts/Consistency or Links/Formatting issues.`,
+
+    "Facts & Consistency": `Focus ONLY on Facts & Consistency issues:
+- Factual errors or incorrect information
+- Inconsistent data, numbers, or stats across pages
+- Contradictory statements
+- Outdated information
+- Naming inconsistencies (product names, company name variations)
+
+When reporting cross-page contradictions, ALWAYS quote the exact text from BOTH sides.
+Good: 'credibility: "file never touches our servers" (FAQ) contradicts "relayed through our server" (Transparency)'
+Bad: 'credibility: FAQ claim contradicts transparency page'
+
+DO NOT report Language or Links/Formatting issues.`,
+
+    "Links & Formatting": `Focus ONLY on Formatting & UX issues:
+- Formatting problems (inconsistent styles, broken layouts)
+- Layout issues affecting readability
+- Visual hierarchy problems
+- Navigation UX issues
+
+DO NOT check or report ANY link issues — broken links, wrong destinations, link text quality, mailto/tel links, or external links. A separate automated system handles all link validation via HTTP checks.
+DO NOT report Language or Facts/Consistency issues.`
+  }
+
+  const urlListText = urlsToAudit.map((u, i) => `${i + 1}. ${u}`).join('\n')
+
+  const ignoreBlock = ignoreKeywords?.length
+    ? `\n# Allowed Terms\nDO NOT flag or suggest changing:\n${ignoreKeywords.map(k => `- ${k}`).join('\n')}\n`
+    : ''
+  const flagBlock = flagKeywords?.length
+    ? `\n# Flag Keywords\nALWAYS flag when present:\n${flagKeywords.map(k => `- ${k}`).join('\n')}\n`
+    : ''
+
+  return `You are auditing for ${category} issues ONLY. A separate checker model will verify every finding — when in doubt, include it. A checker verifies everything.
+
+**AUDIT EXACTLY THESE ${urlsToAudit.length} URLs:**
+${urlListText}
+
+Do NOT audit any other pages. Focus only on these specific URLs.
+
+**Language detection:** Detect the language of each page from its content. Write all output (issue_description, suggested_fix) in that same language.
+
+**RESPONSIVE DUPLICATES — read before auditing:**
+Modern sites ship BOTH mobile and desktop versions of components in the same HTML. Seeing the same text twice is intentional responsive design, not a content issue.
+
+How to spot them:
+- Tailwind classes: "hidden md:flex", "flex md:hidden", "block lg:hidden", "hidden lg:block", "sm:hidden"
+- Two <nav> elements (mobile drawer + desktop bar) are standard
+- Any two sections with opposite visibility classes are responsive variants — audit the content ONCE
+
+Pages are truncated at an HTML tag boundary and marked with "[Content truncated due to length]". DO NOT flag content near this marker as incomplete — it is an extraction limit, not a real site issue.
+
+Do NOT check or report ANY link issues — broken links, wrong destinations, link text, mailto/tel links, or external links. A separate automated system handles all link validation via HTTP checks.
+
+${manifestText ? `Below is an ELEMENT MANIFEST showing interactive elements on the page:\n${manifestText}\n\n---\n` : ''}
+
+${categoryInstructions[category]}
+
+**HOW TO USE THE MANIFEST:**
+- Use it to avoid false positives about missing elements
+- The manifest shows code structure, NOT functionality
+
+If you encounter bot protection, return: BOT_PROTECTION_OR_FIREWALL_BLOCKED
+
+**Report the same issue on each page it appears** — don't deduplicate across pages. Severity is optional and defaults to "medium" if uncertain.
+
+For every issue, provide:
+- page_url: The URL where issue was found
+- category: "${category}" (always this category)
+- issue_description: impact label (professionalism:, trust:, clarity:, credibility:, frustration:) + problem in 15 words or fewer. Always name WHERE: quote the specific text or name the section (hero, pricing table, nav, footer CTA).
+- severity: "critical", "medium", or "low" (default "medium" if unsure)
+- suggested_fix: action verb + fix in 8 words or fewer
+
+Output format — return ONLY the issues array, no summary counts:
+{
+  "issues": [...]
+}
+
+If no ${category} issues found, return: null
+${ignoreBlock}
+${flagBlock}
+${excludedIssues && excludedIssues !== '[]' ? `\n# Previously Resolved/Ignored Issues\n\nDO NOT report these again:\n${excludedIssues}\n` : ''}
+${activeIssues && activeIssues !== '[]' ? `\n# Active Issues\n\nVerify if these still exist:\n${activeIssues}\n` : ''}`
+}
+
+/**
+ * Checker prompt for the Pro two-pass pipeline.
+ * Given HTML snippets (potentially from multiple pages) and candidate issues,
+ * determine which are real. One call per category, not per page.
+ * Optimizes for precision — only confirmed issues reach the user.
+ */
+export function buildCheckerPrompt(
+  snippetsText: string,
+  issues: Array<{ category: string; issue_description: string; page_url?: string }>,
+  category: string
+): string {
+  const categoryVerification: Record<string, string> = {
+    "Language": "Confirm the exact quoted text exists in the HTML AND contains the claimed error. Valid stylistic choices (brand voice, intentional tone) are not errors. Regional spelling (UK vs US English) on a locale-targeted site is a valid concern, not a stylistic choice.",
+    "Facts & Consistency": "Confirm the claimed text/data is present. You can verify internal consistency (numbers matching across sections) but not external facts. If the text exists and the inconsistency is real within the page, confirm. Cross-page contradictions are valid. If an issue claims page A contradicts page B, look for evidence from both pages in the excerpts.",
+    "Links & Formatting": "Confirm the HTML structure supports the claim (empty alt, wrong heading level, missing aria). Layout/render issues that can't be verified from static HTML → mark uncertain.",
+  }
+
+  const verificationInstruction = categoryVerification[category]
+    || "Check that each issue has clear supporting evidence in the HTML before confirming."
+
+  const issueList = issues
+    .map((issue, i) => `${i}. [${issue.category}] ${issue.issue_description}`)
+    .join('\n')
+
+  return `You are the final quality gate. Only issues that survive your review reach the user. Be skeptical — require clear HTML evidence.
+
+${verificationInstruction}
+
+Issues to verify:
+${issueList}
+
+Below is the full cleaned HTML for each page that has issues — the same HTML the auditor reviewed. Find the evidence for each issue directly in the page content.
+
+${snippetsText}
+
+For each issue return:
+- confirmed: true (clear evidence) | false (no evidence or claim is wrong) | "uncertain" (plausible but not provable from static HTML)
+- confidence: 0.0-1.0
+- severity: final severity ("critical", "medium", or "low")
+- evidence: HTML snippet proving or refuting the issue (max 200 chars)
+
+Return ONLY valid JSON in this exact format:
+{
+  "verifications": [
+    {"index": 0, "confirmed": true, "confidence": 0.95, "severity": "medium", "evidence": "<a href=\\"tel:\\">Contact</a>"},
+    {"index": 1, "confirmed": false, "confidence": 0.9, "severity": "low", "evidence": "text not found in HTML"}
+  ]
+}`
 }

@@ -2,10 +2,12 @@ import OpenAI from "openai"
 import { z } from "zod"
 import Logger from "./logger"
 // Removed: manifest-extractor (replaced with Firecrawl)
-import { extractWithFirecrawl, formatFirecrawlForPrompt, countPagesFound, getDiscoveredPages, getAuditedUrls, type AuditManifest } from "./firecrawl-adapter"
-import { buildMiniAuditPrompt, buildFullAuditPrompt, buildCategoryAuditPrompt } from "./audit-prompts"
+import { extractWithFirecrawl, formatFirecrawlForPrompt, formatPagesForChecker, countPagesFound, getDiscoveredPages, getAuditedUrls, type AuditManifest } from "./firecrawl-adapter"
+import { buildMiniAuditPrompt, buildFullAuditPrompt, buildCategoryAuditPrompt, buildLiberalCategoryAuditPrompt, buildCheckerPrompt } from "./audit-prompts"
 import { runBrandVoiceAuditPass, type BrandVoiceProfileForAudit } from "./brand-voice-audit"
 import { createTracedOpenAIClient } from "./langsmith-openai"
+import { applyCheckerDecisions, type CheckerVerification } from "./checker-decisions"
+// snippet-extractor no longer used by checker pass (full HTML sent instead)
 
 // ============================================================================
 // Content Audit
@@ -70,6 +72,10 @@ export type AuditResult = {
     issue_description: string
     severity: 'low' | 'medium' | 'critical'
     suggested_fix: string
+    /** HTML snippet from checker pass confirming the issue (Pro only) */
+    evidence?: string
+    /** Checker confidence score 0-1 (Pro only) */
+    confidence?: number
   }>
   pagesAudited: number // Model's self-reported count of pages audited
   discoveredPages: string[] // All internal URLs found by Puppeteer
@@ -167,6 +173,132 @@ function verifyIssuesAgainstHtml(
   }
 
   return verified
+}
+
+// ============================================================================
+// Checker Pass: model-based verification for Pro two-pass pipeline
+// Groups issues by page, one API call per page, drops unconfirmed findings
+// ============================================================================
+
+
+async function runCheckerPass(
+  issues: AuditResult["issues"],
+  manifest: AuditManifest,
+  openai?: OpenAI
+): Promise<AuditResult["issues"]> {
+  if (issues.length === 0) return []
+
+  const client = openai || createTracedOpenAIClient({
+    apiKey: process.env.OPENAI_API_KEY,
+    timeout: 120000,
+  })
+
+  // Group issues by category — gives checker cross-page visibility.
+  // "Brand voice" issues land here too; buildCheckerPrompt falls back to generic
+  // verification criteria for that category, which is acceptable.
+  const byCategory = new Map<string, AuditResult["issues"]>()
+  for (const issue of issues) {
+    const list = byCategory.get(issue.category) || []
+    list.push(issue)
+    byCategory.set(issue.category, list)
+  }
+
+  Logger.info(`[CheckerPass] Verifying ${issues.length} issues across ${byCategory.size} categories`)
+
+  const BATCH_SIZE = 50
+
+  const categoryPromises = Array.from(byCategory.entries()).map(async ([category, categoryIssues]) => {
+    // Collect only the pages that have issues in this category.
+    // Checker gets the same full cleaned HTML the auditor saw — no snippet extraction.
+    const pageUrls = new Set(categoryIssues.map(i => i.page_url))
+    const htmlContext = formatPagesForChecker(manifest, pageUrls)
+    Logger.info(`[CheckerPass] ${category}: ${categoryIssues.length} issues across ${pageUrls.size} pages`)
+
+    // Batch if >50 issues in one category
+    const batches: AuditResult["issues"][] = []
+    for (let i = 0; i < categoryIssues.length; i += BATCH_SIZE) {
+      batches.push(categoryIssues.slice(i, i + BATCH_SIZE))
+    }
+
+    const batchResults = await Promise.all(batches.map(async (batchIssues) => {
+      // Each batch gets the full HTML context for all pages in this category
+      const prompt = buildCheckerPrompt(htmlContext, batchIssues, category)
+
+      // ~150 tokens per verification entry; floor at 4000, cap at 16000
+      const maxOutputTokens = Math.min(16000, Math.max(4000, batchIssues.length * 150))
+
+      const params: any = {
+        model: "gpt-5.1-2025-11-13",
+        input: prompt,
+        max_output_tokens: maxOutputTokens,
+        text: { format: { type: "text" } },
+        reasoning: { effort: "low", summary: null },
+        store: true,
+      }
+
+      let response: any
+      try {
+        response = await client.responses.create(params)
+      } catch (err) {
+        Logger.warn(`[CheckerPass] API call failed for ${category}`, err instanceof Error ? err : undefined)
+        return batchIssues.map(issue => ({ ...issue, evidence: 'Checker call failed', confidence: 0.5 }))
+      }
+
+      // Poll for completion
+      let finalResponse = response
+      let status = response.status as string
+      let attempts = 0
+      while ((status === "queued" || status === "in_progress") && attempts < 120) {
+        await new Promise(resolve => setTimeout(resolve, 1000))
+        finalResponse = await client.responses.retrieve(response.id)
+        status = finalResponse.status as string
+        attempts++
+      }
+
+      const outputText = (finalResponse.output_text || '').trim()
+
+      let verifications: CheckerVerification[] = []
+      try {
+        const cleaned = outputText.replace(/^```(?:json)?\n?/, '').replace(/\n?```$/, '')
+        const parsed = JSON.parse(cleaned)
+        verifications = parsed?.verifications || []
+      } catch {
+        Logger.warn(`[CheckerPass] JSON parse failed for ${category} — keeping all issues`)
+        return batchIssues.map(issue => ({ ...issue, evidence: 'Checker parse error', confidence: 0.5 }))
+      }
+
+      // Apply checker decisions using pure filtering logic
+      const verified = applyCheckerDecisions(batchIssues, verifications) as AuditResult["issues"]
+
+      // Log dropped issues
+      for (let i = 0; i < batchIssues.length; i++) {
+        const v = verifications.find(v => v.index === i)
+        const confirmed = v?.confirmed ?? true
+        const confidence = v?.confidence ?? 0.5
+        if (!(confirmed === true || (confirmed === 'uncertain' && confidence >= 0.7))) {
+          Logger.debug(`[CheckerPass] Dropped: "${batchIssues[i].issue_description}" (confirmed=${confirmed}, confidence=${confidence})`)
+        }
+      }
+
+      Logger.debug(`[CheckerPass] ${category}: ${verified.length}/${batchIssues.length} issues passed`)
+      return verified
+    }))
+
+    return batchResults.flat()
+  })
+
+  const results = await Promise.allSettled(categoryPromises)
+  const allVerified: AuditResult["issues"] = []
+
+  for (const r of results) {
+    if (r.status === "fulfilled") {
+      allVerified.push(...r.value)
+    }
+  }
+
+  const dropped = issues.length - allVerified.length
+  Logger.info(`[CheckerPass] Complete: ${allVerified.length}/${issues.length} issues passed (${dropped} dropped)`)
+  return allVerified
 }
 
 // ============================================================================
@@ -809,8 +941,11 @@ export async function parallelProAudit(
     // Merge all issues: category + brand voice + link validation
     const linkValidationIssuesPro = firecrawlManifest.linkValidationIssues || []
     const unverifiedIssuesPro = [...categoryIssuesPro, ...brandVoiceIssuesPro]
-    // Verify model-generated issues against source HTML, then add link validation (already verified by crawler)
-    const issues = [...verifyIssuesAgainstHtml(unverifiedIssuesPro, firecrawlManifest), ...linkValidationIssuesPro]
+    // Two-pass verification: model checker replaces regex filter for Pro tier
+    // Brand voice issues are also run through the checker for consistency
+    const checkedIssues = await runCheckerPass(unverifiedIssuesPro, firecrawlManifest, openai)
+    // Link validation issues are already verified by crawler — add after checker
+    const issues = [...checkedIssues, ...linkValidationIssuesPro]
     const totalDurationMs = Date.now() - startTime
 
     Logger.info(`[ParallelProAudit] Completed: ${issues.length} issues from ${successfulResultsPro.length}/${categoryResultCountPro} categories${brandVoicePromisePro ? " + content checks" : ""} in ${(totalDurationMs / 1000).toFixed(1)}s`)
@@ -866,7 +1001,8 @@ async function runCategoryAuditPro(
     ? JSON.stringify(issueContext.active.filter(i => i.category === category))
     : "[]"
 
-  const promptText = buildCategoryAuditPrompt(
+  // Liberal prompt: optimized for recall, checker will filter false positives
+  const promptText = buildLiberalCategoryAuditPrompt(
     category,
     urlsToAudit,
     manifestText,
@@ -877,6 +1013,7 @@ async function runCategoryAuditPro(
   )
 
   // NOTE: temperature omitted — GPT-5.1 with reasoning enabled rejects non-default values (400 error)
+  // reasoning: null disables reasoning for faster/cheaper audit pass (checker handles verification)
   const params: any = {
     model: "gpt-5.1-2025-11-13",
     input: promptText,
@@ -893,15 +1030,24 @@ async function runCategoryAuditPro(
       format: { type: "text" },
       verbosity: "low"
     },
-    reasoning: {
-      effort: "low", // Low reasoning for speed (same as Free)
-      summary: null
-    },
+    reasoning: null, // No reasoning for audit pass — checker handles quality gate
     store: true
   }
 
   Logger.debug(`[ParallelProAudit] [${category}] Calling OpenAI API...`)
-  const response = await client.responses.create(params)
+  let response: any
+  try {
+    response = await client.responses.create(params)
+  } catch (err: any) {
+    // If reasoning:null is rejected by the API, fall back to lowest effort
+    if (err?.message?.includes('reasoning') || err?.status === 400) {
+      Logger.warn(`[ParallelProAudit] [${category}] reasoning:null rejected, falling back to effort:low`)
+      params.reasoning = { effort: "low", summary: null }
+      response = await client.responses.create(params)
+    } else {
+      throw err
+    }
+  }
 
   // Poll for completion with longer timeout for Pro
   let finalResponse = response

@@ -22,7 +22,7 @@ import {
  * feeding to the model. SVGs are collapsed to a placeholder preserving any
  * aria-label/role so the model still understands their purpose.
  */
-function stripHtmlNoise(html: string): string {
+export function stripHtmlNoise(html: string): string {
   let cleaned = html
   cleaned = cleaned.replace(/<script[\s\S]*?<\/script>/gi, '')
   cleaned = cleaned.replace(/<!--[\s\S]*?-->/g, '')
@@ -418,6 +418,41 @@ export function formatFirecrawlForPrompt(manifest: AuditManifest): string {
     output += '---\n\n'
   })
 
+  return output
+}
+
+/**
+ * Format only the pages that have issues for the checker pass.
+ * Gives the checker the same cleaned HTML + element manifest the auditor saw,
+ * but scoped to just the pages relevant to the current category — same
+ * stripHtmlNoise + 14k truncation as formatFirecrawlForPrompt.
+ */
+export function formatPagesForChecker(
+  manifest: AuditManifest,
+  pageUrls: Set<string>
+): string {
+  const pages = manifest.pages.filter(p => pageUrls.has(p.url))
+  if (pages.length === 0) return '[No HTML available for any issue page]'
+
+  let output = ''
+  for (const page of pages) {
+    output += `## Page: ${page.url}\n\n`
+    if (page.html) {
+      const cleaned = stripHtmlNoise(page.html)
+      let content = cleaned
+      if (cleaned.length > 14000) {
+        const cutPoint = cleaned.lastIndexOf('>', 14000)
+        content = cleaned.substring(0, cutPoint > 0 ? cutPoint : 14000)
+          + '\n[Content truncated]'
+      }
+      output += `${content}\n\n`
+      const elementManifest = extractElementManifestFromHtml(page.html, page.url)
+      if (elementManifest) {
+        output += `**Element Manifest:**\n${elementManifest}\n\n`
+      }
+    }
+    output += '---\n\n'
+  }
   return output
 }
 
