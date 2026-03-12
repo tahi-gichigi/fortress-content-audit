@@ -247,7 +247,79 @@ describe('compressHtml — compression ratio', () => {
 })
 
 // ============================================================================
-// 5. DOM-aware chunking
+// 5. Inline formatting tag unwrapping
+// ============================================================================
+
+describe('compressHtml — inline tag unwrapping', () => {
+  it('unwraps <strong> but preserves text', () => {
+    const html = '<p>This is <strong>important</strong> text.</p>'
+    const result = compressHtml(html)
+    expect(result).not.toContain('<strong>')
+    expect(result).toContain('important')
+  })
+
+  it('unwraps <em>, <b>, <i>, <u>', () => {
+    const html = '<p><em>italic</em> <b>bold</b> <i>also italic</i> <u>underline</u></p>'
+    const result = compressHtml(html)
+    expect(result).not.toContain('<em>')
+    expect(result).not.toContain('<b>')
+    expect(result).not.toContain('<i>')
+    expect(result).not.toContain('<u>')
+    expect(result).toContain('italic')
+    expect(result).toContain('bold')
+    expect(result).toContain('underline')
+  })
+
+  it('unwraps <bdt> (inline tag fragment common in compressed HTML)', () => {
+    const html = '<p>IP a<bdt>dd</bdt>resses</p>'
+    const result = compressHtml(html)
+    expect(result).not.toContain('<bdt>')
+    expect(result).toContain('dd')
+  })
+
+  it('unwraps bare <span> but preserves text', () => {
+    const html = '<p>Hello <span>world</span></p>'
+    const result = compressHtml(html)
+    expect(result).not.toContain('<span>')
+    expect(result).toContain('world')
+  })
+
+  it('preserves <span> with aria-* attributes', () => {
+    const html = '<span aria-live="polite">Status update</span>'
+    const result = compressHtml(html)
+    expect(result).toContain('<span')
+    expect(result).toContain('aria-live="polite"')
+    expect(result).toContain('Status update')
+  })
+
+  it('preserves <span> with role attribute', () => {
+    const html = '<span role="status">Loading...</span>'
+    const result = compressHtml(html)
+    expect(result).toContain('<span')
+    expect(result).toContain('role="status"')
+  })
+
+  it('preserves <a>, <nav>, <h1-h6> — structural tags are not unwrapped', () => {
+    const html = '<nav><a href="/pricing"><strong>Pricing</strong></a></nav>'
+    const result = compressHtml(html)
+    expect(result).toContain('<nav>')
+    expect(result).toContain('<a href="/pricing">')
+    expect(result).not.toContain('<strong>')
+    expect(result).toContain('Pricing')
+  })
+
+  it('produces shorter output than input for formatting-heavy content', () => {
+    const html = '<p><strong><em><b>Very</b></em></strong> <span>formatted</span> <i><u>text</u></i></p>'
+    const result = compressHtml(html)
+    expect(result.length).toBeLessThan(html.length)
+    expect(result).toContain('Very')
+    expect(result).toContain('formatted')
+    expect(result).toContain('text')
+  })
+})
+
+// ============================================================================
+// 6. DOM-aware chunking
 // ============================================================================
 
 describe('chunkHtml — DOM-aware chunking', () => {

@@ -2,6 +2,65 @@
 
 ---
 
+## Run 3: Cost Optimisation (inline tag stripping + no manifest in checker + prompt caching)
+
+**Run date:** 2026-03-12
+**Branch:** `feature/two-pass-model-checker`
+**Code state:** Three cost-reduction optimisations layered on top of Run 2
+
+### What changed since Run 2
+1. **Inline formatting tags stripped** (`lib/html-compressor.ts`): `<strong>`, `<em>`, `<b>`, `<i>`, `<u>`, `<s>`, `<span>` (bare), `<font>`, `<bdt>`, `<bdo>`, and other formatting-only wrappers are now unwrapped — text preserved, tags removed. Confirmed via LangSmith: no audit issue has ever relied on bold/italic/underline context.
+2. **Element manifest removed from checker** (`lib/firecrawl-adapter.ts`): `formatPagesForChecker` no longer appends the element manifest. The checker only needs compressed HTML to verify issues exist — manifest was redundant and added ~15-20% token overhead.
+3. **Manifest moved to prompt prefix** (`lib/audit-prompts.ts`): `buildLiberalCategoryAuditPrompt` now puts the full site HTML manifest FIRST (before category instructions). All 3 parallel category calls share an identical prefix, enabling OpenAI prompt caching on calls 2 and 3.
+
+### Future cost reduction options (higher risk, not yet implemented)
+- **Option 4: Deduplicate nav/footer** — same nav appears on every page, wasting tokens. Strip repeated sections across pages. ~10-20% savings, medium risk (detection reliability).
+- **Option 5: gpt-4.1-mini for auditor** — cheaper model, checker catches quality drop. ~40% savings, medium-high risk (needs eval to validate recall doesn't degrade).
+
+### Results
+
+| Site | Pages | OLD raw→filtered (drop) | NEW raw→filtered (drop) | Checker rejected | Avg conf |
+|------|-------|------------------------|------------------------|-----------------|----------|
+| secondhome.io | 20 | 87→61 (30%) | 51→49 (4%) | 2 | 0.99 |
+| justcancel.io | 17 | 24→15 (38%) | 44→34 (23%) | 10 | 0.98 |
+| youform.com | 19 | 20→12 (40%) | 22→22 (0%) | 0 | 0.92 |
+| seline.so | 19 | 72→62 (14%) | 55→55 (0%) | 0 | 0.99 |
+
+### vs Run 2
+
+| Site | Run 2 drop | Run 3 drop | Change |
+|------|-----------|-----------|--------|
+| secondhome.io | 3% | 4% | +1pp (flat) |
+| justcancel.io | 11% | 23% | +12pp — checker correctly rejected 10 FP issues |
+| youform.com | 3% | 0% | -3pp (improved) |
+| seline.so | 17% | 0% | **-17pp (big improvement)** |
+
+### Cost (from LangSmith traces, Run 3)
+
+| Site | Input tokens/call | Cost/site | vs Run 2 |
+|------|------------------|-----------|---------|
+| seline.so | ~102K | ~$0.93 | -18% ($0.21 saved) |
+| youform.com | ~136K | ~$1.14 | flat |
+
+- Inline tag stripping reduces token counts on formatting-heavy pages (seline: 130K → 102K = 22% reduction)
+- Element manifest removed from checker: checker calls are 16% smaller (~77K vs estimated ~92K)
+- Prompt caching: barely firing in practice. Parallel calls can't benefit from each other's cache. Only 2/24 runs had non-zero `cache_read` (seline Facts checker: 36K tokens, youform: 6K tokens). The manifest-first restructure helps for sequential re-audits of the same site within the cache window.
+
+### Compression ratios (Run 3)
+
+Inline tag stripping added ~5-15pp on top of Run 2 attribute stripping:
+- seline.so: 53-74% (was ~60-77% in Run 2)
+- youform.com: 57-91% (91% on template-heavy pages with lots of inline formatting)
+- justcancel.io: 28-56%
+- secondhome.io: similar range
+
+### Notable
+- seline.so stray "A" issues (CTA text "Add to your websiteA") — real bugs, confirmed at 1.0 confidence
+- justcancel.io 10 checker rejections: formatting-only issues where HTML whitespace made evidence ambiguous (confirmed=false/uncertain) — correct rejects
+- youform.com checker drop rate 0%: all 22 issues had clear HTML evidence
+
+---
+
 ## Run 2: HTML Compression + Full-HTML Checker (current)
 
 **Run date:** 2026-03-12

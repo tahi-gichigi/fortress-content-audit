@@ -433,13 +433,11 @@ export function formatPagesForChecker(
     output += `## Page: ${page.url}\n\n`
     if (page.html) {
       // Same pipeline as formatFirecrawlForPrompt: strip → compress (60K limit, DOM chunking fallback)
+      // Element manifest intentionally omitted here — the checker only needs to verify whether
+      // a claimed issue exists in the HTML. The compressed HTML is sufficient for that;
+      // the manifest is redundant and adds ~15-20% token overhead.
       const content = compressHtmlWithLogging(stripHtmlNoise(page.html), page.url)
       output += `${content}\n\n`
-      // Element manifest is built from raw HTML (before compression) — preserves href, role, etc.
-      const elementManifest = extractElementManifestFromHtml(page.html, page.url)
-      if (elementManifest) {
-        output += `**Element Manifest:**\n${elementManifest}\n\n`
-      }
     }
     output += '---\n\n'
   }

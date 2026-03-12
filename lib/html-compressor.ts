@@ -34,6 +34,15 @@ const KEEP_ATTRS = new Set([
   'colspan', 'rowspan', 'scope', 'headers',
 ])
 
+// Inline formatting-only tags to unwrap (keep text content, remove wrapper).
+// Bold/italic/underline carry no semantic meaning for content auditing.
+// Verified via LangSmith: no audit issue has ever relied on text being bold or italic.
+// Must be a const array for use in cheerio selector strings.
+const INLINE_FORMAT_TAGS = [
+  'strong', 'em', 'b', 'i', 'u', 's', 'del', 'ins',
+  'sub', 'sup', 'small', 'font', 'bdt', 'bdo', 'tt', 'strike', 'big',
+]
+
 /**
  * Compress HTML to semantic-only form for model consumption.
  *
@@ -79,6 +88,23 @@ export function compressHtml(html: string): string {
     const src = (el as any).attribs?.src
     if (src && src.startsWith('data:')) {
       $(el).attr('src', '[data-uri]')
+    }
+  })
+
+  // Unwrap inline formatting tags — keep text content, remove tag wrapper.
+  // Must run AFTER attribute stripping so aria-*/role detection on <span> still works.
+  $(INLINE_FORMAT_TAGS.join(', ')).each((_i, el) => {
+    $(el).replaceWith($(el).contents())
+  })
+
+  // Unwrap bare <span> elements — only keep spans that carry semantic meaning
+  // via aria-* attributes or role (e.g. aria-live regions, tooltip anchors).
+  $('span').each((_i, el) => {
+    const attribs = (el as any).attribs || {}
+    const hasAria = Object.keys(attribs).some(a => a.startsWith('aria-'))
+    const hasRole = !!attribs.role
+    if (!hasAria && !hasRole) {
+      $(el).replaceWith($(el).contents())
     }
   })
 

@@ -477,7 +477,11 @@ DO NOT report Language or Facts/Consistency issues.`
     ? `\n# Flag Keywords\nALWAYS flag when present:\n${flagKeywords.map(k => `- ${k}`).join('\n')}\n`
     : ''
 
-  return `You are auditing for ${category} issues ONLY. A separate checker model will verify every finding — when in doubt, include it. A checker verifies everything.
+  // Manifest goes FIRST so it forms a shared prefix across all 3 parallel category calls.
+  // OpenAI prompt caching fires when the prefix is identical — putting the large manifest
+  // first means calls 2 and 3 get a cache hit on the manifest tokens (~50% cost reduction
+  // on those tokens). The small category-specific instruction comes after.
+  return `${manifestText ? `${manifestText}\n\n---\n\n` : ''}You are auditing for ${category} issues ONLY. A separate checker model will verify every finding — when in doubt, include it. A checker verifies everything.
 
 **AUDIT EXACTLY THESE ${urlsToAudit.length} URLs:**
 ${urlListText}
@@ -497,8 +501,6 @@ How to spot them:
 Pages are truncated at an HTML tag boundary and marked with "[Content truncated due to length]". DO NOT flag content near this marker as incomplete — it is an extraction limit, not a real site issue.
 
 Do NOT check or report ANY link issues — broken links, wrong destinations, link text, mailto/tel links, or external links. A separate automated system handles all link validation via HTTP checks.
-
-${manifestText ? `Below is an ELEMENT MANIFEST showing interactive elements on the page:\n${manifestText}\n\n---\n` : ''}
 
 ${categoryInstructions[category]}
 

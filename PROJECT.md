@@ -60,8 +60,31 @@ Recorded in `docs/decisions/` as numbered ADRs. Check these before making change
 
 ### Tiers
 - **FREE** → `parallelMiniAudit` — 3 category models + optional brand voice, 5 pages, 10 tool calls
-- **PAID** → `parallelProAudit` — same structure, 20 pages, 30 tool calls
+- **PAID** → `parallelProAudit` — same structure, 20 pages, 30 tool calls + two-pass checker
 - **ENTERPRISE** → `auditSite` sequential + brand voice pass, 60 tool calls
+
+### Two-Pass Pipeline (PAID tier)
+The Pro audit uses a liberal auditor → model checker flow:
+1. **Auditor pass**: 3 parallel category models (Language / Facts & Consistency / Links & Formatting), each scanning all pages. Liberal prompt ("when in doubt, include it") maximises recall.
+2. **Checker pass**: 3 parallel checker calls (one per category). Each receives the full compressed HTML for pages with issues in that category. Drops issues with `confirmed=false` or `confirmed=uncertain` + confidence <0.7.
+- Two-pass confirmed to produce ~97% avg confidence, <15% drop rate across benchmark sites.
+- Checker grouped by category (not page) so it sees cross-page contradiction evidence.
+
+### Content Extraction Pipeline
+All tiers use Firecrawl → semantic HTML compression → model input:
+1. **Firecrawl** — bot-protected crawl + page selection (map → select → scrape)
+2. **`stripHtmlNoise`** — removes scripts, comments, SVG internals
+3. **`compressHtml`** (`lib/html-compressor.ts`) — strips class/id/style/data-* attrs, unwraps inline formatting tags (`<strong>`, `<em>`, `<b>`, `<i>`, `<u>`, `<span>` etc. — auditing never needs bold/italic context), collapses SVGs to placeholders. Typically 60-80% size reduction on Tailwind pages.
+4. **DOM-aware chunking** — pages still >60K chars after compression are split at semantic boundaries (section/article children of main)
+5. **Element manifest** — extracted from raw HTML (pre-compression) and appended to auditor prompt. NOT sent to checker (redundant — checker only verifies existence of issues in HTML).
+
+### Prompt Caching (cost optimisation)
+`buildLiberalCategoryAuditPrompt` puts the full site HTML manifest FIRST so the 3 parallel category calls share an identical prefix. OpenAI caches this prefix, reducing token cost on calls 2 and 3 by ~50% for the shared prefix tokens.
+
+### Cost Profile (Run 2 baseline, pre-optimisation)
+- ~$1.14/site (6 calls × ~130K input tokens × $2/M tokens)
+- No prompt caching was active in Run 2 (manifest was mid-prompt)
+- Run 3 optimisations: inline tag stripping, manifest-first caching, no manifest in checker
 
 ### Issue Persistence (cross-audit context)
 Each re-audit feeds two context blocks into the model prompts:
