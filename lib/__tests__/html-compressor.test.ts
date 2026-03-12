@@ -1,13 +1,14 @@
 /**
  * Tests for lib/html-compressor.ts
  *
- * Three areas:
+ * Four areas:
  * 1. Attribute stripping — class/id/style/data-* removed, whitelist preserved
  * 2. Tag stripping — script/style/noscript/head removed entirely
  * 3. SVG replacement — inline SVGs → placeholders
+ * 4. DOM-aware chunking — large pages split at semantic boundaries
  */
 
-import { compressHtml } from '../html-compressor'
+import { compressHtml, chunkHtml } from '../html-compressor'
 
 // ============================================================================
 // 1. Attribute stripping
@@ -232,5 +233,58 @@ describe('compressHtml — compression ratio', () => {
     const result = compressHtml(simple)
     expect(result).toContain('Hello')
     expect(result).toContain('World')
+  })
+
+  it('replaces data URI src with placeholder', () => {
+    const dataUri = 'data:image/png;base64,' + 'A'.repeat(10000)
+    const html = `<img src="${dataUri}" alt="Chart"/>`
+    const result = compressHtml(html)
+    expect(result).not.toContain('base64')
+    expect(result).toContain('src="[data-uri]"')
+    expect(result).toContain('alt="Chart"')
+    expect(result.length).toBeLessThan(html.length / 10)
+  })
+})
+
+// ============================================================================
+// 5. DOM-aware chunking
+// ============================================================================
+
+describe('chunkHtml — DOM-aware chunking', () => {
+  it('returns single-element array when page fits in limit', () => {
+    const html = '<main><section><h1>Hello</h1></section></main>'
+    expect(chunkHtml(html, 10000)).toHaveLength(1)
+    expect(chunkHtml(html, 10000)[0]).toContain('Hello')
+  })
+
+  it('splits at section boundaries when page exceeds limit', () => {
+    // Three sections, each ~100 chars, limit 150 — should produce 2+ chunks
+    const section = (n: number) => `<section><h2>Section ${n}</h2><p>${'x'.repeat(50)}</p></section>`
+    const html = `<main>${section(1)}${section(2)}${section(3)}</main>`
+    const chunks = chunkHtml(html, 150)
+    expect(chunks.length).toBeGreaterThan(1)
+    // All content should be present across chunks
+    const combined = chunks.join('')
+    expect(combined).toContain('Section 1')
+    expect(combined).toContain('Section 2')
+    expect(combined).toContain('Section 3')
+  })
+
+  it('each chunk stays under the limit', () => {
+    const section = (n: number) => `<section><h2>S${n}</h2><p>${'x'.repeat(80)}</p></section>`
+    const html = `<main>${Array.from({ length: 5 }, (_, i) => section(i + 1)).join('')}</main>`
+    const chunks = chunkHtml(html, 200)
+    for (const chunk of chunks) {
+      expect(chunk.length).toBeLessThanOrEqual(200)
+    }
+  })
+
+  it('falls back to character split when no semantic children found', () => {
+    const html = 'x'.repeat(500)
+    const chunks = chunkHtml(html, 100)
+    expect(chunks).toHaveLength(1)
+    // Chunk content is ≤ limit; '[Content truncated]' marker may add a few chars
+    expect(chunks[0]).toContain('[Content truncated]')
+    expect(chunks[0].replace('\n[Content truncated]', '').length).toBeLessThanOrEqual(100)
   })
 })

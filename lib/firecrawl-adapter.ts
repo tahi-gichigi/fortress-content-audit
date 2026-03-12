@@ -394,19 +394,10 @@ export function formatFirecrawlForPrompt(manifest: AuditManifest): string {
     }
 
     if (page.html) {
-      // Pipeline: stripHtmlNoise (SVGs, scripts) → compressHtml (class/id/style attrs) → truncate.
-      // Compression typically reduces a 200K page to 40-70K chars, so most pages fit without
-      // truncation. The 60K limit is an emergency fallback for extremely large pages.
-      const strippedHtml = stripHtmlNoise(page.html)
-      const compressedHtml = compressHtmlWithLogging(strippedHtml, page.url)
-      const HTML_LIMIT = 60000
-      let contentPreview = compressedHtml
-      if (compressedHtml.length > HTML_LIMIT) {
-        // Cut at last '>' to avoid truncating inside a tag attribute or element
-        const cutPoint = compressedHtml.lastIndexOf('>', HTML_LIMIT)
-        contentPreview = compressedHtml.substring(0, cutPoint > 0 ? cutPoint : HTML_LIMIT)
-          + '\n\n[Content truncated due to length — do not flag truncation as an issue]'
-      }
+      // Pipeline: stripHtmlNoise (SVGs, scripts) → compressHtmlWithLogging (class/id/style attrs
+      // + 60K limit + DOM-aware chunking fallback). Compression reduces a 200K page to ~40-70K
+      // so most pages fit without truncation.
+      const contentPreview = compressHtmlWithLogging(stripHtmlNoise(page.html), page.url)
       output += `**Content (HTML):**\n${contentPreview}\n\n`
     }
 
@@ -438,19 +429,11 @@ export function formatPagesForChecker(
   if (pages.length === 0) return '[No HTML available for any issue page]'
 
   let output = ''
-  const HTML_LIMIT = 60000
   for (const page of pages) {
     output += `## Page: ${page.url}\n\n`
     if (page.html) {
-      // Same pipeline as formatFirecrawlForPrompt: strip → compress → truncate (fallback only)
-      const strippedHtml = stripHtmlNoise(page.html)
-      const compressedHtml = compressHtmlWithLogging(strippedHtml, page.url)
-      let content = compressedHtml
-      if (compressedHtml.length > HTML_LIMIT) {
-        const cutPoint = compressedHtml.lastIndexOf('>', HTML_LIMIT)
-        content = compressedHtml.substring(0, cutPoint > 0 ? cutPoint : HTML_LIMIT)
-          + '\n[Content truncated]'
-      }
+      // Same pipeline as formatFirecrawlForPrompt: strip → compress (60K limit, DOM chunking fallback)
+      const content = compressHtmlWithLogging(stripHtmlNoise(page.html), page.url)
       output += `${content}\n\n`
       // Element manifest is built from raw HTML (before compression) — preserves href, role, etc.
       const elementManifest = extractElementManifestFromHtml(page.html, page.url)

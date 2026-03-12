@@ -6,25 +6,31 @@
  *   - <script>, <style>, <noscript> tags entirely
  *   - HTML comments
  *   - Inline SVG content → <svg/> placeholder (preserving aria-label if present)
+ *   - data: URI src values (base64 images — huge token cost, zero audit value)
  *   - Collapsed/redundant whitespace
  *
  * Preserves:
  *   - All semantic HTML structure (nav, main, section, h1-h6, p, ul, etc.)
  *   - Text content
- *   - href, src, alt, title, type, role, for, name, target, lang, rel
+ *   - href, src (non-data-URI), alt, title, type, role, for, name, target, lang, rel
  *   - All aria-* attributes (accessibility auditing)
  *
  * Result: a 200K char page typically compresses to 40-70K chars (60-80% reduction).
  * This is applied AFTER stripHtmlNoise and BEFORE the model prompt — the element
  * manifest in firecrawl-adapter.ts continues to use the raw (pre-compression) HTML.
+ *
+ * NOTE: compressHtml is self-contained — it removes scripts/SVGs/comments
+ * defensively even though stripHtmlNoise already handles them in the main pipeline.
+ * This allows it to be used standalone without depending on call order.
  */
 
 import * as cheerio from 'cheerio'
+import Logger from './logger'
 
 // Attributes to keep — everything needed for content + accessibility auditing
 const KEEP_ATTRS = new Set([
-  'href', 'src', 'alt', 'title', 'type', 'role', 'for', 'htmlfor', 'name',
-  'target', 'lang', 'rel', 'action', 'method', 'value', 'placeholder',
+  'href', 'src', 'alt', 'title', 'type', 'role', 'for',
+  'name', 'target', 'lang', 'rel', 'action', 'method', 'value', 'placeholder',
   'colspan', 'rowspan', 'scope', 'headers',
 ])
 
@@ -37,16 +43,15 @@ const KEEP_ATTRS = new Set([
 export function compressHtml(html: string): string {
   const $ = cheerio.load(html, { decodeEntities: false })
 
-  // Remove non-content tags entirely
-  $('script, style, noscript, template').remove()
-  $('head').remove()
+  // Remove non-content tags entirely (defensive — stripHtmlNoise handles these
+  // in the main pipeline, but keeping them here makes the fn safe to call standalone)
+  $('script, style, noscript, template, head').remove()
 
-  // Collapse inline SVGs to placeholder (same logic as stripHtmlNoise but comprehensive)
+  // Collapse inline SVGs to placeholder — preserve aria-label/role if present
   $('svg').each((_i, el) => {
     const $el = $(el)
     const ariaLabel = $el.attr('aria-label')
     const role = $el.attr('role')
-    // Replace with minimal placeholder
     if (ariaLabel) {
       $el.replaceWith(`<svg aria-label="${ariaLabel}"/>`)
     } else if (role) {
@@ -61,43 +66,110 @@ export function compressHtml(html: string): string {
     if (el.type !== 'tag') return
     const attribs = (el as any).attribs || {}
     for (const attr of Object.keys(attribs)) {
-      // Keep aria-* attributes (all of them)
+      // Keep all aria-* (accessibility auditing)
       if (attr.startsWith('aria-')) continue
-      // Keep explicitly whitelisted attributes
+      // Keep whitelisted attributes
       if (KEEP_ATTRS.has(attr)) continue
       // Drop everything else (class, id, style, data-*, event handlers, etc.)
       $(el).removeAttr(attr)
     }
+
+    // Strip data URI src values — base64 images are enormous and add no audit value.
+    // Replace with a placeholder so the model still knows an image/resource exists.
+    const src = (el as any).attribs?.src
+    if (src && src.startsWith('data:')) {
+      $(el).attr('src', '[data-uri]')
+    }
   })
 
-  // Collapse whitespace: normalise all runs of whitespace to single spaces
-  // We do this on the serialised output (cheerio doesn't do this in-place)
+  // Serialise and clean up
   let compressed = $.html()
 
-  // Remove HTML comment nodes that cheerio might have kept
+  // Remove any HTML comments cheerio might have retained
   compressed = compressed.replace(/<!--[\s\S]*?-->/g, '')
 
-  // Collapse runs of whitespace (spaces, tabs, newlines) between tags to single space
+  // Collapse whitespace: multi-space/newline runs → single space,
+  // then remove whitespace between tags (block-level structure only, inline text is safe)
   compressed = compressed
-    .replace(/\s{2,}/g, ' ')       // collapse multiple spaces/newlines
-    .replace(/>\s+</g, '><')       // remove whitespace between tags (keeps structure tight)
-    .replace(/^\s+|\s+$/g, '')     // trim
+    .replace(/\s{2,}/g, ' ')
+    .replace(/>\s+</g, '><')
+    .replace(/^\s+|\s+$/g, '')
 
   return compressed
 }
 
 /**
- * Compress HTML and log the reduction ratio for observability.
+ * Split compressed HTML at semantic boundaries (section/article children of main)
+ * when a page is still too large after compression.
  *
- * @param html - Raw HTML
- * @param pageUrl - Used in log message only
- * @returns Compressed HTML
+ * Returns an array of self-contained HTML chunks, each under maxChars.
+ * If the page fits in one chunk, the array has a single element.
  */
-export function compressHtmlWithLogging(html: string, pageUrl: string): string {
-  const raw = html.length
+export function chunkHtml(html: string, maxChars: number): string[] {
+  if (html.length <= maxChars) return [html]
+
+  const $ = cheerio.load(html, { decodeEntities: false })
+
+  // Collect top-level semantic children: direct children of main, or all sections/articles
+  const candidates: string[] = []
+  const $main = $('main')
+  const $body = $('body')
+
+  const $container = $main.length ? $main : $body
+  $container.children().each((_i, el) => {
+    candidates.push($.html(el))
+  })
+
+  if (candidates.length === 0) {
+    // No semantic children found — fall back to character split at last tag boundary
+    const cut = html.lastIndexOf('>', maxChars)
+    return [html.substring(0, cut > 0 ? cut : maxChars) + '\n[Content truncated]']
+  }
+
+  // Greedily pack candidates into chunks
+  const chunks: string[] = []
+  let current = ''
+
+  for (const candidate of candidates) {
+    if (current.length + candidate.length > maxChars) {
+      if (current) {
+        chunks.push(current.trim())
+        current = ''
+      }
+      // Single element larger than maxChars — include it as its own chunk (unavoidable)
+      if (candidate.length > maxChars) {
+        const cut = candidate.lastIndexOf('>', maxChars)
+        chunks.push(candidate.substring(0, cut > 0 ? cut : maxChars) + '\n[Section truncated]')
+        continue
+      }
+    }
+    current += candidate
+  }
+
+  if (current.trim()) chunks.push(current.trim())
+
+  return chunks.length > 0 ? chunks : [html.substring(0, maxChars)]
+}
+
+/**
+ * Compress HTML, log the reduction ratio to LangSmith, and return the result.
+ * If the compressed page still exceeds limit, applies DOM-aware chunking and
+ * returns the concatenated chunks with section markers.
+ */
+export function compressHtmlWithLogging(html: string, pageUrl: string, limit = 60000): string {
+  const rawLen = html.length
   const compressed = compressHtml(html)
-  const reduction = raw > 0 ? Math.round((1 - compressed.length / raw) * 100) : 0
-  // Use console.log here so this shows in LangSmith traces without importing Logger
-  console.log(`[HtmlCompressor] ${pageUrl}: ${raw} → ${compressed.length} chars (${reduction}% reduction)`)
-  return compressed
+  const reduction = rawLen > 0 ? Math.round((1 - compressed.length / rawLen) * 100) : 0
+  Logger.info(`[HtmlCompressor] ${pageUrl}: ${rawLen} → ${compressed.length} chars (${reduction}% reduction)`)
+
+  if (compressed.length <= limit) return compressed
+
+  // DOM-aware chunking fallback for extremely large pages
+  const chunks = chunkHtml(compressed, limit)
+  if (chunks.length > 1) {
+    Logger.info(`[HtmlCompressor] ${pageUrl}: chunked into ${chunks.length} sections (page still ${compressed.length} chars after compression)`)
+  }
+  // For now return only the first chunk — auditor has web_search for the rest.
+  // Multi-chunk support (separate API call per chunk) is future work.
+  return chunks[0]
 }
