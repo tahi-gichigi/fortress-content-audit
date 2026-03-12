@@ -40,6 +40,17 @@ seline.so drop rate halved (42% → 17%). justcancel.io drop rate cut by 3/4. Bo
 - youform.com raw issues nearly doubled (36 → 72) — auditor now seeing more page content
 - All sites avg confidence ≥ 0.83; 3 of 4 sites ≥ 0.98
 
+### Accuracy verification (Firecrawl spot-check)
+- Checker confirmed "IP adresses", "Key takeway", "Using html data attributes" at confidence 1.0 — all verified real via Firecrawl
+- The eval's original `droppedByChecker` metric was misleading — it compared OLD vs NEW pipeline wording, not actual checker decisions. Fixed in eval script (now tracks `checkerRejected` vs `onlyInOld`/`onlyInNew`)
+- Reasoning effort "low" is sufficient; `summary: "auto"` added for LangSmith debugging
+
+### Cost (from LangSmith traces)
+- Per call: ~130K input tokens, ~$0.17-$0.22
+- Per site (6 calls): ~$1.14
+- Full 4-site eval: ~$4.56
+- No prompt caching active (`cache_read: 0`) — restructuring prompts to enable it is the top cost reduction priority
+
 ---
 
 ## Run 1: Per-category checker, snippet extraction (baseline)

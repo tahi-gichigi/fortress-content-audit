@@ -52,10 +52,21 @@ interface SiteMetrics {
     avgConfidence: number
     confHistogram: { '0.7-0.79': number; '0.8-0.89': number; '0.9+': number }
   }
-  newDiscoveries: any[]
-  droppedByChecker: any[]
-  stable: any[]
+  // Actual checker rejections: issues the NEW auditor found but checker said false/uncertain
+  checkerRejected: any[]
+  // Cross-pipeline comparison: in OLD filtered but not in NEW filtered (wording mismatch, not a real drop)
+  onlyInOld: any[]
+  // Cross-pipeline comparison: in NEW filtered but not in OLD filtered
+  onlyInNew: any[]
+  // Issues present in both pipelines
+  inBoth: any[]
   warnings: string[]
+}
+
+// Return type for runCheckerPassLocal — includes both filtered and rejected
+interface CheckerResult {
+  filtered: any[]
+  rejected: any[]
 }
 
 // ---------------------------------------------------------------------------
@@ -88,8 +99,8 @@ function verifyIssuesAgainstHtml(issues: any[], manifest: AuditManifest): any[] 
 // runCheckerPassLocal — calls the checker model per page
 // ---------------------------------------------------------------------------
 
-async function runCheckerPassLocal(issues: any[], manifest: AuditManifest, openai: any): Promise<any[]> {
-  if (issues.length === 0) return []
+async function runCheckerPassLocal(issues: any[], manifest: AuditManifest, openai: any): Promise<CheckerResult> {
+  if (issues.length === 0) return { filtered: [], rejected: [] }
 
   // Group issues by category — gives checker cross-page visibility
   const byCategory = new Map<string, any[]>()
@@ -126,7 +137,7 @@ async function runCheckerPassLocal(issues: any[], manifest: AuditManifest, opena
           input: prompt,
           max_output_tokens: maxOutputTokens,
           text: { format: { type: 'text' } },
-          reasoning: { effort: 'low', summary: null },
+          reasoning: { effort: 'low', summary: 'auto' },
           store: true,
         })
       } catch (err) {
@@ -161,13 +172,26 @@ async function runCheckerPassLocal(issues: any[], manifest: AuditManifest, opena
         return batchIssues.map((i: any) => ({ ...i, evidence: 'Parse error', confidence: 0.5 }))
       }
 
-      return applyCheckerDecisions(batchIssues as RawIssue[], verifications)
+      const accepted = applyCheckerDecisions(batchIssues as RawIssue[], verifications)
+      // Rejected = issues in batchIssues that didn't survive applyCheckerDecisions
+      const acceptedDescs = new Set(accepted.map((a: any) => `${a.page_url}|${a.issue_description}`))
+      const rejected = batchIssues.filter((i: any) => !acceptedDescs.has(`${i.page_url}|${i.issue_description}`))
+        .map((i: any) => {
+          const v = verifications.find((v: CheckerVerification) => v.index === batchIssues.indexOf(i))
+          return { ...i, checkerConfirmed: v?.confirmed ?? 'missing', checkerConfidence: v?.confidence ?? null, checkerEvidence: v?.evidence ?? '' }
+        })
+      return { accepted, rejected }
     }))
 
-    return batchResults.flat()
+    const allAccepted = batchResults.flatMap((r: any) => r.accepted)
+    const allRejected = batchResults.flatMap((r: any) => r.rejected)
+    return { accepted: allAccepted, rejected: allRejected }
   }))
 
-  return categoryResults.flat()
+  return {
+    filtered: categoryResults.flatMap((r: any) => r.accepted),
+    rejected: categoryResults.flatMap((r: any) => r.rejected),
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -180,7 +204,7 @@ async function runCategoryAudit(prompt: string, openai: any): Promise<any[]> {
     input: prompt,
     max_output_tokens: 8000,
     text: { format: { type: 'text' } },
-    reasoning: { effort: 'low', summary: null },
+    reasoning: { effort: 'low', summary: 'auto' },
     store: true,
   })
 
@@ -265,9 +289,10 @@ async function evalSite(domain: string, openai: any): Promise<SiteMetrics> {
       pagesAudited: 0,
       old: { raw: 0, filtered: 0, dropRate: 0 },
       new: { raw: 0, filtered: 0, dropRate: 0, avgConfidence: 0, confHistogram: { '0.7-0.79': 0, '0.8-0.89': 0, '0.9+': 0 } },
-      newDiscoveries: [],
-      droppedByChecker: [],
-      stable: [],
+      checkerRejected: [],
+      onlyInOld: [],
+      onlyInNew: [],
+      inBoth: [],
       warnings: ['Crawl failed — site skipped'],
     }
   }
@@ -278,11 +303,10 @@ async function evalSite(domain: string, openai: any): Promise<SiteMetrics> {
 
   console.log(`  ${pagesAudited} pages audited`)
 
-  // Log HTML truncation info
-  for (const page of manifest.pages) {
-    if (page.html && page.html.length > 30000) {
-      console.log(`  [HTML truncation] ${page.url}: ${page.html.length} chars — checker sees truncated HTML`)
-    }
+  // Log pages where raw HTML is very large (compression handles these — this is informational only)
+  const largePages = manifest.pages.filter(p => p.html && p.html.length > 60000)
+  if (largePages.length > 0) {
+    console.log(`  ${largePages.length} large pages (raw HTML >60K) — compression applied`)
   }
 
   // Log link validation passthrough
@@ -312,9 +336,11 @@ async function evalSite(domain: string, openai: any): Promise<SiteMetrics> {
 
   // Step 3: filter both pipelines
   const oldFiltered = verifyIssuesAgainstHtml(oldRaw, manifest)
-  const newFiltered = await runCheckerPassLocal(newRaw, manifest, openai)
+  const checkerResult = await runCheckerPassLocal(newRaw, manifest, openai)
+  const newFiltered = checkerResult.filtered
+  const checkerRejected = checkerResult.rejected
 
-  console.log(`  Old filtered: ${oldFiltered.length} | New filtered: ${newFiltered.length}`)
+  console.log(`  Old filtered: ${oldFiltered.length} | New filtered: ${newFiltered.length} | Checker rejected: ${checkerRejected.length}`)
 
   // Step 4: compute metrics
   const oldDropRate = oldRaw.length > 0 ? 1 - oldFiltered.length / oldRaw.length : 0
@@ -326,10 +352,10 @@ async function evalSite(domain: string, openai: any): Promise<SiteMetrics> {
 
   const confHistogram = buildConfHistogram(newFiltered)
 
-  // Step 5: diff
-  const newDiscoveries = newFiltered.filter((ni: any) => !oldFiltered.some((oi: any) => issuesMatch(oi, ni)))
-  const droppedByChecker = oldFiltered.filter((oi: any) => !newFiltered.some((ni: any) => issuesMatch(oi, ni)))
-  const stable = oldFiltered.filter((oi: any) => newFiltered.some((ni: any) => issuesMatch(oi, ni)))
+  // Step 5: diff — cross-pipeline comparison (fuzzy match, not checker decisions)
+  const onlyInNew = newFiltered.filter((ni: any) => !oldFiltered.some((oi: any) => issuesMatch(oi, ni)))
+  const onlyInOld = oldFiltered.filter((oi: any) => !newFiltered.some((ni: any) => issuesMatch(oi, ni)))
+  const inBoth = oldFiltered.filter((oi: any) => newFiltered.some((ni: any) => issuesMatch(oi, ni)))
 
   // Step 6: edge case checks
   if (newFiltered.length === 0 && pagesAudited > 0) {
@@ -352,16 +378,18 @@ async function evalSite(domain: string, openai: any): Promise<SiteMetrics> {
   console.log(`NEW pipeline:  ${newRaw.length} raw → ${newFiltered.length} filtered (${(newDropRate * 100).toFixed(0)}% drop, checker)`)
   console.log(`\nAvg confidence:  ${avgConfidence.toFixed(2)}`)
   console.log(`Conf histogram:  0.7-0.79: ${confHistogram['0.7-0.79']} | 0.8-0.89: ${confHistogram['0.8-0.89']} | 0.9+: ${confHistogram['0.9+']}`)
-  console.log(`\nNew discoveries (in new, not old):   ${newDiscoveries.length} issues`)
-  newDiscoveries.slice(0, 5).forEach((issue: any, idx: number) => {
-    console.log(`  ${idx + 1}. [${issue.category}/${issue.severity}/${(issue.confidence ?? 0).toFixed(2)}] ${issue.issue_description}`)
-    if (issue.evidence) console.log(`     Evidence: ${issue.evidence}`)
-  })
-  console.log(`Dropped by checker (in old, not new): ${droppedByChecker.length} issues`)
-  droppedByChecker.slice(0, 5).forEach((issue: any, idx: number) => {
+  console.log(`\nChecker rejected (auditor found, checker said no): ${checkerRejected.length} issues`)
+  checkerRejected.slice(0, 5).forEach((issue: any, idx: number) => {
     console.log(`  ${idx + 1}. [${issue.category}] ${issue.issue_description}`)
+    console.log(`     verdict: confirmed=${issue.checkerConfirmed}, confidence=${issue.checkerConfidence}`)
   })
-  console.log(`Stable (in both): ${stable.length} issues`)
+  console.log(`\nCross-pipeline: only in NEW: ${onlyInNew.length} | only in OLD: ${onlyInOld.length} | in both: ${inBoth.length}`)
+  onlyInNew.slice(0, 3).forEach((issue: any, idx: number) => {
+    console.log(`  NEW ${idx + 1}. [${issue.category}/${(issue.confidence ?? 0).toFixed(2)}] ${issue.issue_description}`)
+  })
+  onlyInOld.slice(0, 3).forEach((issue: any, idx: number) => {
+    console.log(`  OLD ${idx + 1}. [${issue.category}] ${issue.issue_description}`)
+  })
 
   for (const w of warnings) {
     console.log(`\n⚠ WARNING: ${w}`)
@@ -382,9 +410,10 @@ async function evalSite(domain: string, openai: any): Promise<SiteMetrics> {
       avgConfidence,
       confHistogram,
     },
-    newDiscoveries,
-    droppedByChecker,
-    stable,
+    checkerRejected,
+    onlyInOld,
+    onlyInNew,
+    inBoth,
     warnings,
   }
 }
@@ -409,9 +438,10 @@ async function main() {
         pagesAudited: 0,
         old: { raw: 0, filtered: 0, dropRate: 0 },
         new: { raw: 0, filtered: 0, dropRate: 0, avgConfidence: 0, confHistogram: { '0.7-0.79': 0, '0.8-0.89': 0, '0.9+': 0 } },
-        newDiscoveries: [],
-        droppedByChecker: [],
-        stable: [],
+        checkerRejected: [],
+        onlyInOld: [],
+        onlyInNew: [],
+        inBoth: [],
         warnings: [`Unhandled error: ${String(err)}`],
       })
     }
@@ -430,8 +460,9 @@ async function main() {
     avgConfidence: validResults.length > 0
       ? validResults.reduce((s, r) => s + r.new.avgConfidence, 0) / validResults.length
       : 0,
-    totalNewDiscoveries: results.reduce((s, r) => s + r.newDiscoveries.length, 0),
-    totalDroppedByChecker: results.reduce((s, r) => s + r.droppedByChecker.length, 0),
+    totalCheckerRejected: results.reduce((s, r) => s + r.checkerRejected.length, 0),
+    totalOnlyInNew: results.reduce((s, r) => s + r.onlyInNew.length, 0),
+    totalOnlyInOld: results.reduce((s, r) => s + r.onlyInOld.length, 0),
   }
 
   // Final summary block
