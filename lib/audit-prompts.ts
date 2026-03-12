@@ -24,12 +24,12 @@ Audit only the homepage and one additional key public-facing page of a website f
 **Language detection:** Detect the language of each page from its content. Write all issue descriptions and suggested fixes in that same language. Do not flag intentional foreign-language content — brand names, product terms, proper nouns, or content clearly written in a secondary language on purpose.
 
 **RESPONSIVE DUPLICATES — read before auditing:**
-Modern sites ship BOTH mobile and desktop versions of components in the same HTML. Seeing the same text twice is intentional responsive design, not a content issue.
+Modern sites ship BOTH mobile and desktop versions of components in the same HTML. Seeing the same text twice is intentional responsive design, not a content issue. CSS class attributes have been removed from the HTML you receive, so use structural clues to identify them.
 
 How to spot them:
-- Tailwind classes: "hidden md:flex", "flex md:hidden", "block lg:hidden", "hidden lg:block", "sm:hidden"
 - Two <nav> elements (mobile drawer + desktop bar) are standard
-- Any two sections with opposite visibility classes are responsive variants — audit the content ONCE
+- Two sections or divs with identical text content are likely mobile/desktop variants — audit the content ONCE
+- Repeated CTAs, hero text, or banners appearing in the same page are usually responsive pairs
 
 Pages are truncated at an HTML tag boundary and marked with "[Content truncated due to length]". DO NOT flag content near this marker as incomplete — it is an extraction limit, not a real site issue.
 
@@ -176,12 +176,12 @@ Audit up to 20 public-facing, top-of-funnel pages of a website for:
 **Language detection:** Detect the language of each page from its content. Write all issue descriptions and suggested fixes in that same language. Do not flag intentional foreign-language content — brand names, product terms, proper nouns, or content clearly written in a secondary language on purpose.
 
 **RESPONSIVE DUPLICATES — read before auditing:**
-Modern sites ship BOTH mobile and desktop versions of components in the same HTML. Seeing the same text twice is intentional responsive design, not a content issue.
+Modern sites ship BOTH mobile and desktop versions of components in the same HTML. Seeing the same text twice is intentional responsive design, not a content issue. CSS class attributes have been removed from the HTML you receive, so use structural clues to identify them.
 
 How to spot them:
-- Tailwind classes: "hidden md:flex", "flex md:hidden", "block lg:hidden", "hidden lg:block", "sm:hidden"
 - Two <nav> elements (mobile drawer + desktop bar) are standard
-- Any two sections with opposite visibility classes are responsive variants — audit the content ONCE
+- Two sections or divs with identical text content are likely mobile/desktop variants — audit the content ONCE
+- Repeated CTAs, hero text, or banners appearing in the same page are usually responsive pairs
 
 Pages are truncated at an HTML tag boundary and marked with "[Content truncated due to length]". DO NOT flag content near this marker as incomplete — it is an extraction limit, not a real site issue.
 
@@ -378,12 +378,12 @@ Do NOT audit any other pages. Focus only on these specific URLs.
 **Language detection:** Detect the language of each page from its content. Write all output (issue_description, suggested_fix) in that same language.
 
 **RESPONSIVE DUPLICATES — read before auditing:**
-Modern sites ship BOTH mobile and desktop versions of components in the same HTML. Seeing the same text twice is intentional responsive design, not a content issue.
+Modern sites ship BOTH mobile and desktop versions of components in the same HTML. Seeing the same text twice is intentional responsive design, not a content issue. CSS class attributes have been removed from the HTML you receive, so use structural clues to identify them.
 
 How to spot them:
-- Tailwind classes: "hidden md:flex", "flex md:hidden", "block lg:hidden", "hidden lg:block", "sm:hidden"
 - Two <nav> elements (mobile drawer + desktop bar) are standard
-- Any two sections with opposite visibility classes are responsive variants — audit the content ONCE
+- Two sections or divs with identical text content are likely mobile/desktop variants — audit the content ONCE
+- Repeated CTAs, hero text, or banners appearing in the same page are usually responsive pairs
 
 Pages are truncated at an HTML tag boundary and marked with "[Content truncated due to length]". DO NOT flag content near this marker as incomplete — it is an extraction limit, not a real site issue.
 
@@ -487,12 +487,12 @@ Do NOT audit any other pages. Focus only on these specific URLs.
 **Language detection:** Detect the language of each page from its content. Write all output (issue_description, suggested_fix) in that same language.
 
 **RESPONSIVE DUPLICATES — read before auditing:**
-Modern sites ship BOTH mobile and desktop versions of components in the same HTML. Seeing the same text twice is intentional responsive design, not a content issue.
+Modern sites ship BOTH mobile and desktop versions of components in the same HTML. Seeing the same text twice is intentional responsive design, not a content issue. CSS class attributes have been removed from the HTML you receive, so use structural clues to identify them.
 
 How to spot them:
-- Tailwind classes: "hidden md:flex", "flex md:hidden", "block lg:hidden", "hidden lg:block", "sm:hidden"
 - Two <nav> elements (mobile drawer + desktop bar) are standard
-- Any two sections with opposite visibility classes are responsive variants — audit the content ONCE
+- Two sections or divs with identical text content are likely mobile/desktop variants — audit the content ONCE
+- Repeated CTAs, hero text, or banners appearing in the same page are usually responsive pairs
 
 Pages are truncated at an HTML tag boundary and marked with "[Content truncated due to length]". DO NOT flag content near this marker as incomplete — it is an extraction limit, not a real site issue.
 

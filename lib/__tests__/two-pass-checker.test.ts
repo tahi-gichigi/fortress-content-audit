@@ -71,10 +71,13 @@ describe('buildLiberalCategoryAuditPrompt — recall orientation', () => {
     expect(prompt).toContain('Do NOT check or report ANY link issues')
   })
 
-  it('still includes responsive duplicates instruction', () => {
+  it('still includes responsive duplicates instruction (class-attr-free version)', () => {
     const prompt = buildLiberalCategoryAuditPrompt('Language', urls, manifest, noExcluded, noActive)
     expect(prompt).toContain('RESPONSIVE DUPLICATES')
-    expect(prompt).toContain('hidden md:flex')
+    // Class attributes are stripped from HTML, so Tailwind class examples are no longer in the prompt.
+    // The instruction now uses structural clues (two nav elements, repeated sections).
+    expect(prompt).toContain('Two <nav> elements')
+    expect(prompt).not.toContain('hidden md:flex')
   })
 
   it('injects ignore keywords block when provided', () => {
