@@ -273,11 +273,17 @@ export default function DashboardPage() {
   }, [])
 
   // Define load functions BEFORE useEffects that use them to avoid initialization order issues
-  const loadAudits = useCallback(async (token: string, domain?: string | null) => {
+  const loadAudits = useCallback(async (token: string, domain?: string | null, userId?: string) => {
     try {
       const supabase = createClient()
-      const { data: { user } } = await supabase.auth.getUser()
-      if (!user) return
+      // Avoid getSession() — can deadlock via navigator.locks on reload.
+      // Use provided userId or fall back to getUser() (network call, no lock).
+      let uid = userId
+      if (!uid) {
+        const { data: { user } } = await supabase.auth.getUser()
+        if (!user) return
+        uid = user.id
+      }
 
       // Use provided domain or fall back to selectedDomain state
       const domainToFilter = domain !== undefined ? domain : selectedDomain
@@ -286,7 +292,7 @@ export default function DashboardPage() {
       let query = supabase
         .from('brand_audit_runs')
         .select('*')
-        .eq('user_id', user.id)
+        .eq('user_id', uid)
       
       if (domainToFilter) {
         query = query.eq('domain', domainToFilter)
@@ -391,26 +397,23 @@ export default function DashboardPage() {
     if (selectedDomain && authToken) {
       console.log('[Dashboard] Reloading data for domain:', selectedDomain)
       const reloadData = async () => {
-        const supabase = createClient()
-        const { data: { session } } = await supabase.auth.getSession()
-        if (session) {
-          await Promise.all([
-            loadAudits(session.access_token, selectedDomain),
-            loadHealthScore(session.access_token)
-          ])
-          // Also reload usage info for the new domain
-          try {
-            const url = `/api/audit/usage?domain=${encodeURIComponent(selectedDomain)}`
-            const response = await fetch(url, {
-              headers: { 'Authorization': `Bearer ${session.access_token}` }
-            })
-            if (response.ok) {
-              const data = await response.json()
-              setUsageInfo(data)
-            }
-          } catch (error) {
-            console.error("Error loading usage info:", error)
+        // Use authToken from state — avoid getSession() deadlock
+        await Promise.all([
+          loadAudits(authToken, selectedDomain),
+          loadHealthScore(authToken)
+        ])
+        // Also reload usage info for the new domain
+        try {
+          const url = `/api/audit/usage?domain=${encodeURIComponent(selectedDomain)}`
+          const response = await fetch(url, {
+            headers: { 'Authorization': `Bearer ${authToken}` }
+          })
+          if (response.ok) {
+            const data = await response.json()
+            setUsageInfo(data)
           }
+        } catch (error) {
+          console.error("Error loading usage info:", error)
         }
       }
       reloadData()
@@ -505,15 +508,13 @@ export default function DashboardPage() {
               pagesAudited: pollData.meta?.pagesAudited || 0
             })
 
-            // Reload all data
-            const supabase = createClient()
-            const { data: { session } } = await supabase.auth.getSession()
-            if (session) {
+            // Reload all data using authToken from state
+            if (authToken) {
               await Promise.all([
-                loadAudits(session.access_token, selectedDomain),
-                loadHealthScore(session.access_token)
+                loadAudits(authToken, selectedDomain),
+                loadHealthScore(authToken)
               ])
-              await loadUsageInfo(session.access_token, selectedDomain)
+              await loadUsageInfo(authToken, selectedDomain)
             }
             return
           }
@@ -640,28 +641,19 @@ export default function DashboardPage() {
   const checkAuthAndLoad = async () => {
     try {
       const supabase = createClient()
-      
-      // Use getUser() instead of getSession() for security (validates with server)
-      const { data: { user }, error: userError } = await supabase.auth.getUser()
-      
-      if (userError || !user) {
-        console.log('[Dashboard] No authenticated user, redirecting to sign-up')
-        router.push(`/sign-up?next=${encodeURIComponent('/dashboard')}`)
-        return
-      }
 
-      // Get session for access token (needed for API calls)
+      // getSession() reads from cookies — no network round-trip.
+      // Middleware already validates the session on every request.
       const { data: { session } } = await supabase.auth.getSession()
       if (!session) {
-        console.log('[Dashboard] No session found')
         router.push(`/sign-up?next=${encodeURIComponent('/dashboard')}`)
         return
       }
 
+      const user = session.user
       setAuthToken(session.access_token)
 
       // Check for pending audit to claim (from localStorage)
-      // This may add a new audit to the user's account
       const claimResult = await claimPendingAudit(session.access_token)
 
       // Parallelize profile, domains loading, and domain data fetch
@@ -671,53 +663,48 @@ export default function DashboardPage() {
           .select('plan')
           .eq('user_id', user.id)
           .maybeSingle(),
-        loadDomains(session.access_token),
+        loadDomains(session.access_token, user.id),
         supabase
           .from('brand_audit_runs')
           .select('domain')
           .eq('user_id', user.id)
           .not('domain', 'is', null)
       ])
-      
       if (profile) {
         setPlan(profile.plan || 'free')
       }
-      
+
       const availableDomains = Array.from(new Set(
         (domainData || []).map(a => a.domain).filter((d): d is string => d !== null)
       ))
-      
+
       // If we just claimed an audit, use that domain; otherwise use saved or first available
       let initialDomain: string | null = null
       if (claimResult.claimed && claimResult.domain) {
-        // Use the newly claimed audit's domain
         initialDomain = claimResult.domain
-        console.log('[Dashboard] Using claimed audit domain:', initialDomain)
       } else {
-        // Validate saved domain exists, otherwise use first available
         const savedDomain = localStorage.getItem('selectedDomain')
         const isValidDomain = savedDomain && availableDomains.includes(savedDomain)
         initialDomain = isValidDomain ? savedDomain : (availableDomains[0] || null)
       }
-      
+
       if (initialDomain) {
         setSelectedDomain(initialDomain)
         localStorage.setItem('selectedDomain', initialDomain)
       }
 
-      // Parallelize data loading - these queries are independent
-      // Pass initialDomain explicitly since state update hasn't propagated yet
-      await Promise.all([
-        loadAudits(session.access_token, initialDomain),
-        loadHealthScore(session.access_token, initialDomain),
-        loadUsageInfo(session.access_token, initialDomain)
-      ])
-      
+      // Unblock the UI immediately — data loads in background
+      setLoading(false)
+
+      // Load all data in background (non-blocking)
+      loadAudits(session.access_token, initialDomain, user.id)
+      loadHealthScore(session.access_token, initialDomain)
+      loadUsageInfo(session.access_token, initialDomain)
+
       // Issues are now loaded via useAuditIssues hook
     } catch (error) {
       console.error("Error loading dashboard:", error)
       setError("Failed to load dashboard. Please refresh the page.")
-    } finally {
       setLoading(false)
     }
   }
@@ -1020,16 +1007,22 @@ export default function DashboardPage() {
     // until window.location.reload() completes. All error paths above already clear the state.
   }
 
-  const loadDomains = async (token: string) => {
+  const loadDomains = async (token: string, userId?: string) => {
     try {
       const supabase = createClient()
-      const { data: { user } } = await supabase.auth.getUser()
-      if (!user) return
+      // Avoid calling getSession() — it can deadlock due to navigator.locks contention.
+      // The supabase singleton is already authenticated via cookies; we just need the user ID.
+      let uid = userId
+      if (!uid) {
+        const { data: { user } } = await supabase.auth.getUser()
+        if (!user) return
+        uid = user.id
+      }
 
       const { data: audits } = await supabase
         .from('brand_audit_runs')
         .select('domain')
-        .eq('user_id', user.id)
+        .eq('user_id', uid)
         .not('domain', 'is', null)
 
       if (audits) {

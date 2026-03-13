@@ -14,21 +14,29 @@ export function SiteHeader() {
   const [plan, setPlan] = useState<string | null>(null)
 
   useEffect(() => {
-    const loadPlan = async () => {
+    const loadPlan = async (userId?: string) => {
       const supabase = createClient()
-      const { data: { session } } = await supabase.auth.getSession()
-      if (!session) return
+      // If no userId provided, get from session (only safe outside onAuthStateChange)
+      let uid = userId
+      if (!uid) {
+        const { data: { session } } = await supabase.auth.getSession()
+        if (!session) return
+        uid = session.user.id
+      }
       const { data: profile } = await supabase
         .from('profiles')
         .select('plan')
-        .eq('user_id', session.user.id)
+        .eq('user_id', uid)
         .maybeSingle()
       setPlan(profile?.plan || 'free')
     }
     loadPlan()
 
+    // Use session arg directly to avoid getSession() deadlock during initialization
     const supabase = createClient()
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(() => loadPlan())
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session) loadPlan(session.user.id)
+    })
     const handlePaymentSuccess = () => loadPlan()
     window.addEventListener('paymentSuccess', handlePaymentSuccess)
     return () => {

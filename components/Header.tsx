@@ -24,10 +24,10 @@ export default function Header({ rightContent }: HeaderProps) {
     }
     checkAuth()
 
-    // Listen for auth changes
+    // Use session arg directly to avoid getSession() deadlock during initialization
     const supabase = createClient()
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(() => {
-      checkAuth()
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setIsAuthenticated(!!session)
     })
 
     return () => {

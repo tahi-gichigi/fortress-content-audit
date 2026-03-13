@@ -41,13 +41,13 @@ export function NavUser() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const loadUser = async () => {
+    const loadUser = async (authUser?: any) => {
       try {
         const supabase = createClient()
-        // Use getUser() instead of getSession() for security (validates with server)
-        const { data: { user }, error: userError } = await supabase.auth.getUser()
-        
-        if (userError || !user) {
+        // If no user provided, get from session (only safe outside onAuthStateChange)
+        const user = authUser ?? (await supabase.auth.getSession()).data.session?.user
+
+        if (!user) {
           setLoading(false)
           return
         }
@@ -76,10 +76,12 @@ export function NavUser() {
 
     loadUser()
 
-    // Listen for auth changes
+    // Listen for auth changes — use the session arg directly to avoid
+    // calling getSession() inside onAuthStateChange (causes deadlock with
+    // initializePromise during _notifyAllSubscribers).
     const supabase = createClient()
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(() => {
-      loadUser()
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      loadUser(session?.user)
     })
 
     return () => {
