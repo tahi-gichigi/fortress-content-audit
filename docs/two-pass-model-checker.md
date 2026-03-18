@@ -1,7 +1,7 @@
 # Two-Pass Model Checker: Research & Test Results
 
 > **SUPERSEDED** - This is a historical research spike. The production implementation differs in several ways:
-> - Model is `gpt-5.1-2025-11-13`, not `gpt-5.2`
+> - Model is `gpt-5.1-2025-11-13`, not `gpt-5.2` (spike used gpt-5.2 which didn't ship)
 > - Checker is grouped by **category**, not by page
 > - `formatFirecrawlForPromptMarkdown` referenced below no longer exists
 > - See [ADR-002](decisions/002-two-pass-checker-with-html-compression.md) for the final production design
@@ -21,10 +21,10 @@ The goal: higher precision with fewer false positives, at acceptable cost/latenc
 ```
 Crawl → pages (HTML + markdown)
           │
-          ├── Audit pass (gpt-5.2, no reasoning, 3 categories parallel)
+          ├── Audit pass (gpt-5.1 [spike used gpt-5.2, production uses gpt-5.1-2025-11-13], no reasoning, 3 categories parallel)
           │     └── Raw issues (broad, may include hallucinations)
           │
-          └── Checker pass (gpt-5.2, reasoning: low, grouped by page)
+          └── Checker pass (gpt-5.1 [spike used gpt-5.2, production uses gpt-5.1-2025-11-13], reasoning: low, grouped by page)
                 └── Verified issues (confirmed with HTML evidence + confidence score)
 ```
 
@@ -45,7 +45,7 @@ The checker receives the cleaned page HTML alongside all raw issues for that pag
 
 ---
 
-## Test Results (3 sites, gpt-5.2)
+## Test Results (3 sites, gpt-5.1 [spike used gpt-5.2, production uses gpt-5.1-2025-11-13])
 
 | Site | Pages | Variant | Audit tokens | Checker tokens | Total | Raw issues | Verified | Drop rate |
 |------|-------|---------|-------------|----------------|-------|------------|----------|-----------|
@@ -105,7 +105,7 @@ Audit pass: 13–22s (HTML) vs 15–25s (MD). Checker: 6–12s per variant. Tota
 - Free tier can remain single-pass (no checker) for speed/cost
 
 ### Open questions before production use
-1. **Cost model** — inline token costs are `$0.00` (gpt-5.2 pricing not in SDK). Need actual pricing to evaluate per-audit cost.
+1. **Cost model** — inline token costs are `$0.00` (gpt-5.1 [spike used gpt-5.2, production uses gpt-5.1-2025-11-13] pricing not in SDK). Need actual pricing to evaluate per-audit cost.
 2. **Checker prompt tuning** — the checker occasionally rejects valid issues (the `<select>` case). May need a leniency adjustment for dynamic-render issues.
 3. **Secondhome.io B failure** — investigate why all 3 markdown audit categories timeout/error at ~85s. May be token limit on large markdown payloads.
 

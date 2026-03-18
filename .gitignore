@@ -46,8 +46,8 @@ test-verify-results-*.json
 .cursor/
 .claude/settings.local.json
 
-# Root-level throwaway test scripts
-/test-*.ts
+# Root-level throwaway test scripts and artifacts
+/test-*
 /debug-*.ts
 /check-*.ts
 /run-*.ts

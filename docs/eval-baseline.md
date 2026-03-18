@@ -82,7 +82,7 @@ Drop rate up significantly on all sites — mini is a noisier auditor. The check
 
 ### Future cost reduction options (higher risk, not yet implemented)
 - **Option 4: Deduplicate nav/footer** — same nav appears on every page, wasting tokens. Strip repeated sections across pages. ~10-20% savings, medium risk (detection reliability).
-- **Option 5: gpt-4.1-mini for auditor** — cheaper model, checker catches quality drop. ~40% savings, medium-high risk (needs eval to validate recall doesn't degrade).
+- **Option 5: gpt-4.1-mini for auditor** — cheaper model, checker catches quality drop. ~40% savings, medium-high risk (needs eval to validate recall doesn't degrade). Note: Run 4 tested `gpt-5-mini` (a different model) for this same idea — rejected due to high variance. See ADR-003.
 
 ### Results
 

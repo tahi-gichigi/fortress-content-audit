@@ -20,6 +20,9 @@ Strip class/id/style/data-* attributes, unwrap inline formatting tags (`<strong>
 ### Full HTML to checker (not snippets)
 Checker receives full compressed page HTML, not extracted snippets. Eliminates the entire class of "snippet extractor couldn't locate the text" false drops. `lib/snippet-extractor.ts` has been deleted — it is no longer part of the codebase.
 
+### Checker decision logic (`lib/checker-decisions.ts`)
+Pure function `applyCheckerDecisions()` encodes the acceptance rule: keep issues where `confirmed=true`, or `confirmed=uncertain` with `confidence >= 0.7`. Extracted as a pure function so it can be unit-tested independently of the model calls. Tests in `lib/__tests__/two-pass-checker.test.ts`.
+
 ## Alternatives considered
 
 - **Snippet extraction for checker** — rejected. 41-60% snippet match rate on benchmark sites meant checker frequently worked blind, dropping real issues.
