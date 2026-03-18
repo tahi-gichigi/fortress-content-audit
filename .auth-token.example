@@ -1,1 +1,1 @@
-paste your token here, then save as .auth-token (one line only; .auth-token is gitignored)
+paste your bearer token here, then save as .auth-token (one line only, no trailing newline; .auth-token is gitignored)
