@@ -8,7 +8,7 @@ import { selectPagesToAudit } from './page-selector'
 import { crawlLinks, type CrawlerIssue } from './link-crawler'
 import * as cheerio from 'cheerio'
 import Logger from './logger'
-import { compressHtmlWithLogging } from './html-compressor'
+import { compressHtmlWithLogging, compressHtmlToChunks } from './html-compressor'
 
 // Fallback to old method when Firecrawl unavailable
 import {
@@ -26,6 +26,7 @@ import {
 export function stripHtmlNoise(html: string): string {
   let cleaned = html
   cleaned = cleaned.replace(/<script[\s\S]*?<\/script>/gi, '')
+  cleaned = cleaned.replace(/<style[\s\S]*?<\/style>/gi, '')
   cleaned = cleaned.replace(/<!--[\s\S]*?-->/g, '')
   cleaned = cleaned.replace(/<svg([^>]*)>[\s\S]*?<\/svg>/gi, (_match, attrs) => {
     const ariaLabel = attrs.match(/aria-label="([^"]*)"/)?.[1]
@@ -382,6 +383,12 @@ export function formatFirecrawlForPrompt(manifest: AuditManifest): string {
   let output = '# WEBSITE CONTENT\n\n'
   output += `Extracted from ${pages.length} pages using Firecrawl (bot-protected crawling).\n\n`
 
+  // Nav/footer dedup: fingerprint shared structural blocks across pages.
+  // On page 2+, a nav/header/footer with identical text to one already seen is
+  // replaced with a placeholder to avoid burning tokens on repeated chrome.
+  // 300-char fingerprint: a single word difference (e.g. CTA change) prevents false dedup.
+  const seenBlocks = new Set<string>()
+
   pages.forEach((page, index) => {
     output += `## Page ${index + 1}: ${page.url}\n\n`
 
@@ -394,14 +401,43 @@ export function formatFirecrawlForPrompt(manifest: AuditManifest): string {
     }
 
     if (page.html) {
-      // Pipeline: stripHtmlNoise (SVGs, scripts) → compressHtmlWithLogging (class/id/style attrs
-      // + 60K limit + DOM-aware chunking fallback). Compression reduces a 200K page to ~40-70K
-      // so most pages fit without truncation.
-      const contentPreview = compressHtmlWithLogging(stripHtmlNoise(page.html), page.url)
-      output += `**Content (HTML):**\n${contentPreview}\n\n`
+      // Pipeline: stripHtmlNoise → compressHtmlToChunks (up to 2 × 60K chunks).
+      // Dedup nav/header/footer before inserting into prompt so repeated chrome
+      // doesn't burn tokens on page 2+. Element manifest still runs on raw HTML (unaffected).
+      const chunks = compressHtmlToChunks(stripHtmlNoise(page.html), page.url)
+
+      // Deduplicate shared structural blocks (nav, header, footer) across pages
+      const $c = cheerio.load(chunks.join(''), { decodeEntities: false })
+      for (const tag of ['nav', 'header', 'footer'] as const) {
+        $c(tag).each((_i, el) => {
+          const fp = `${tag}:${$c(el).text().replace(/\s+/g, ' ').trim().slice(0, 300)}`
+          if (seenBlocks.has(fp)) {
+            $c(el).replaceWith(`<${tag}>[Same as Page 1]</${tag}>`)
+          } else {
+            seenBlocks.add(fp)
+          }
+        })
+      }
+      const dedupedHtml = $c.html()
+
+      // Re-split at the original chunk boundaries after dedup (best-effort).
+      // For a single chunk, this is a no-op. For 2 chunks, dedup shrinks the combined
+      // HTML so we output it as-is (still within token budget for the auditor).
+      if (chunks.length === 1) {
+        output += `**Content (HTML):**\n${dedupedHtml}\n\n`
+      } else {
+        // Distribute deduped content back into two labelled parts for model clarity
+        const mid = Math.ceil(dedupedHtml.length / 2)
+        const boundary = dedupedHtml.lastIndexOf('>', mid)
+        const split = boundary > 0 ? boundary + 1 : mid
+        output += `**Content (HTML, part 1 of 2):**\n${dedupedHtml.slice(0, split)}\n\n`
+        output += `**Content (HTML, part 2 of 2):**\n${dedupedHtml.slice(split)}\n\n`
+      }
     }
 
-    // Append element manifest from HTML if available
+    // Append element manifest from HTML if available.
+    // Uses raw (pre-compression) HTML — element manifest must not be deduplicated
+    // because nav links may differ per page even when text looks the same.
     if (page.html) {
       const elementManifest = extractElementManifestFromHtml(page.html, page.url)
       if (elementManifest) {

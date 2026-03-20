@@ -6,11 +6,23 @@
 - **NEVER use example.com as a test domain** - use real domain names from the project context
 - Never hallucinate API keys, event names, or property names - check existing code first
 
+### Presenting Audit Results
+- **Always return the full issue description and suggested fix** when showing audit results — never paraphrase or summarise. Include: severity, page URL, category, full `issue_description`, and full `suggested_fix`. The user needs the exact wording the model returned to evaluate whether it's a real issue or a false positive without guessing.
+- When building a table of issues, include all fields. Truncating or rewording the model output hides the context needed for review.
+
 ### Audit Quality Philosophy
 - **Fewer issues, higher confidence** — it's better to miss an edge case than to report false positives. Users lose trust in the tool when it flags things that aren't real issues.
 - **Link auditing is internal-only** — only flag internal navigation links that are broken or point to the wrong page. Never flag mailto:, tel:, or external links as broken — AI models can't verify these from markdown and they're almost always fine on the live site.
 - **Extraction artifacts are not issues** — Firecrawl's HTML-to-markdown conversion strips whitespace between adjacent HTML elements (e.g., `<span>The</span><span>simple</span>` becomes `Thesimple`). The prompts in `lib/audit-prompts.ts` include explicit caveats telling models to ignore these. If similar artifact patterns emerge, fix at the prompt level, not by modifying the crawled content.
 - **HTML-direct is the future** — Validated approach: feed cleaned raw HTML (after strip-hidden-elements JS) directly to models instead of markdown. Eliminates extraction artifacts entirely. See ADR-001 for details. The strip script must preserve zero-dimension inline tags (`<br>`, `<img>`, `<svg>`, etc.).
+
+### Supabase Security (migration 029)
+- **RLS enabled on `blog_posts`** (no policies — locked down, table not in use)
+- **RLS enabled on `guideline_versions`** — owner-scoped via parent `guidelines.user_id`
+- **`email_captures` policy tightened** — anon INSERT only; GET/PUT routes use `supabaseAdmin`
+- **5 functions patched** — `SET search_path = ''` added to prevent search_path hijacking
+- **`brand_audit_runs` USING(true) intentionally kept** — see migration 012 comment
+- **Leaked password protection not yet enabled** — requires SMTP configured in Supabase Auth first (Authentication → Settings → SMTP Settings), then toggle under Authentication → Attack Protection
 
 ### Testing
 - **For AI prompt or model/API changes: always run a real end-to-end audit test before pushing to prod** — prompt wording directly affects output quality and regressions are invisible without live testing

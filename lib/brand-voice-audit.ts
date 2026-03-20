@@ -184,7 +184,7 @@ export async function runBrandVoiceAuditPass(
       tools: [{ type: "web_search", filters: { allowed_domains: [domainHostname] } }],
       max_tool_calls: maxToolCalls,
       max_output_tokens: 8000,
-      text: { format: { type: "text" }, verbosity: "low" },
+      text: { format: { type: "text" } },
       reasoning: { effort: "low", summary: null },
       store: true,
     } as any)

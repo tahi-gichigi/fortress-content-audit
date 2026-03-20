@@ -32,6 +32,10 @@ const KEEP_ATTRS = new Set([
   'href', 'src', 'alt', 'title', 'type', 'role', 'for',
   'name', 'target', 'lang', 'rel', 'action', 'method', 'value', 'placeholder',
   'colspan', 'rowspan', 'scope', 'headers',
+  // inert marks elements as non-interactive and hidden from AT — keeps inactive
+  // digits in animated number components (e.g. number-flow-react) from being
+  // read as content by the model
+  'inert',
 ])
 
 // Inline formatting-only tags to unwrap (keep text content, remove wrapper).
@@ -70,6 +74,41 @@ export function compressHtml(html: string): string {
     }
   })
 
+  // Remove visually-hidden elements BEFORE stripping classes.
+  // Tailwind's `hidden` class means display:none; `sr-only` clips to 1px; `invisible`
+  // means visibility:hidden. After class stripping, these elements get unwrapped and their
+  // text content merges with adjacent text — causing phantom audit issues like
+  // "Add to your websiteA" (where "A" was a keyboard-shortcut badge inside a hidden span).
+  // Widened from $('span') to $('*') — hidden/sr-only/invisible are applied to div, p, a,
+  // and other elements too, not just spans.
+  // Two-tier hidden-class removal:
+  //
+  // Tier 1 — spans: always remove if hidden/sr-only/invisible, regardless of responsive
+  // counterpart classes. Spans get unwrapped later (they carry no block structure), so a
+  // `hidden md:block` span would merge its text into adjacent content — the original
+  // stray-A false positive. Stage 1 (browser JS) is the authority on viewport visibility;
+  // stage 3 removes all hidden spans as a safety net.
+  //
+  // Tier 2 — all other elements: only remove if there is NO responsive show class (md:flex,
+  // lg:block, etc.). Block elements like `<div class="hidden md:flex">` are desktop-visible
+  // nav containers — stage 1 at desktop viewport correctly leaves them in, so stage 3
+  // must not remove them. Only remove truly-always-hidden block elements.
+  $('span').each((_i, el) => {
+    const cls = (el as any).attribs?.class || ''
+    if (/(?:^|\s)hidden(?:\s|$)|(?:^|\s)sr-only(?:\s|$)|(?:^|\s)invisible(?:\s|$)/.test(cls)) {
+      $(el).remove()
+    }
+  })
+  $(':not(span)').each((_i, el) => {
+    const cls = (el as any).attribs?.class || ''
+    const isHidden = /(?:^|\s)hidden(?:\s|$)|(?:^|\s)sr-only(?:\s|$)|(?:^|\s)invisible(?:\s|$)/.test(cls)
+    if (!isHidden) return
+    // Skip responsive patterns like `hidden md:flex` — visible at larger breakpoints.
+    const hasResponsiveShow = /(?:sm|md|lg|xl|2xl):[a-z]/.test(cls)
+    if (hasResponsiveShow) return
+    $(el).remove()
+  })
+
   // Strip disallowed attributes from every element
   $('*').each((_i, el) => {
     if (el.type !== 'tag') return
@@ -98,15 +137,40 @@ export function compressHtml(html: string): string {
   })
 
   // Unwrap bare <span> elements — only keep spans that carry semantic meaning
-  // via aria-* attributes or role (e.g. aria-live regions, tooltip anchors).
+  // via aria-* attributes, role, or inert (inert spans are inactive variants in
+  // animated components like number-flow-react — unwrapping them loses the signal).
   $('span').each((_i, el) => {
     const attribs = (el as any).attribs || {}
     const hasAria = Object.keys(attribs).some(a => a.startsWith('aria-'))
     const hasRole = !!attribs.role
-    if (!hasAria && !hasRole) {
+    const hasInert = 'inert' in attribs
+    if (!hasAria && !hasRole && !hasInert) {
       $(el).replaceWith($(el).contents())
     }
   })
+
+  // Collapse empty and single-child divs — pure structural noise with no audit value.
+  // Traverse in reverse DOM order (bottom-up) so children collapse before parents,
+  // allowing grandparent divs to become eligible after their child divs are unwrapped.
+  // Guard: skip divs with role or aria-* — those are semantic landmarks (role="main",
+  // aria-label="navigation") and must not be unwrapped.
+  const allDivs = $('div').toArray().reverse()
+  for (const el of allDivs) {
+    const $el = $(el)
+    const attribs = (el as any).attribs || {}
+    if (attribs.role) continue
+    if (Object.keys(attribs).some(a => a.startsWith('aria-'))) continue
+    const children = $el.children()
+    // directText: any text node content not inside a child element
+    const directText = $el.clone().children().remove().end().text().trim()
+    if (children.length === 0 && !directText) {
+      // Empty div — remove entirely
+      $el.remove()
+    } else if (children.length === 1 && !directText) {
+      // Single child, no sibling text — unwrap the wrapper div
+      $el.replaceWith($el.contents())
+    }
+  }
 
   // Serialise and clean up
   let compressed = $.html()
@@ -114,11 +178,13 @@ export function compressHtml(html: string): string {
   // Remove any HTML comments cheerio might have retained
   compressed = compressed.replace(/<!--[\s\S]*?-->/g, '')
 
-  // Collapse whitespace: multi-space/newline runs → single space,
-  // then remove whitespace between tags (block-level structure only, inline text is safe)
+  // Collapse whitespace: newlines/tabs → single space, then trim.
+  // We intentionally do NOT strip all whitespace between tags (the old >\s+< pattern)
+  // because that merges adjacent inline elements: "<a>About</a> <a>Pricing</a>" →
+  // "AboutPricing". Confirmed source of the dub.co "DubRead more" false positive.
   compressed = compressed
-    .replace(/\s{2,}/g, ' ')
-    .replace(/>\s+</g, '><')
+    .replace(/[\t\n\r]+/g, ' ')
+    .replace(/ {2,}/g, ' ')
     .replace(/^\s+|\s+$/g, '')
 
   return compressed
@@ -175,6 +241,23 @@ export function chunkHtml(html: string, maxChars: number): string[] {
   if (current.trim()) chunks.push(current.trim())
 
   return chunks.length > 0 ? chunks : [html.substring(0, maxChars)]
+}
+
+/**
+ * Compress HTML and return all chunks as an array.
+ * If the compressed page fits within limit, returns a single-element array.
+ * If it exceeds limit, returns up to 2 chunks (hard cap — prevents runaway token growth).
+ * The checker continues to use compressHtmlWithLogging (chunk 1 only) — cost stays flat.
+ */
+export function compressHtmlToChunks(html: string, pageUrl: string, limit = 60000): string[] {
+  const rawLen = html.length
+  const compressed = compressHtml(html)
+  const reduction = rawLen > 0 ? Math.round((1 - compressed.length / rawLen) * 100) : 0
+  Logger.info(`[HtmlCompressor] ${pageUrl}: ${rawLen} → ${compressed.length} chars (${reduction}% reduction)`)
+  if (compressed.length <= limit) return [compressed]
+  const chunks = chunkHtml(compressed, limit)
+  Logger.info(`[HtmlCompressor] ${pageUrl}: chunked into ${chunks.length} sections`)
+  return chunks.slice(0, 2) // hard cap: max 2 chunks to bound token growth
 }
 
 /**

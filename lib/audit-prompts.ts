@@ -31,7 +31,12 @@ How to spot them:
 - Two sections or divs with identical text content are likely mobile/desktop variants — audit the content ONCE
 - Repeated CTAs, hero text, or banners appearing in the same page are usually responsive pairs
 
-Pages are truncated at an HTML tag boundary and marked with "[Content truncated due to length]". DO NOT flag content near this marker as incomplete — it is an extraction limit, not a real site issue.
+**DYNAMIC / INTERACTIVE CONTENT — do not flag these:**
+- Do NOT flag numbers, text, or values inside interactive components (sliders, counters, animated number displays, progress bars). These show a snapshot state at scrape time — values like "0 seconds", "$0", or garbled text inside animated elements are NOT content errors.
+- Do NOT flag garbled or partially-encoded text (e.g. "secure0n*d", "3x7K") inside a single isolated element — it is likely a text animation or encoding artifact captured mid-render, not a real content issue.
+- Do NOT flag form field labels that mix parameter names and type annotations — this is standard developer tooling UI, not a copywriting error.
+
+Pages are truncated at an HTML tag boundary and marked with "[Content truncated due to length]". DO NOT flag content near this marker as incomplete — it is an extraction limit, not a real site issue. Large pages may appear as "part 1 of 2" / "part 2 of 2" — treat them as one continuous page.
 
 Do NOT check or report ANY link issues — broken links, wrong destinations, link text, mailto/tel links, or external links. A separate automated system handles all link validation via HTTP checks.
 
@@ -183,7 +188,12 @@ How to spot them:
 - Two sections or divs with identical text content are likely mobile/desktop variants — audit the content ONCE
 - Repeated CTAs, hero text, or banners appearing in the same page are usually responsive pairs
 
-Pages are truncated at an HTML tag boundary and marked with "[Content truncated due to length]". DO NOT flag content near this marker as incomplete — it is an extraction limit, not a real site issue.
+**DYNAMIC / INTERACTIVE CONTENT — do not flag these:**
+- Do NOT flag numbers, text, or values inside interactive components (sliders, counters, animated number displays, progress bars). These show a snapshot state at scrape time — values like "0 seconds", "$0", or garbled text inside animated elements are NOT content errors.
+- Do NOT flag garbled or partially-encoded text (e.g. "secure0n*d", "3x7K") inside a single isolated element — it is likely a text animation or encoding artifact captured mid-render, not a real content issue.
+- Do NOT flag form field labels that mix parameter names and type annotations — this is standard developer tooling UI, not a copywriting error.
+
+Pages are truncated at an HTML tag boundary and marked with "[Content truncated due to length]". DO NOT flag content near this marker as incomplete — it is an extraction limit, not a real site issue. Large pages may appear as "part 1 of 2" / "part 2 of 2" — treat them as one continuous page.
 
 Do NOT check or report ANY link issues — broken links, wrong destinations, link text, mailto/tel links, or external links. A separate automated system handles all link validation via HTTP checks.
 
@@ -385,7 +395,12 @@ How to spot them:
 - Two sections or divs with identical text content are likely mobile/desktop variants — audit the content ONCE
 - Repeated CTAs, hero text, or banners appearing in the same page are usually responsive pairs
 
-Pages are truncated at an HTML tag boundary and marked with "[Content truncated due to length]". DO NOT flag content near this marker as incomplete — it is an extraction limit, not a real site issue.
+**DYNAMIC / INTERACTIVE CONTENT — do not flag these:**
+- Do NOT flag numbers, text, or values inside interactive components (sliders, counters, animated number displays, progress bars). These show a snapshot state at scrape time — values like "0 seconds", "$0", or garbled text inside animated elements are NOT content errors.
+- Do NOT flag garbled or partially-encoded text (e.g. "secure0n*d", "3x7K") inside a single isolated element — it is likely a text animation or encoding artifact captured mid-render, not a real content issue.
+- Do NOT flag form field labels that mix parameter names and type annotations — this is standard developer tooling UI, not a copywriting error.
+
+Pages are truncated at an HTML tag boundary and marked with "[Content truncated due to length]". DO NOT flag content near this marker as incomplete — it is an extraction limit, not a real site issue. Large pages may appear as "part 1 of 2" / "part 2 of 2" — treat them as one continuous page.
 
 Do NOT check or report ANY link issues — broken links, wrong destinations, link text, mailto/tel links, or external links. A separate automated system handles all link validation via HTTP checks.
 
@@ -498,26 +513,31 @@ How to spot them:
 - Two sections or divs with identical text content are likely mobile/desktop variants — audit the content ONCE
 - Repeated CTAs, hero text, or banners appearing in the same page are usually responsive pairs
 
-Pages are truncated at an HTML tag boundary and marked with "[Content truncated due to length]". DO NOT flag content near this marker as incomplete — it is an extraction limit, not a real site issue.
+**DYNAMIC / INTERACTIVE CONTENT — do not flag these:**
+- Do NOT flag numbers, text, or values inside interactive components (sliders, counters, animated number displays, progress bars). These show a snapshot state at scrape time — values like "0 seconds", "$0", or garbled text inside animated elements are NOT content errors.
+- Do NOT flag garbled or partially-encoded text (e.g. "secure0n*d", "3x7K") inside a single isolated element — it is likely a text animation or encoding artifact captured mid-render, not a real content issue.
+- Do NOT flag form field labels that mix parameter names and type annotations — this is standard developer tooling UI, not a copywriting error.
+
+Pages are truncated at an HTML tag boundary and marked with "[Content truncated due to length]". DO NOT flag content near this marker as incomplete — it is an extraction limit, not a real site issue. Large pages may appear as "part 1 of 2" / "part 2 of 2" — treat them as one continuous page.
 
 Do NOT check or report ANY link issues — broken links, wrong destinations, link text, mailto/tel links, or external links. A separate automated system handles all link validation via HTTP checks.
 
 ${categoryInstructions[category]}
 
-**HOW TO USE THE MANIFEST:**
-- Use it to avoid false positives about missing elements
-- The manifest shows code structure, NOT functionality
+The element manifest shows code structure — use it to avoid false positives about missing elements.
 
 If you encounter bot protection, return: BOT_PROTECTION_OR_FIREWALL_BLOCKED
 
 **Report the same issue on each page it appears** — don't deduplicate across pages. Severity is optional and defaults to "medium" if uncertain.
 
+**When flagging repeated or redundant content**, list the specific pages where it appears and how many times. Don't just say "repeated" — say where.
+
 For every issue, provide:
 - page_url: The URL where issue was found
 - category: "${category}" (always this category)
-- issue_description: impact label (professionalism:, trust:, clarity:, credibility:, frustration:) + problem in 15 words or fewer. Always name WHERE: quote the specific text or name the section (hero, pricing table, nav, footer CTA).
+- issue_description: impact label (professionalism:, trust:, clarity:, credibility:, frustration:) then: quote the exact text, state the problem, name the pages if cross-page. Be specific — vague descriptions waste the user's time.
 - severity: "critical", "medium", or "low" (default "medium" if unsure)
-- suggested_fix: action verb + fix in 8 words or fewer
+- suggested_fix: what to change and how, in one clear sentence
 
 Output format — return ONLY the issues array, no summary counts:
 {
@@ -543,9 +563,9 @@ export function buildCheckerPrompt(
   category: string
 ): string {
   const categoryVerification: Record<string, string> = {
-    "Language": "Confirm the exact quoted text exists in the HTML AND contains the claimed error. Valid stylistic choices (brand voice, intentional tone) are not errors. Regional spelling (UK vs US English) on a locale-targeted site is a valid concern, not a stylistic choice.",
-    "Facts & Consistency": "Confirm the claimed text/data is present. You can verify internal consistency (numbers matching across sections) but not external facts. If the text exists and the inconsistency is real within the page, confirm. Cross-page contradictions are valid. If an issue claims page A contradicts page B, look for evidence from both pages in the excerpts.",
-    "Links & Formatting": "Confirm the HTML structure supports the claim (empty alt, wrong heading level, missing aria). Layout/render issues that can't be verified from static HTML → mark uncertain.",
+    "Language": "Confirm the exact quoted text exists in the HTML AND contains the claimed error. Valid stylistic choices (brand voice, intentional tone) are not errors. Regional spelling (UK vs US English) on a locale-targeted site is a valid concern, not a stylistic choice. If the claimed error text appears inside an animated number component, counter, or interactive widget (look for `inert` attributes on sibling elements, or custom elements like `<number-flow-react>`), mark confirmed: false — these are scrape-time snapshots, not real content.",
+    "Facts & Consistency": "Confirm the claimed text/data is present. You can verify internal consistency (numbers matching across sections) but not external facts. If the text exists and the inconsistency is real within the page, confirm. Cross-page contradictions are valid. If an issue claims page A contradicts page B, look for evidence from both pages in the excerpts. If the claimed value appears inside an interactive component (slider, counter, progress bar), mark confirmed: false — it is a snapshot state, not a real content error.",
+    "Links & Formatting": "Confirm the HTML structure supports the claim (empty alt, wrong heading level, missing aria). Layout/render issues that can't be verified from static HTML → mark uncertain. If the issue describes garbled or scrambled text inside a single isolated element, check for signs of animation (sibling elements with `inert`, custom web components, or repeated character sets 0-9) — if present, mark confirmed: false.",
   }
 
   const verificationInstruction = categoryVerification[category]

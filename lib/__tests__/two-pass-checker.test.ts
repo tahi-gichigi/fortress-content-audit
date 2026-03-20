@@ -49,10 +49,12 @@ describe('buildLiberalCategoryAuditPrompt — recall orientation', () => {
     expect(prompt).not.toContain('pages_with_issues')
   })
 
-  it('allows 15-word descriptions (not 10)', () => {
+  it('instructs specificity over word count caps', () => {
     const prompt = buildLiberalCategoryAuditPrompt('Language', urls, manifest, noExcluded, noActive)
-    expect(prompt).toContain('15 words or fewer')
-    expect(prompt).not.toContain('10 words or fewer')
+    // No word count cap — replaced with structural clarity instructions
+    expect(prompt).not.toContain('words or fewer')
+    expect(prompt).toContain('quote the exact text')
+    expect(prompt).toContain('Be specific')
   })
 
   it('instructs model to report the same issue on each page it appears', () => {

@@ -2,6 +2,172 @@
 
 ---
 
+## Run 6: ADR-004 Pipeline Improvements — Full Production Eval
+
+**Run date:** 2026-03-20 12:14 UTC
+**Environment:** Local dev server (`pnpm dev`), `?tier=PAID` override
+**Site:** seline.so (PAID tier, 19 pages)
+**Pipeline:** Two-pass (3 auditor + 3 checker calls), gpt-5.1 throughout
+**Code state:** All ADR-004 changes active: div collapse, nav/footer dedup, multi-chunk, Phase 0b (Radix accordion), hidden-class widening, inert attr preservation, whitespace collapse fix, dynamic content prompt rules.
+
+### LangSmith-verified metrics
+
+**Auditor calls (3 parallel, gpt-5.1):**
+
+| Call | Input tokens | Output tokens | Cache read | Cost | Category |
+|------|-------------|--------------|-----------|------|----------|
+| Auditor 1 | 86,278 | 2,761 | 0 | $0.135 | Facts & Links |
+| Auditor 2 | 86,314 | 1,019 | 0 | $0.118 | Language |
+| Auditor 3 | 86,234 | 3,828 | 3,456 | $0.142 | Brand voice |
+| **Subtotal** | **258,826** | **7,608** | **3,456** | **$0.395** | |
+
+**Checker calls (3 parallel, gpt-5.1, reasoning: low):**
+
+| Call | Input tokens | Output tokens | Cost |
+|------|-------------|--------------|------|
+| Checker 1 | 58,129 | 1,569 | $0.088 |
+| Checker 2 | 77,491 | 3,854 | $0.135 |
+| Checker 3 | 77,695 | 3,658 | $0.134 |
+| **Subtotal** | **213,315** | **9,081** | **$0.357** | |
+
+### Head-to-head: Run 6 vs Run 5 (Natalie's baseline)
+
+| Metric | Run 5 (baseline) | Run 6 (ADR-004) | Change |
+|--------|-----------------|-----------------|--------|
+| Auditor input tokens | 336,712 | 258,826 | **-23%** |
+| Checker input tokens | 331,936 | 213,315 | **-36%** |
+| Total input tokens | ~668K | ~472K | **-29%** |
+| Auditor cost | $0.511 | $0.395 | -23% |
+| Checker cost | $0.524 | $0.357 | -32% |
+| **Total cost** | **$1.04** | **$0.75** | **-28%** |
+| Auditor wall time (parallel) | ~65s | ~41s | **-37%** |
+| Checker wall time (parallel) | ~57s | ~43s | -25% |
+| **Total model time** | **~122s** | **~84s** | **-31%** |
+| Prompt cache hits | 0 | 3,456 tokens | Cache starting to fire |
+| Checker calls | 4 | 3 | -1 |
+| Issues returned | unknown | 65 | — |
+| Pages audited | 19 | 19 | — |
+
+### Token savings breakdown
+
+Per-call auditor input dropped from ~112K to ~86K (23% reduction). Sources:
+- **Div collapse**: 64% fewer div elements (1,223 → 441 on homepage). Removes empty/single-child div nesting that Tailwind SPAs produce. Each eliminated div saves ~10 chars of tags.
+- **Nav/footer dedup**: Identical nav/header/footer blocks on pages 2+ replaced with `<tag>[Same as Page 1]</tag>`. On seline.so's 19 pages, the ~2K-char nav block is transmitted once instead of 19 times.
+- **Multi-chunk**: Large pages no longer silently truncated at chunk 1 — all content reaches the model, so the model finds more issues per page (partially explains higher issue count).
+
+### Quality comparison
+
+**False positive eliminated:** Run 5's checker confirmed `"Add to your websiteA"` as a real issue (confidence 0.99) — the stray-A bug where a hidden keyboard-shortcut span was unwrapped into adjacent text. Run 6 does NOT contain this false positive. The hidden-class widening fix in ADR-004 prevents the span from being unwrapped.
+
+**Issue count: 65 (Run 6) vs unknown (Run 5).** The higher count in Run 6 is expected:
+1. Phase 0b exposes accordion/FAQ content that was previously invisible — more content → more issues found
+2. Multi-chunk ensures large pages aren't truncated — same effect
+3. Many of the 65 issues are low-severity style opinions (e.g. "slightly wordy", "sounds informal for docs") that the checker confirmed but a human reviewer might dismiss
+4. Several issues are the same template text repeated across pages (e.g. "monitize" appears on 6 pages) — the checker correctly confirms each occurrence independently
+
+**Genuine new finds in Run 6 (from accordion content):**
+- "Wait a coupe minutes" typo on `/docs/stripe` (FAQ content)
+- "20/80 rule" should be "80/20 rule" on `/seline-vs-posthog`
+- Pricing inconsistencies across comparison pages ($9 vs $14 vs $24)
+- Cookie FAQ contradiction vs install docs
+
+### Caveats
+
+1. **Run 5 issue count unknown.** Natalie's run returned issues to the frontend, but I don't have the final filtered count from LangSmith (only per-call outputs). Direct issue-count comparison not possible.
+2. **Checker call count differs.** Run 5 had 4 checker calls; Run 6 had 3. This means one category had zero issues in Run 6 (or the pipeline structure changed). Accounts for ~$0.09-0.15 of the cost difference.
+3. **Local vs production.** Run 5 was Vercel production; Run 6 was local `pnpm dev`. Network latency and cold-start differences don't affect model call times but may affect total audit wall time.
+4. **Site content may have changed.** 1-2 days between runs. Minor — seline.so unlikely to have major copy changes overnight.
+
+---
+
+## Run 5: Natalie's Production Baseline (pre-ADR-004 pipeline improvements)
+
+**Run date:** 2026-03-18 21:23 UTC
+**Deployed commit:** `73ebd86` (Vercel production)
+**Site:** seline.so only (PAID tier, 19 pages)
+**Pipeline:** Two-pass (3 auditor + 4 checker calls), gpt-5.1 throughout
+**Code state:** Run 3 pipeline (inline tag stripping + HTML compression). Does NOT include any ADR-004 changes: no div collapse, no nav/footer dedup, no multi-chunk, no Phase 0b (Radix accordion expansion), no hidden-class widening, no inert attr preservation, no whitespace collapse fix.
+
+This is the **current production baseline** — the last real user pro audit before ADR-004 pipeline improvements were implemented. All ADR-004 changes should be measured against this run.
+
+### LangSmith-verified metrics
+
+**Auditor calls (3 parallel, gpt-5.1):**
+
+| Call | Input tokens | Output tokens | Reasoning | Cost | Category |
+|------|-------------|--------------|-----------|------|----------|
+| Auditor 1 | 112,130 | 5,374 | 2,517 (low) | $0.194 | Brand voice |
+| Auditor 2 | 112,309 | 623 | 0 (none) | $0.147 | Facts & Links |
+| Auditor 3 | 112,273 | 2,997 | 0 (none) | $0.170 | Language |
+| **Subtotal** | **336,712** | **8,994** | | **$0.511** | |
+
+**Checker calls (4 parallel, gpt-5.1, reasoning: low):**
+
+| Call | Input tokens | Output tokens | Cost |
+|------|-------------|--------------|------|
+| Checker 1 | 64,560 | 1,107 | $0.092 |
+| Checker 2 | 83,020 | 2,335 | $0.127 |
+| Checker 3 | 92,155 | 3,810 | $0.153 |
+| Checker 4 | 92,201 | 3,644 | $0.152 |
+| **Subtotal** | **331,936** | **10,896** | **$0.524** |
+
+| Metric | Value |
+|--------|-------|
+| Total input tokens | ~668K |
+| Total output tokens | ~20K |
+| Total cost (auditor + checker) | **~$1.04** |
+| Page selector cost | ~$0.001 |
+| **Grand total** | **~$1.04** |
+| Duration (auditor start → last checker end) | ~122s |
+| Prompt cache hits | 0 (all `cache_read: 0`) |
+
+### Key observation: per-call input tokens are nearly identical
+
+All 3 auditor calls received ~112K input tokens — the full compressed HTML of all 19 pages is repeated in every category call. This is the primary cost driver and the target for nav/footer dedup.
+
+### Known false positives in this run
+
+Natalie's structured test identified the following false positive root causes that were present in this deployed code. These were subsequently fixed in ADR-004:
+
+| False Positive | Root Cause | Fix (ADR-004) |
+|---------------|------------|---------------|
+| "Placeholder number" in seline.so pricing | `inert` attr stripped → all 10 animated digits visible as content | `inert` added to KEEP_ATTRS |
+| "time on page 0 seconds" | Dynamic counter captured at scrape-time zero state | Prompt rule: don't flag interactive component values |
+| "secure0n*d" garbled text | Text animation captured mid-render | Prompt rule: don't flag garbled text in isolated elements |
+| Parameter list mixes label/type | Model misreading form structure | Prompt rule: don't flag developer tooling UI |
+| "DubRead more" (dub.co test) | Whitespace collapse regex `>\s+<` too aggressive | Replaced with newline/tab-only collapse |
+| Stray "A" character (dub.co test) | Hidden span unwrapped into adjacent text | Hidden-class check widened to all elements |
+
+### Content blind spots in this run
+
+Accordion/FAQ content behind `data-state="closed"` panels was silently stripped by Phase 2 (computed style → display:none). The model never saw FAQ answers, preventing it from finding cross-page contradictions like the "free to start" vs "no free plan" conflict that ADR-004's Phase 0b later revealed.
+
+### Why this is the baseline for ADR-004
+
+1. **Same site** (seline.so) — directly comparable to the ADR-004 evaluation run
+2. **Same tier** (PAID, 19 pages) — same page count and selection
+3. **Same models** (gpt-5.1 auditor + checker) — no model variable
+4. **Production deployment** — real user-facing code, not a test harness
+5. **All ADR-004 changes are absent** — clean before/after comparison
+
+### Caveats for comparison to ADR-004 Run 6
+
+1. **Site content may change** between runs — seline.so may have updated copy
+2. **Page selection is non-deterministic** — gpt-4.1-mini may pick slightly different pages
+3. **ADR-004 adds div collapse + nav dedup** — expected to significantly reduce input tokens per call, which would lower cost even without changing the model or pipeline structure
+4. **ADR-004 adds Phase 0b** — accordion content will now be visible, which may increase raw issue count (more content = more findings) but should improve quality (fewer blind spots)
+
+---
+
+---
+---
+
+# EARLIER EVAL RUNS (pre-production, eval script against 4 benchmark sites)
+
+Runs 1-4 below used the `eval-*.ts` eval script against 4 benchmark sites (secondhome.io, justcancel.io, youform.com, seline.so). These measured the two-pass architecture during development. Run 5 above is the first production baseline.
+
+---
+
 ## Run 4: gpt-5-mini Auditor (rejected - see ADR-003)
 
 **Run date:** 2026-03-13

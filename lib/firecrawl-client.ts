@@ -122,6 +122,29 @@ export async function mapWebsite(url: string): Promise<Array<string | { url: str
 // including Tailwind responsive classes and media queries.
 // Also strips sr-only / visually-hidden elements and aria-hidden content.
 const STRIP_HIDDEN_ELEMENTS_SCRIPT = `
+  // Phase 0: Open native HTML accordions so their content is visible before hidden-element
+  // stripping. <details> elements are closed by default — expanding them here means the
+  // browser calculates their children as visible and phase 2 won't remove them.
+  document.querySelectorAll('details').forEach(d => { d.open = true; });
+  // Force a synchronous reflow so getComputedStyle in phase 2 reflects the opened state.
+  void document.body.offsetHeight;
+
+  // Phase 0b: Expand Radix/Headless UI closed accordion panels.
+  // Radix uses CSS attribute selectors ([data-state="closed"] { display:none }) rather
+  // than JS toggling, so flipping the attribute makes panel content visible to
+  // getComputedStyle in phase 2 — without triggering React event handlers.
+  // Guard: skip dialog, tooltip, menu, and modal components that also use data-state.
+  // These should stay closed to avoid surfacing off-screen modal content as live text.
+  const ACCORDION_SKIP_ROLES = new Set(['dialog','alertdialog','tooltip','menu','menuitem','listbox']);
+  document.querySelectorAll('[data-state="closed"]').forEach(el => {
+    if (ACCORDION_SKIP_ROLES.has(el.getAttribute('role') || '')) return;
+    if (el.getAttribute('aria-modal') === 'true') return;
+    if (el.hasAttribute('data-radix-tooltip-content')) return;
+    if (el.hasAttribute('data-radix-dialog-content')) return;
+    el.setAttribute('data-state', 'open');
+  });
+  void document.body.offsetHeight;
+
   // Phase 1: Strip by class/attribute (sr-only, visually-hidden, aria-hidden)
   document.querySelectorAll('.sr-only, .visually-hidden, [aria-hidden="true"]').forEach(el => {
     el.remove();

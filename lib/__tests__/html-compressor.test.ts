@@ -8,7 +8,7 @@
  * 4. DOM-aware chunking — large pages split at semantic boundaries
  */
 
-import { compressHtml, chunkHtml } from '../html-compressor'
+import { compressHtml, chunkHtml, compressHtmlToChunks } from '../html-compressor'
 
 // ============================================================================
 // 1. Attribute stripping
@@ -193,7 +193,7 @@ describe('compressHtml — compression ratio', () => {
         <header class="sticky top-0 z-50 bg-white border-b border-gray-200 shadow-sm">
           <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
             <a href="/" class="text-xl font-bold text-gray-900">Fortress</a>
-            <div class="hidden md:flex items-center space-x-8">
+            <div class="flex items-center space-x-8">
               <a href="/pricing" class="text-sm font-medium text-gray-700 hover:text-gray-900">Pricing</a>
               <a href="/docs" class="text-sm font-medium text-gray-700 hover:text-gray-900">Docs</a>
               <button class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700">
@@ -316,10 +316,205 @@ describe('compressHtml — inline tag unwrapping', () => {
     expect(result).toContain('formatted')
     expect(result).toContain('text')
   })
+
+  // Regression: keyboard-shortcut badges (hidden md:block) were unwrapped and
+  // merged into adjacent CTA text → "Add to your websiteA" false positive.
+  it('removes spans with Tailwind hidden class instead of unwrapping them', () => {
+    const html = '<a href="/sign-up">Add to your website<span class="ml-2 hidden md:block">A</span></a>'
+    const result = compressHtml(html)
+    expect(result).toContain('Add to your website')
+    expect(result).not.toContain('websiteA')
+    expect(result).not.toContain('>A<')
+  })
+
+  it('removes spans with sr-only class', () => {
+    const html = '<a href="/docs">Read docs<span class="sr-only"> (opens in new tab)</span></a>'
+    const result = compressHtml(html)
+    expect(result).toContain('Read docs')
+    expect(result).not.toContain('opens in new tab')
+  })
+
+  it('removes spans with invisible class', () => {
+    const html = '<button>Submit<span class="invisible">placeholder</span></button>'
+    const result = compressHtml(html)
+    expect(result).toContain('Submit')
+    expect(result).not.toContain('placeholder')
+  })
+
+  it('does not remove visible spans (no hidden/sr-only/invisible class)', () => {
+    const html = '<p>Price: <span class="text-green-600 font-bold">$49</span></p>'
+    const result = compressHtml(html)
+    expect(result).toContain('$49')
+  })
+
+  // Regression: hidden-class check was span-only. Non-span elements with hidden/sr-only
+  // classes would survive and their text could surface as phantom content.
+  it('removes <div class="hidden"> entirely', () => {
+    const html = '<section>Visible content<div class="hidden">Ghost text</div></section>'
+    const result = compressHtml(html)
+    expect(result).toContain('Visible content')
+    expect(result).not.toContain('Ghost text')
+  })
+
+  it('removes <p class="sr-only"> entirely', () => {
+    const html = '<nav><a href="/home">Home</a><p class="sr-only">Screen reader only</p></nav>'
+    const result = compressHtml(html)
+    expect(result).toContain('Home')
+    expect(result).not.toContain('Screen reader only')
+  })
 })
 
 // ============================================================================
-// 6. DOM-aware chunking
+// 6. Regression: animated number components (inert attribute)
+// ============================================================================
+
+describe('compressHtml — inert attribute (animated number components)', () => {
+  // Regression: number-flow-react stores all 10 digits (0-9) per digit position,
+  // hiding inactive ones with `inert`. Without preserving `inert`, the model sees
+  // "0123456789" as live content → "placeholder number" false positive (seline.so).
+  it('preserves inert attribute on inactive digit spans', () => {
+    const html = `<number-flow-react>
+      <span><span inert="">0</span><span inert="">1</span><span>2</span><span inert="">3</span></span>
+      <span>24</span>
+    </number-flow-react>`
+    const result = compressHtml(html)
+    expect(result).toContain('inert')
+    expect(result).toContain('24')
+  })
+
+  it('does not flatten inert digit spans into readable text', () => {
+    const html = `<div>$<span><span inert="">0</span><span inert="">1</span><span>2</span><span inert="">3</span></span></div>`
+    const result = compressHtml(html)
+    // The active digit "2" should be present, but inert ones should stay marked
+    expect(result).toContain('inert')
+  })
+})
+
+// ============================================================================
+// 7. Regression: inline whitespace between adjacent links
+// ============================================================================
+
+describe('compressHtml — inline whitespace preservation', () => {
+  // Regression: old >\s+< regex collapsed ALL whitespace between tags, merging
+  // adjacent inline elements: "<a>About</a> <a>Pricing</a>" → "AboutPricing".
+  // Confirmed source of dub.co "DubRead more" false positive.
+  it('preserves space between adjacent inline elements', () => {
+    const html = '<nav><a href="/about">About</a> <a href="/pricing">Pricing</a></nav>'
+    const result = compressHtml(html)
+    expect(result).toContain('About')
+    expect(result).toContain('Pricing')
+    // Should not merge the two link texts together
+    expect(result).not.toMatch(/About.*Pricing/s.test('AboutPricing') ? /AboutPricing/ : /NOMATCH/)
+    expect(result).not.toContain('AboutPricing')
+  })
+
+  it('preserves space in text like "Read more" split across elements', () => {
+    const html = '<a href="/blog"><span>Read</span> <span>more</span></a>'
+    const result = compressHtml(html)
+    expect(result).not.toContain('Readmore')
+  })
+})
+
+// ============================================================================
+// 8. Div collapse — empty and single-child div unwrapping
+// ============================================================================
+
+describe('compressHtml — div collapse', () => {
+  it('collapses nested single-child divs into the inner element', () => {
+    const html = '<div><div><p>text</p></div></div>'
+    const result = compressHtml(html)
+    expect(result).toContain('<p>text</p>')
+    // Wrapper divs should be gone
+    expect(result.match(/<div/g) || []).toHaveLength(0)
+  })
+
+  it('does NOT unwrap a div with role attribute', () => {
+    const html = '<div role="main"><p>text</p></div>'
+    const result = compressHtml(html)
+    expect(result).toContain('role="main"')
+    expect(result).toContain('<p>text</p>')
+  })
+
+  it('does NOT unwrap a div with aria-label attribute', () => {
+    const html = '<div aria-label="navigation"><p>text</p></div>'
+    const result = compressHtml(html)
+    // aria-label is preserved; div must not be removed
+    expect(result).toContain('<p>text</p>')
+    expect(result).toContain('aria-label="navigation"')
+  })
+
+  it('removes empty divs entirely', () => {
+    const html = '<section>Visible<div></div></section>'
+    const result = compressHtml(html)
+    expect(result).toContain('Visible')
+    expect(result).not.toContain('<div')
+  })
+
+  it('does NOT unwrap a div with two children', () => {
+    const html = '<div><p>A</p><p>B</p></div>'
+    const result = compressHtml(html)
+    expect(result).toContain('<p>A</p>')
+    expect(result).toContain('<p>B</p>')
+    // Div stays because it has 2 children
+    expect(result).toContain('<div')
+  })
+
+  it('does NOT unwrap a div that has direct text alongside a child element', () => {
+    const html = '<div>inline text <p>block</p></div>'
+    const result = compressHtml(html)
+    expect(result).toContain('inline text')
+    expect(result).toContain('<p>block</p>')
+    // Div stays because it has direct text content
+    expect(result).toContain('<div')
+  })
+})
+
+// ============================================================================
+// 9. compressHtmlToChunks — multi-chunk export
+// ============================================================================
+
+describe('compressHtmlToChunks — multi-chunk output', () => {
+  it('returns single chunk when page fits within limit', () => {
+    const html = '<main><section><h1>Hello</h1></section></main>'
+    const chunks = compressHtmlToChunks(html, 'https://example.com', 100000)
+    expect(chunks).toHaveLength(1)
+    expect(chunks[0]).toContain('Hello')
+  })
+
+  it('returns 2 chunks when compressed page exceeds limit', () => {
+    const section = (n: number) => `<section><h2>S${n}</h2><p>${'x'.repeat(200)}</p></section>`
+    const html = `<main>${Array.from({ length: 10 }, (_, i) => section(i + 1)).join('')}</main>`
+    const chunks = compressHtmlToChunks(html, 'https://example.com', 500)
+    expect(chunks.length).toBeGreaterThanOrEqual(2)
+    expect(chunks.length).toBeLessThanOrEqual(2) // hard cap at 2
+  })
+
+  it('each chunk is within limit', () => {
+    const section = (n: number) => `<section><h2>S${n}</h2><p>${'x'.repeat(200)}</p></section>`
+    const html = `<main>${Array.from({ length: 10 }, (_, i) => section(i + 1)).join('')}</main>`
+    const limit = 500
+    const chunks = compressHtmlToChunks(html, 'https://example.com', limit)
+    for (const chunk of chunks) {
+      // Each chunk should be at or under the limit (section truncation adds a marker)
+      expect(chunk.length).toBeLessThanOrEqual(limit + 30) // 30 char buffer for truncation marker
+    }
+  })
+
+  it('combined chunks contain content from the first two sections at minimum', () => {
+    // Hard cap is 2 chunks — content beyond chunk 2 is intentionally dropped.
+    // The contract is that the first two chunk-sized windows of content are present.
+    const section = (n: number) => `<section><h2>Section ${n}</h2><p>${'x'.repeat(100)}</p></section>`
+    const html = `<main>${Array.from({ length: 6 }, (_, i) => section(i + 1)).join('')}</main>`
+    const chunks = compressHtmlToChunks(html, 'https://example.com', 400)
+    const combined = chunks.join(' ')
+    // Sections 1 and 2 must always be present (they go into chunk 1)
+    expect(combined).toContain('Section 1')
+    expect(combined).toContain('Section 2')
+  })
+})
+
+// ============================================================================
+// 11. DOM-aware chunking (chunkHtml)
 // ============================================================================
 
 describe('chunkHtml — DOM-aware chunking', () => {

@@ -1028,7 +1028,6 @@ async function runCategoryAuditPro(
     include: ["web_search_call.action.sources"],
     text: {
       format: { type: "text" },
-      verbosity: "low"
     },
     reasoning: null, // No reasoning for audit pass — checker handles quality gate
     store: true
