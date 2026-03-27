@@ -417,6 +417,16 @@ ${categoryInstructions[category]}
 
 If you encounter bot protection, return: BOT_PROTECTION_OR_FIREWALL_BLOCKED
 
+**SEVERITY RUBRIC — assign carefully:**
+- critical: broken functionality, completely wrong information, accessibility blocker (e.g. missing alt on key image, factual error that misleads users, nav link 404)
+- medium: misleading content, inconsistent terminology across pages, style violations that affect trust (e.g. product name spelled two ways, ambiguous pricing claim)
+- low: minor style preferences, nitpicks, cosmetic inconsistencies (e.g. trailing period in one CTA vs none in others)
+
+**Examples:**
+- critical: "professionalism: pricing page says \\"Free forever\\" but signup says \\"14-day trial\\" — contradictory claim that misleads users" (severity: critical)
+- medium: "credibility: \\"AI-powered\\" used on homepage but \\"machine learning\\" used on features — inconsistent terminology" (severity: medium)
+- low: "professionalism: footer copyright year is 2023, should be 2024" (severity: low)
+
 For every issue, provide:
 - page_url: The URL where issue was found
 - category: "${category}" (always this category)
@@ -535,6 +545,16 @@ If you encounter bot protection, return: BOT_PROTECTION_OR_FIREWALL_BLOCKED
 **Report the same issue on each page it appears** — don't deduplicate across pages. Severity is optional and defaults to "medium" if uncertain.
 
 **When flagging repeated or redundant content**, list the specific pages where it appears and how many times. Don't just say "repeated" — say where.
+
+**SEVERITY RUBRIC — assign carefully:**
+- critical: broken functionality, completely wrong information, accessibility blocker (e.g. missing alt on key image, factual error that misleads users, nav link 404)
+- medium: misleading content, inconsistent terminology across pages, style violations that affect trust (e.g. product name spelled two ways, ambiguous pricing claim)
+- low: minor style preferences, nitpicks, cosmetic inconsistencies (e.g. trailing period in one CTA vs none in others)
+
+**Examples:**
+- critical: "professionalism: pricing page says \\"Free forever\\" but signup says \\"14-day trial\\" — contradictory claim that misleads users" (severity: critical)
+- medium: "credibility: \\"AI-powered\\" used on homepage but \\"machine learning\\" used on features — inconsistent terminology" (severity: medium)
+- low: "professionalism: footer copyright year is 2023, should be 2024" (severity: low)
 
 For every issue, provide:
 - page_url: The URL where issue was found
