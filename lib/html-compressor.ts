@@ -109,6 +109,19 @@ export function compressHtml(html: string): string {
     $(el).remove()
   })
 
+  // Detect badge/tag/label spans before attribute stripping — class attrs are
+  // needed for pattern matching and will be removed in the next step.
+  // These often appear as inline UI chips (e.g. "New", "Beta", "Pro") and get merged
+  // into adjacent text without whitespace, producing false positives.
+  $('span').each((_i, el) => {
+    const $el = $(el)
+    const cls = (el as any).attribs?.class || ''
+    const text = $el.text().trim()
+    if (text.length <= 30 && /badge|tag|label|chip|pill|status|tier|plan/i.test(cls)) {
+      $el.replaceWith(`[Badge: ${text}]`)
+    }
+  })
+
   // Strip disallowed attributes from every element
   $('*').each((_i, el) => {
     if (el.type !== 'tag') return
@@ -127,18 +140,6 @@ export function compressHtml(html: string): string {
     const src = (el as any).attribs?.src
     if (src && src.startsWith('data:')) {
       $(el).attr('src', '[data-uri]')
-    }
-  })
-
-  // Detect badge/tag/label spans before unwrapping — replace with readable placeholder.
-  // These often appear as inline UI chips (e.g. "New", "Beta", "Pro") and get merged
-  // into adjacent text without whitespace, producing false positives.
-  $('span').each((_i, el) => {
-    const $el = $(el)
-    const cls = (el as any).attribs?.class || ''
-    const text = $el.text().trim()
-    if (text.length <= 30 && /badge|tag|label|chip|pill|status|tier|plan/i.test(cls)) {
-      $el.replaceWith(`[Badge: ${text}]`)
     }
   })
 
