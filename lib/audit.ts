@@ -74,6 +74,8 @@ export type AuditResult = {
     evidence?: string
     /** Checker confidence score 0-1 (Pro only) */
     confidence?: number
+    /** Verification status from checker pass */
+    verification_status?: 'verified' | 'unverified' | 'parse_error'
   }>
   pagesAudited: number // Model's self-reported count of pages audited
   discoveredPages: string[] // All internal URLs found by Puppeteer
@@ -239,7 +241,7 @@ async function runCheckerPass(
         response = await client.responses.create(params)
       } catch (err) {
         Logger.warn(`[CheckerPass] API call failed for ${category}`, err instanceof Error ? err : undefined)
-        return batchIssues.map(issue => ({ ...issue, evidence: 'Checker call failed', confidence: 0.5 }))
+        return batchIssues.map(issue => ({ ...issue, evidence: 'Checker call failed', confidence: 0.5, verification_status: 'unverified' as const }))
       }
 
       // Poll for completion
@@ -261,17 +263,18 @@ async function runCheckerPass(
         const parsed = JSON.parse(cleaned)
         verifications = parsed?.verifications || []
       } catch {
-        Logger.warn(`[CheckerPass] JSON parse failed for ${category} — keeping all issues`)
-        return batchIssues.map(issue => ({ ...issue, evidence: 'Checker parse error', confidence: 0.5 }))
+        Logger.warn(`[CheckerPass] JSON parse failed for ${category} — keeping all issues as parse_error`)
+        return batchIssues.map(issue => ({ ...issue, evidence: 'Checker parse error', confidence: 0.5, verification_status: 'parse_error' as const }))
       }
 
       // Apply checker decisions using pure filtering logic
-      const verified = applyCheckerDecisions(batchIssues, verifications) as AuditResult["issues"]
+      const verified = (applyCheckerDecisions(batchIssues, verifications) as AuditResult["issues"])
+        .map(issue => ({ ...issue, verification_status: 'verified' as const }))
 
       // Log dropped issues
       for (let i = 0; i < batchIssues.length; i++) {
         const v = verifications.find(v => v.index === i)
-        const confirmed = v?.confirmed ?? true
+        const confirmed = v?.confirmed ?? false
         const confidence = v?.confidence ?? 0.5
         if (!(confirmed === true || (confirmed === 'uncertain' && confidence >= 0.7))) {
           Logger.debug(`[CheckerPass] Dropped: "${batchIssues[i].issue_description}" (confirmed=${confirmed}, confidence=${confidence})`)

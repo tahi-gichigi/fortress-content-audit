@@ -43,14 +43,14 @@ export interface CheckedIssue extends RawIssue {
  * - Preserve all other fields
  *
  * For missing verifications (no verification found for an index):
- * - Default confirmed to true (safe), confidence to 0.5
+ * - Default confirmed to false (fail-safe), confidence to 0.5
  * - evidence defaults to ''
  */
 export function applyCheckerDecisions(issues: RawIssue[], verifications: CheckerVerification[]): CheckedIssue[] {
   const result: CheckedIssue[] = []
   for (let i = 0; i < issues.length; i++) {
     const v = verifications.find(v => v.index === i)
-    const confirmed = v?.confirmed ?? true
+    const confirmed = v?.confirmed ?? false
     const confidence = v?.confidence ?? 0.5
 
     // Keep if: confirmed true, OR uncertain with confidence >= 0.7

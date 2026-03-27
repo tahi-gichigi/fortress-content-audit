@@ -9,23 +9,8 @@ import Logger from '@/lib/logger'
 import { checkDailyLimit, checkDomainLimit, isNewDomain, incrementAuditUsage, getAuditUsage } from '@/lib/audit-rate-limit'
 import { createMockAuditData } from '@/lib/mock-audit-data'
 import { detectMilestoneCrossings, getMilestoneToastContent } from '@/lib/milestones'
-
-/**
- * Simple in-memory health score calculation from issues array.
- * Matches lib/health-score.ts severity weights (no critical-pages here): fairer calibration.
- */
-function calculateScoreFromIssues(issues: Array<{ severity: string }>): number {
-  let penalty = 0
-  for (const issue of issues) {
-    switch (issue.severity) {
-      case 'low': penalty += 0.5; break
-      case 'medium': penalty += 2; break
-      case 'high':
-      case 'critical': penalty += 4; break
-    }
-  }
-  return Math.max(0, Math.min(100, 100 - penalty))
-}
+import { calculateHealthScore } from '@/lib/health-score'
+import type { AuditRun } from '@/types/fortress'
 
 function getBearer(req: Request) {
   const a = req.headers.get('authorization') || req.headers.get('Authorization')
@@ -501,8 +486,9 @@ export async function POST(request: Request) {
       // Milestone celebration detection (only for authenticated users)
       if (isAuthenticated && userId) {
         try {
-          // Calculate current health score from filtered issues
-          const currentScore = calculateScoreFromIssues(filteredIssues)
+          // Calculate current health score from DB (uses canonical formula from lib/health-score.ts)
+          const currentScoreResult = await calculateHealthScore({ id: runId } as AuditRun)
+          const currentScore = currentScoreResult.score
 
           // Get previous audit's health score
           const { data: previousAudit } = await supabaseAdmin
@@ -525,9 +511,9 @@ export async function POST(request: Request) {
               .eq('audit_id', previousAudit.id)
 
             if (previousIssues && previousIssues.length > 0) {
-              // Only count active issues for previous score
-              const activePreviousIssues = previousIssues.filter(i => i.status === 'active')
-              previousScore = calculateScoreFromIssues(activePreviousIssues)
+              // Use canonical formula from lib/health-score.ts
+              const prevScoreResult = await calculateHealthScore({ id: previousAudit.id } as AuditRun)
+              previousScore = prevScoreResult.score
             } else {
               // No issues means perfect score
               previousScore = 100

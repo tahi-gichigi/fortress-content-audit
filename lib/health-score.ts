@@ -26,7 +26,7 @@ export interface HealthScoreResult {
  * Formula: 100 - (low×0.5 + medium×2 + critical×4) - (criticalPages×5)
  * - Excludes ignored/resolved issues (only counts active)
  * - Critical pages = pages with at least one critical-severity issue
- * - Score clamped to 1-100 (minimum 1 if issues exist, can be 100 if no issues)
+ * - Score clamped to 0-100
  * - Counts issues, not instances; calibrated so a few criticals don’t tank the score
  *
  * @param audit - Audit run (issues queried from issues table)
@@ -116,7 +116,7 @@ export async function calculateHealthScore(
   score -= criticalPages * 5
 
   // Clamp to 1-100 (minimum 1 if issues exist, can be 100 if no issues)
-  score = Math.max(1, Math.min(100, score))
+  score = Math.max(0, Math.min(100, score))
   
   return {
     score,
@@ -238,7 +238,7 @@ export async function calculateAggregatedHealthScore(
   score -= criticalPages * 5
 
   // Clamp to 1-100 (minimum 1 if issues exist, can be 100 if no issues)
-  score = Math.max(1, Math.min(100, score))
+  score = Math.max(0, Math.min(100, score))
   
   return {
     score,
