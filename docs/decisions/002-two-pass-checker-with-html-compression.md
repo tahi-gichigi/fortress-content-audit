@@ -17,6 +17,9 @@ Single-pass auditing with a conservative prompt missed real issues (low recall).
 ### HTML compression (`lib/html-compressor.ts`)
 Strip class/id/style/data-* attributes, unwrap inline formatting tags (`<strong>`, `<em>`, `<b>`, `<i>`, `<u>`, bare `<span>` etc. — auditing never needs bold/italic context), collapse SVGs to placeholders. Typically 60-91% size reduction on Tailwind pages.
 
+**Fix (2026-03-19): Remove visually-hidden spans before class stripping.**
+Tailwind's `hidden`, `sr-only`, and `invisible` classes make elements visually hidden. Before this fix, class stripping + span unwrapping merged their text content into adjacent text — e.g. `Add to your website<span class="hidden md:block">A</span>` became `"Add to your websiteA"`, which the auditor and checker both confirmed as a real stray-character issue. The fix adds a pass before attribute stripping that removes `<span>` elements whose `class` contains `hidden`, `sr-only`, or `invisible` as a whole word. Found via Natalie's seline.so test (2026-03-18). Verified end-to-end with the production Firecrawl client.
+
 ### Full HTML to checker (not snippets)
 Checker receives full compressed page HTML, not extracted snippets. Eliminates the entire class of "snippet extractor couldn't locate the text" false drops. `lib/snippet-extractor.ts` has been deleted — it is no longer part of the codebase.
 

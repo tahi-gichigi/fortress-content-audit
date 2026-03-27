@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server"
 import { supabase, type EmailCapture } from '@/lib/supabase'
+import { supabaseAdmin } from '@/lib/supabase-admin'
 
 // Helper function for error handling
 const getErrorMessage = (error: unknown): string => {
@@ -61,9 +62,9 @@ export async function POST(request: Request) {
 
     console.log(`[Email Capture API] Storing capture for session: ${sessionToken}, email: ${email.substring(0, 3)}***`)
 
-    // Test Supabase connection
+    // Test Supabase connection — uses admin client (anon has no SELECT on email_captures)
     try {
-      await supabase.from('email_captures').select('id').limit(1)
+      await supabaseAdmin.from('email_captures').select('id').limit(1)
     } catch (connectionError) {
       console.error('[Email Capture API] Supabase connection test failed:', connectionError)
       return NextResponse.json(
@@ -152,8 +153,8 @@ export async function GET(request: Request) {
     const sessionToken = searchParams.get('sessionToken')
 
     if (sessionToken) {
-      // Return specific capture
-      const { data, error } = await supabase
+      // Return specific capture — uses admin client (anon has no SELECT on email_captures)
+      const { data, error } = await supabaseAdmin
         .from('email_captures')
         .select('*')
         .eq('session_token', sessionToken)
@@ -168,8 +169,8 @@ export async function GET(request: Request) {
 
       return NextResponse.json(data)
     } else {
-      // Return all captures (for admin/debugging)
-      const { data, error } = await supabase
+      // Return all captures (admin/debugging) — uses admin client
+      const { data, error } = await supabaseAdmin
         .from('email_captures')
         .select('*')
         .order('captured_at', { ascending: false })
@@ -241,9 +242,9 @@ export async function PUT(request: Request) {
       )
     }
 
-    // First, check if the capture exists
+    // First, check if the capture exists — uses admin client (anon has no SELECT on email_captures)
     console.log(`[Email Capture API] PUT - Checking if capture exists for session: ${sessionToken}`)
-    const { data: existingData, error: selectError } = await supabase
+    const { data: existingData, error: selectError } = await supabaseAdmin
       .from('email_captures')
       .select('*')
       .eq('session_token', sessionToken)
@@ -283,8 +284,8 @@ export async function PUT(request: Request) {
       })
     }
 
-    // Update payment_completed to true
-    const { data, error } = await supabase
+    // Update payment_completed to true — uses admin client (anon has no UPDATE on email_captures)
+    const { data, error } = await supabaseAdmin
       .from('email_captures')
       .update({ payment_completed: true })
       .eq('session_token', sessionToken)
