@@ -496,6 +496,7 @@ export function DataTable({
   initialSeverityFilter,
   hidePagination = false,
   hideSelectAndActions = false,
+  loading = false,
 }: {
   data: AuditTableRow[]
   auditId?: string
@@ -507,6 +508,7 @@ export function DataTable({
   initialSeverityFilter?: 'all' | 'critical' | 'medium' | 'low'
   hidePagination?: boolean
   hideSelectAndActions?: boolean
+  loading?: boolean
 }) {
   const { toast } = useToast()
   const [rowSelection, setRowSelection] = React.useState<RowSelectionState>({})
@@ -974,8 +976,8 @@ export function DataTable({
                         colSpan={columns.length}
                         className="h-32 text-center py-8"
                       >
-                        {/* Use shared empty state when no filters are active */}
-                        {hideTabs || (activeStateTab === 'all' && activeSeverityTab === "all") ? (
+                        {/* Use shared empty state when no filters are active (suppress during loading) */}
+                        {!loading && (hideTabs || (activeStateTab === 'all' && activeSeverityTab === "all")) ? (
                           <EmptyAuditState variant="inline" />
                         ) : (
                           <div className="flex flex-col items-center justify-center gap-2">

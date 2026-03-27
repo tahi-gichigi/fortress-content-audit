@@ -20,6 +20,7 @@ interface AuditTableProps {
   readOnly?: boolean
   onStatusUpdate?: () => void
   initialSeverityFilter?: 'all' | 'critical' | 'medium' | 'low'
+  loading?: boolean // Suppress empty state during loading
 }
 
 export function AuditTable({
@@ -32,6 +33,7 @@ export function AuditTable({
   readOnly = false,
   onStatusUpdate,
   initialSeverityFilter = 'all',
+  loading = false,
 }: AuditTableProps) {
   const router = useRouter()
   const [isAuthenticated, setIsAuthenticated] = useState(false)
@@ -87,6 +89,7 @@ export function AuditTable({
         initialSeverityFilter={initialSeverityFilter}
         hidePagination={showPreview}
         hideSelectAndActions={showPreview}
+        loading={loading}
       />
       {showPreview && (totalIssues ?? data.length) > data.length && (
         <div

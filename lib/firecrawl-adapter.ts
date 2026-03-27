@@ -406,11 +406,15 @@ export function formatFirecrawlForPrompt(manifest: AuditManifest): string {
       // doesn't burn tokens on page 2+. Element manifest still runs on raw HTML (unaffected).
       const chunks = compressHtmlToChunks(stripHtmlNoise(page.html), page.url)
 
-      // Deduplicate shared structural blocks (nav, header, footer) across pages
+      // Deduplicate shared structural blocks (nav, header, footer) across pages.
+      // Fingerprint includes text + href values so a nav with the same text but different
+      // links (e.g. localized navs) is NOT treated as a duplicate.
       const $c = cheerio.load(chunks.join(''), { decodeEntities: false })
       for (const tag of ['nav', 'header', 'footer'] as const) {
         $c(tag).each((_i, el) => {
-          const fp = `${tag}:${$c(el).text().replace(/\s+/g, ' ').trim().slice(0, 300)}`
+          const text = $c(el).text().replace(/\s+/g, ' ').trim()
+          const hrefs = $c(el).find('a[href]').map((_i2, a) => $c(a).attr('href') || '').toArray()
+          const fp = `${tag}:${text.slice(0, 200)}:${hrefs.slice(0, 5).join(',')}`
           if (seenBlocks.has(fp)) {
             $c(el).replaceWith(`<${tag}>[Same as Page 1]</${tag}>`)
           } else {

@@ -1523,6 +1523,7 @@ export default function DashboardPage() {
                       totalIssues={displayTotalIssues}
                       onStatusUpdate={refetch}
                       initialSeverityFilter={severityFilter}
+                      loading={tableRowsLoading || !!pendingAuditId}
                     />
                   </div>
                 )}
