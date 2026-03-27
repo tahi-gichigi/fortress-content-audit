@@ -628,6 +628,56 @@ async function runCategoryAuditWithRetry(
   }
 }
 
+/**
+ * Deduplicate issues within a single audit run by (page_url, normalized description).
+ * Keeps the higher-severity issue when duplicates are found.
+ * Uses substring containment or >80% character overlap as similarity measure.
+ */
+function deduplicateIssues(issues: AuditResult['issues']): AuditResult['issues'] {
+  const normalize = (s: string) => s.toLowerCase().replace(/[^\w\s]/g, '').trim()
+
+  const isSimilar = (a: string, b: string): boolean => {
+    const na = normalize(a)
+    const nb = normalize(b)
+    if (na === nb) return true
+    if (na.includes(nb) || nb.includes(na)) return true
+    // Jaccard-like character overlap: shared chars / max length
+    const setA = new Set(na)
+    const setB = new Set(nb)
+    const shared = [...setA].filter(c => setB.has(c)).length
+    const maxLen = Math.max(setA.size, setB.size)
+    if (maxLen === 0) return true
+    return shared / maxLen > 0.8
+  }
+
+  const severityRank: Record<string, number> = { critical: 3, medium: 2, low: 1 }
+
+  const deduped: AuditResult['issues'] = []
+
+  for (const issue of issues) {
+    const existingIdx = deduped.findIndex(
+      d => d.page_url === issue.page_url && isSimilar(d.issue_description, issue.issue_description)
+    )
+    if (existingIdx === -1) {
+      deduped.push(issue)
+    } else {
+      // Keep higher severity
+      const existingRank = severityRank[deduped[existingIdx].severity] ?? 0
+      const newRank = severityRank[issue.severity] ?? 0
+      if (newRank > existingRank) {
+        deduped[existingIdx] = issue
+      }
+    }
+  }
+
+  const dropped = issues.length - deduped.length
+  if (dropped > 0) {
+    Logger.info(`[Dedup] Removed ${dropped} duplicate issues (${deduped.length} remaining)`)
+  }
+
+  return deduped
+}
+
 // Merge results from parallel audits
 function mergeParallelResults(
   results: CategoryAuditResult[],
@@ -779,7 +829,10 @@ export async function parallelMiniAudit(
 
     // Merge all issues: category + brand voice + link validation
     const linkValidationIssues = firecrawlManifest.linkValidationIssues || []
-    const unverifiedIssues = [...categoryIssues, ...brandVoiceIssues]
+    const mergedForDedup = [...categoryIssues, ...brandVoiceIssues]
+    // Dedup before verification pass
+    const dedupedIssues = deduplicateIssues(mergedForDedup)
+    const unverifiedIssues = dedupedIssues
     // Verify model-generated issues against source HTML, then add link validation (already verified by crawler)
     const issues = [...verifyIssuesAgainstHtml(unverifiedIssues, firecrawlManifest), ...linkValidationIssues]
     const totalDurationMs = Date.now() - startTime
@@ -941,7 +994,9 @@ export async function parallelProAudit(
 
     // Merge all issues: category + brand voice + link validation
     const linkValidationIssuesPro = firecrawlManifest.linkValidationIssues || []
-    const unverifiedIssuesPro = [...categoryIssuesPro, ...brandVoiceIssuesPro]
+    const mergedForDedupPro = [...categoryIssuesPro, ...brandVoiceIssuesPro]
+    // Dedup BEFORE checker pass to reduce checker token cost
+    const unverifiedIssuesPro = deduplicateIssues(mergedForDedupPro)
     // Two-pass verification: model checker replaces regex filter for Pro tier
     // Brand voice issues are also run through the checker for consistency
     const checkedIssues = await runCheckerPass(unverifiedIssuesPro, firecrawlManifest, openai)
