@@ -779,7 +779,7 @@ describe('Cross-fix: Prompt language detection', () => {
       '[]',
       '[]'
     )
-    expect(prompt).toContain("site's primary language")
+    expect(prompt).toContain("primary language")
     expect(prompt).toContain('skip it')
   })
 
@@ -791,7 +791,7 @@ describe('Cross-fix: Prompt language detection', () => {
       '[]',
       '[]'
     )
-    expect(prompt).toContain("site's primary language")
+    expect(prompt).toContain("primary language")
     expect(prompt).toContain('skip it')
   })
 })

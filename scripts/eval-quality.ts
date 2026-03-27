@@ -32,6 +32,10 @@ config({ path: '.env.local' })
 
 import * as fs from 'fs'
 import * as path from 'path'
+import { fileURLToPath } from 'url'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 import { Client } from 'langsmith'
 import { evaluate, type EvaluatorT, type SummaryEvaluatorT } from 'langsmith/evaluation'
 import { extractWithFirecrawl, formatFirecrawlForPrompt, formatPagesForChecker, getAuditedUrls, type AuditManifest } from '../lib/firecrawl-adapter'

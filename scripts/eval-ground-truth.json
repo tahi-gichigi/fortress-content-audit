@@ -107,6 +107,11 @@
           "id": "sel-fp-4",
           "pattern": "parameter list mixes label|developer tooling",
           "reason": "Standard developer tooling UI, not a copywriting error."
+        },
+        {
+          "id": "sel-fp-5",
+          "pattern": "stray .A. character|stray A",
+          "reason": "Hidden span unwrapped into adjacent text. Fixed by hidden-class widening."
         }
       ]
     },
@@ -230,6 +235,60 @@
           "id": "bee-fp-3",
           "pattern": "AINewsletterGenerator|missing spaces",
           "reason": "Inline tag unwrapping merged words. Fixed with space insertion on unwrap."
+        }
+      ]
+    },
+    {
+      "domain": "cal.com",
+      "tier": "PAID",
+      "notes": "Scheduling tool. Mixed-language content (Portuguese, Italian) on primary pages. Download link returns 404 to crawlers but works in browser.",
+      "knownIssues": [],
+      "falsePositivePatterns": [
+        {
+          "id": "cal-fp-1",
+          "pattern": "Desktop App.*404|download.*404",
+          "reason": "Download link returns 404 to HEAD/GET but works in browser. Inconclusive, not broken."
+        },
+        {
+          "id": "cal-fp-2",
+          "pattern": "portuguese|italian|spanish|idioma|lingua",
+          "reason": "Mixed-language content on primary pages. Foreign language sections are intentional localization."
+        }
+      ]
+    },
+    {
+      "domain": "linear.app",
+      "tier": "PAID",
+      "notes": "Project management tool. Text animations and Spanish content mixed in.",
+      "knownIssues": [],
+      "falsePositivePatterns": [
+        {
+          "id": "lin-fp-1",
+          "pattern": "secure0n\\\\*d|secure0nd|encoding.*glitch",
+          "reason": "Text animation captured mid-render, not a real encoding issue."
+        },
+        {
+          "id": "lin-fp-2",
+          "pattern": "spanish|foreign.*language",
+          "reason": "Spanish content sections flagged as errors. Intentional localization."
+        }
+      ]
+    },
+    {
+      "domain": "lottiefiles.com",
+      "tier": "PAID",
+      "notes": "Animation platform. SVG-heavy. Bot protection returns 403 on many pages but links work in browser.",
+      "knownIssues": [],
+      "falsePositivePatterns": [
+        {
+          "id": "lot-fp-1",
+          "pattern": "HTTP 403|returned error.*403|returned.*403",
+          "reason": "Bot protection returns 403 to crawlers but pages work in browser. Fixed: 403 treated as inconclusive."
+        },
+        {
+          "id": "lot-fp-2",
+          "pattern": "SVG.*path|SVG.*data|SVG.*content",
+          "reason": "SVG path data exposed in audit results. Should be collapsed by compressor."
         }
       ]
     }

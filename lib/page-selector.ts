@@ -14,7 +14,7 @@ const LONGFORM_PATH_PATTERNS = [
 ]
 
 // Foreign language path prefixes to filter out
-const FOREIGN_LANG_PATTERN = /^\/(es|pt|it|fr|de|ja|ko|zh|nl|ru|ar|sv|da|nb|fi|pl|cs|tr)\//i
+const FOREIGN_LANG_PATTERN = /^\/(es|pt|it|fr|de|ja|ko|zh|nl|ru|ar|sv|da|nb|fi|pl|cs|tr|he|hu|th|vi|ro|bg|uk|el|id|ms|hi)\//i
 
 function isLongformUrl(url: string): boolean {
   try {

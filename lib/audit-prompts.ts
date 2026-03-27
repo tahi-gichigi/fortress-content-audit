@@ -21,7 +21,7 @@ Audit only the homepage and one additional key public-facing page of a website f
 - Facts & Consistency (factual errors, inconsistencies, incorrect stats)
 - Formatting (layout problems, visual hierarchy issues, formatting inconsistencies — NOT link issues, those are checked by a separate automated system)
 
-**Language detection:** Detect the language of each page from its content. Write all issue descriptions and suggested fixes in that same language. Do not flag intentional foreign-language content — brand names, product terms, proper nouns, or content clearly written in a secondary language on purpose.
+**Language detection:** Detect the primary language of the site from its homepage. Write all output in that language. Audit ONLY content in the primary language. If a page or section is in a different language, skip it entirely — do not flag spelling or grammar in non-primary languages. Do not flag brand names, technical terms, or proper nouns in any language.
 
 **RESPONSIVE DUPLICATES — read before auditing:**
 Modern sites ship BOTH mobile and desktop versions of components in the same HTML. Seeing the same text twice is intentional responsive design, not a content issue. CSS class attributes have been removed from the HTML you receive, so use structural clues to identify them.
@@ -179,7 +179,7 @@ Audit up to 20 public-facing, top-of-funnel pages of a website for:
 - Facts & Consistency (factual errors, inconsistencies, incorrect stats)
 - Formatting (layout problems, visual hierarchy issues, formatting inconsistencies — NOT link issues, those are checked by a separate automated system)
 
-**Language detection:** Detect the language of each page from its content. Write all issue descriptions and suggested fixes in that same language. Do not flag intentional foreign-language content — brand names, product terms, proper nouns, or content clearly written in a secondary language on purpose.
+**Language detection:** Detect the primary language of the site from its homepage. Write all output in that language. Audit ONLY content in the primary language. If a page or section is in a different language, skip it entirely — do not flag spelling or grammar in non-primary languages. Do not flag brand names, technical terms, or proper nouns in any language.
 
 **RESPONSIVE DUPLICATES — read before auditing:**
 Modern sites ship BOTH mobile and desktop versions of components in the same HTML. Seeing the same text twice is intentional responsive design, not a content issue. CSS class attributes have been removed from the HTML you receive, so use structural clues to identify them.
@@ -387,7 +387,7 @@ ${urlListText}
 
 Do NOT audit any other pages. Focus only on these specific URLs.
 
-**Language detection:** Detect the language of each page from its content. Write all output (issue_description, suggested_fix) in that same language. Audit only content in the site's primary language. If a page is in a different language, skip it.
+**Language detection:** Detect the primary language of the site from its homepage. Write all output in that language. Audit ONLY content in the primary language. If a page or section is in a different language, skip it entirely — do not flag spelling or grammar in non-primary languages. Do not flag brand names, technical terms, or proper nouns in any language.
 
 **RESPONSIVE DUPLICATES — read before auditing:**
 Modern sites ship BOTH mobile and desktop versions of components in the same HTML. Seeing the same text twice is intentional responsive design, not a content issue. CSS class attributes have been removed from the HTML you receive, so use structural clues to identify them.
@@ -426,6 +426,8 @@ If you encounter bot protection, return: BOT_PROTECTION_OR_FIREWALL_BLOCKED
 - critical: "professionalism: pricing page says \\"Free forever\\" but signup says \\"14-day trial\\" — contradictory claim that misleads users" (severity: critical)
 - medium: "credibility: \\"AI-powered\\" used on homepage but \\"machine learning\\" used on features — inconsistent terminology" (severity: medium)
 - low: "professionalism: footer copyright year is 2023, should be 2024" (severity: low)
+
+**NOT critical (common severity inflation):** style/readability preferences (long paragraphs, jargon, passive voice) → low. Minor grammar that doesn't change meaning → low.
 
 For every issue, provide:
 - page_url: The URL where issue was found
@@ -516,7 +518,7 @@ ${urlListText}
 
 Do NOT audit any other pages. Focus only on these specific URLs.
 
-**Language detection:** Detect the language of each page from its content. Write all output (issue_description, suggested_fix) in that same language. Audit only content in the site's primary language. If a page is in a different language, skip it.
+**Language detection:** Detect the primary language of the site from its homepage. Write all output in that language. Audit ONLY content in the primary language. If a page or section is in a different language, skip it entirely — do not flag spelling or grammar in non-primary languages. Do not flag brand names, technical terms, or proper nouns in any language.
 
 **RESPONSIVE DUPLICATES — read before auditing:**
 Modern sites ship BOTH mobile and desktop versions of components in the same HTML. Seeing the same text twice is intentional responsive design, not a content issue. CSS class attributes have been removed from the HTML you receive, so use structural clues to identify them.
@@ -556,6 +558,8 @@ If you encounter bot protection, return: BOT_PROTECTION_OR_FIREWALL_BLOCKED
 - medium: "credibility: \\"AI-powered\\" used on homepage but \\"machine learning\\" used on features — inconsistent terminology" (severity: medium)
 - low: "professionalism: footer copyright year is 2023, should be 2024" (severity: low)
 
+**NOT critical (common severity inflation):** style/readability preferences (long paragraphs, jargon, passive voice) → low. Minor grammar that doesn't change meaning → low. Missing articles (a/an/the) in non-headline positions → low.
+
 For every issue, provide:
 - page_url: The URL where issue was found
 - category: "${category}" (always this category)
@@ -587,9 +591,9 @@ export function buildCheckerPrompt(
   category: string
 ): string {
   const categoryVerification: Record<string, string> = {
-    "Language": "Confirm the exact quoted text exists in the HTML AND contains the claimed error. Valid stylistic choices (brand voice, intentional tone) are not errors. Regional spelling (UK vs US English) on a locale-targeted site is a valid concern, not a stylistic choice. If the claimed error text appears inside an animated number component, counter, or interactive widget (look for `inert` attributes on sibling elements, or custom elements like `<number-flow-react>`), mark confirmed: false — these are scrape-time snapshots, not real content.",
+    "Language": "Confirm the exact quoted text exists in the HTML AND contains the claimed error. Valid stylistic choices (brand voice, intentional tone) are not errors. Regional spelling (UK vs US English) on a locale-targeted site is a valid concern, not a stylistic choice. If the claimed error text appears inside an animated number component, counter, or interactive widget (look for `inert` attributes on sibling elements, or custom elements like `<number-flow-react>`), mark confirmed: false — these are scrape-time snapshots, not real content. If the issue claims invisible characters, zero-width characters, or non-printable characters, search for the exact codepoint (U+200B, U+FEFF, U+200C, etc.) in the HTML evidence. If no such codepoint is present, mark confirmed: false.",
     "Facts & Consistency": "Confirm the claimed text/data is present. You can verify internal consistency (numbers matching across sections) but not external facts. If the text exists and the inconsistency is real within the page, confirm. Cross-page contradictions are valid. If an issue claims page A contradicts page B, look for evidence from both pages in the excerpts. If the claimed value appears inside an interactive component (slider, counter, progress bar), mark confirmed: false — it is a snapshot state, not a real content error.",
-    "Formatting": "Confirm the HTML structure supports the claim (empty alt, wrong heading level, missing aria). Layout/render issues that can't be verified from static HTML → mark uncertain. If the issue describes garbled or scrambled text inside a single isolated element, check for signs of animation (sibling elements with `inert`, custom web components, or repeated character sets 0-9) — if present, mark confirmed: false.",
+    "Formatting": "Confirm the HTML structure supports the claim (empty alt, wrong heading level, missing aria). Layout/render issues that can't be verified from static HTML → mark uncertain. If the issue describes garbled or scrambled text inside a single isolated element, check for signs of animation (sibling elements with `inert`, custom web components, or repeated character sets 0-9) — if present, mark confirmed: false. If the issue claims missing visual indicators (checkmarks, icons, dots, slide markers) that would only be visible in a rendered browser, mark confirmed: false — static HTML cannot verify CSS/SVG rendering.",
   }
 
   const verificationInstruction = categoryVerification[category]

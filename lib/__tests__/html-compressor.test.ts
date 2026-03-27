@@ -284,6 +284,22 @@ describe('compressHtml — inline tag unwrapping', () => {
     expect(result).toContain('world')
   })
 
+  it('inserts space between adjacent spans to prevent word merging', () => {
+    // Regression: beehiiv heading <h1><span>Artificial</span><span>Intelligence</span>...
+    // was producing "ArtificialIntelligencefornewsletteroperators"
+    const html = '<h1><span>Artificial</span><span>Intelligence</span><span>for</span><span>newsletter</span><span>operators</span></h1>'
+    const result = compressHtml(html)
+    expect(result).toContain('Artificial Intelligence for newsletter operators')
+    expect(result).not.toContain('ArtificialIntelligence')
+  })
+
+  it('does not double-space when span already has leading whitespace', () => {
+    const html = '<p>Hello <span>world</span> end</p>'
+    const result = compressHtml(html)
+    expect(result).not.toContain('Hello  world')
+    expect(result).toContain('Hello world')
+  })
+
   it('preserves <span> with aria-* attributes', () => {
     const html = '<span aria-live="polite">Status update</span>'
     const result = compressHtml(html)

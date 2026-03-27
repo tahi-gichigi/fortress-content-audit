@@ -167,6 +167,16 @@ export function compressHtml(html: string): string {
     const hasRole = !!attribs.role
     const hasInert = 'inert' in attribs
     if (!hasAria && !hasRole && !hasInert) {
+      // Insert space before unwrapping if previous sibling text has no trailing
+      // whitespace — prevents adjacent spans merging into one word:
+      // <span>Artificial</span><span>Intelligence</span> → "Artificial Intelligence"
+      const prev = el.prev
+      if (prev && prev.type === 'text') {
+        const prevText = (prev as any).data || ''
+        if (prevText.length > 0 && !/\s$/.test(prevText)) {
+          (prev as any).data = prevText + ' '
+        }
+      }
       $(el).replaceWith($(el).contents())
     }
   })
