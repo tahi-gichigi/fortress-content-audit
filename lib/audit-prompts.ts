@@ -21,7 +21,7 @@ Audit only the homepage and one additional key public-facing page of a website f
 - Facts & Consistency (factual errors, inconsistencies, incorrect stats)
 - Formatting (layout problems, visual hierarchy issues, formatting inconsistencies — NOT link issues, those are checked by a separate automated system)
 
-**Language detection:** Detect the language of each page from its content. Write all issue descriptions and suggested fixes in that same language. Do not flag intentional foreign-language content — brand names, product terms, proper nouns, or content clearly written in a secondary language on purpose.
+**Language detection:** Detect the primary language of the site from its homepage. Write all output in that language. Audit ONLY content in the primary language. If a page or section is in a different language, skip it entirely — do not flag spelling or grammar in non-primary languages. Do not flag brand names, technical terms, or proper nouns in any language.
 
 **RESPONSIVE DUPLICATES — read before auditing:**
 Modern sites ship BOTH mobile and desktop versions of components in the same HTML. Seeing the same text twice is intentional responsive design, not a content issue. CSS class attributes have been removed from the HTML you receive, so use structural clues to identify them.
@@ -35,6 +35,8 @@ How to spot them:
 - Do NOT flag numbers, text, or values inside interactive components (sliders, counters, animated number displays, progress bars). These show a snapshot state at scrape time — values like "0 seconds", "$0", or garbled text inside animated elements are NOT content errors.
 - Do NOT flag garbled or partially-encoded text (e.g. "secure0n*d", "3x7K") inside a single isolated element — it is likely a text animation or encoding artifact captured mid-render, not a real content issue.
 - Do NOT flag form field labels that mix parameter names and type annotations — this is standard developer tooling UI, not a copywriting error.
+- Do NOT flag text adjacent to UI badge/tag/label elements (shown as [Badge: text] in the HTML) as a word-merging or concatenation error — these are intentional inline UI chips.
+- Do NOT flag invisible, zero-width, or non-printable characters (U+FEFF, U+200B, etc.) as content issues. These are encoding artifacts from CMS systems or web frameworks and do not affect how text renders or reads — flagging them is always a false positive.
 
 Pages are truncated at an HTML tag boundary and marked with "[Content truncated due to length]". DO NOT flag content near this marker as incomplete — it is an extraction limit, not a real site issue. Large pages may appear as "part 1 of 2" / "part 2 of 2" — treat them as one continuous page.
 
@@ -77,7 +79,7 @@ After completing the single pass over both pages and categories, return as outpu
 
 # Steps
 
-1. For each of the two pages (homepage and one key additional public page), audit all three categories (Language; Facts & Consistency; Links & Formatting) in a single comprehensive review.
+1. For each of the two pages (homepage and one key additional public page), audit all three categories (Language; Facts & Consistency; Formatting) in a single comprehensive review.
 2. For every identified issue, generate a JSON object with required fields (see output format).
 3. Ensure the "issue_description" begins with the appropriate impact keyword for instant clarity.
 4. Track the total number of issues, count of pages with issues, and total pages audited.
@@ -91,7 +93,7 @@ If issues are found:
 Respond with a JSON object containing:
 - "issues": array of objects, each with:
     - page_url: [string]
-    - category: [string] — must be "Language", "Facts & Consistency", or "Links & Formatting"
+    - category: [string] — must be "Language", "Facts & Consistency", or "Formatting"
     - issue_description: [string] — begins with an impact word (e.g., "professionalism:", "frustration:", "trust:", "credibility:") then concise problem statement
     - severity: [string] — "critical", "medium", or "low"
     - suggested_fix: [string] — direct, actionable, concise fix
@@ -122,7 +124,7 @@ Example if issues are found:
     },
     {
       "page_url": "https://example.com/pricing",
-      "category": "Links & Formatting",
+      "category": "Formatting",
       "issue_description": "frustration: 'Contact Support' footer link leads to 404",
       "severity": "critical",
       "suggested_fix": "Update link to correct support page."
@@ -153,7 +155,7 @@ null
 - Use the precise output format above; do not include extraneous notes, explanations, or context.
 - DON'T report "/cdn-cgi/l/email-protection" links as broken - Cloudflare decodes these client-side into valid mailto links.
 
-**Important: Audit only the homepage and ONE key additional page. Audit all categories (Language, Facts & Consistency, Links & Formatting) in a single comprehensive pass (not three separate passes). If no issues are found, return null; otherwise, follow all formatting, style, and conciseness rules.**
+**Important: Audit only the homepage and ONE key additional page. Audit all categories (Language, Facts & Consistency, Formatting) in a single comprehensive pass (not three separate passes). If no issues are found, return null; otherwise, follow all formatting, style, and conciseness rules.**
 
 ${excludedIssues && excludedIssues !== '[]' ? `\n# Previously Resolved/Ignored Issues\n\nThe following issues have been resolved or ignored by the user. DO NOT report them again:\n${excludedIssues}\n` : ''}
 ${activeIssues && activeIssues !== '[]' ? `\n# Active Issues from Previous Audit\n\nThe following issues were found in a previous audit. Verify if they still exist:\n${activeIssues}\n` : ''}
@@ -178,7 +180,7 @@ Audit up to 20 public-facing, top-of-funnel pages of a website for:
 - Facts & Consistency (factual errors, inconsistencies, incorrect stats)
 - Formatting (layout problems, visual hierarchy issues, formatting inconsistencies — NOT link issues, those are checked by a separate automated system)
 
-**Language detection:** Detect the language of each page from its content. Write all issue descriptions and suggested fixes in that same language. Do not flag intentional foreign-language content — brand names, product terms, proper nouns, or content clearly written in a secondary language on purpose.
+**Language detection:** Detect the primary language of the site from its homepage. Write all output in that language. Audit ONLY content in the primary language. If a page or section is in a different language, skip it entirely — do not flag spelling or grammar in non-primary languages. Do not flag brand names, technical terms, or proper nouns in any language.
 
 **RESPONSIVE DUPLICATES — read before auditing:**
 Modern sites ship BOTH mobile and desktop versions of components in the same HTML. Seeing the same text twice is intentional responsive design, not a content issue. CSS class attributes have been removed from the HTML you receive, so use structural clues to identify them.
@@ -192,6 +194,8 @@ How to spot them:
 - Do NOT flag numbers, text, or values inside interactive components (sliders, counters, animated number displays, progress bars). These show a snapshot state at scrape time — values like "0 seconds", "$0", or garbled text inside animated elements are NOT content errors.
 - Do NOT flag garbled or partially-encoded text (e.g. "secure0n*d", "3x7K") inside a single isolated element — it is likely a text animation or encoding artifact captured mid-render, not a real content issue.
 - Do NOT flag form field labels that mix parameter names and type annotations — this is standard developer tooling UI, not a copywriting error.
+- Do NOT flag text adjacent to UI badge/tag/label elements (shown as [Badge: text] in the HTML) as a word-merging or concatenation error — these are intentional inline UI chips.
+- Do NOT flag invisible, zero-width, or non-printable characters (U+FEFF, U+200B, etc.) as content issues. These are encoding artifacts from CMS systems or web frameworks and do not affect how text renders or reads — flagging them is always a false positive.
 
 Pages are truncated at an HTML tag boundary and marked with "[Content truncated due to length]". DO NOT flag content near this marker as incomplete — it is an extraction limit, not a real site issue. Large pages may appear as "part 1 of 2" / "part 2 of 2" — treat them as one continuous page.
 
@@ -224,7 +228,7 @@ For pages that are still loading or temporarily unavailable, retry up to three t
 
 For every issue, log:
 - page_url: [string]
-- category: "Language", "Facts & Consistency", or "Links & Formatting"
+- category: "Language", "Facts & Consistency", or "Formatting"
 - issue_description: impact label (professionalism:, trust:, clarity:, credibility:, frustration:) + problem in 10 words or fewer. For readability issues use "clarity:" or "accessibility:" — never "readability:" or grade codes. Always name WHERE: quote the text or name the section (hero, pricing table, nav, footer CTA).
 - severity: "critical", "medium", or "low"
 - suggested_fix: action verb + fix in 8 words or fewer
@@ -247,7 +251,7 @@ If issues are found, respond with:
   "issues": [
     {
       "page_url": "[string]",
-      "category": "[Language|Facts & Consistency|Links & Formatting]",
+      "category": "[Language|Facts & Consistency|Formatting]",
       "issue_description": "[impact word]: [ultra-concise problem statement]",
       "severity": "[critical|medium|low]",
       "suggested_fix": "[concise fix]"
@@ -276,14 +280,14 @@ Example if issues are found:
     },
     {
       "page_url": "https://example.com/about",
-      "category": "Links & Formatting",
+      "category": "Formatting",
       "issue_description": "frustration: 'Contact Us' footer link leads to 404",
       "severity": "critical",
       "suggested_fix": "Update link to correct contact page."
     },
     {
       "page_url": "https://example.com/pricing",
-      "category": "Links & Formatting",
+      "category": "Formatting",
       "issue_description": "trust: hero 'Learn More' button links to homepage, not pricing",
       "severity": "medium",
       "suggested_fix": "Change button href to pricing page."
@@ -329,7 +333,7 @@ ${activeIssues && activeIssues !== '[]' ? `\n# Active Issues from Previous Audit
  * @param flagKeywords - Terms to always flag when present
  */
 export function buildCategoryAuditPrompt(
-  category: "Language" | "Facts & Consistency" | "Links & Formatting",
+  category: "Language" | "Facts & Consistency" | "Formatting",
   urlsToAudit: string[],
   manifestText: string,
   excludedIssues: string,
@@ -347,7 +351,7 @@ export function buildCategoryAuditPrompt(
 
 Do not flag intentional foreign-language content — brand names, technical terms, proper nouns, or sections clearly written in a secondary language on purpose. Only flag genuine errors within the page's own detected language.
 
-DO NOT report Facts/Consistency or Links/Formatting issues.`,
+DO NOT report Facts/Consistency or Formatting issues.`,
 
     "Facts & Consistency": `Focus ONLY on Facts & Consistency issues:
 - Factual errors or incorrect information
@@ -356,9 +360,9 @@ DO NOT report Facts/Consistency or Links/Formatting issues.`,
 - Outdated information
 - Naming inconsistencies (product names, company name variations)
 
-DO NOT report Language or Links/Formatting issues.`,
+DO NOT report Language or Formatting issues.`,
 
-    "Links & Formatting": `Focus ONLY on Formatting & UX issues:
+    "Formatting": `Focus ONLY on Formatting & UX issues:
 - Formatting problems (inconsistent styles, broken layouts)
 - Layout issues affecting readability
 - Visual hierarchy problems
@@ -385,7 +389,7 @@ ${urlListText}
 
 Do NOT audit any other pages. Focus only on these specific URLs.
 
-**Language detection:** Detect the language of each page from its content. Write all output (issue_description, suggested_fix) in that same language.
+**Language detection:** Detect the primary language of the site from its homepage. Write all output in that language. Audit ONLY content in the primary language. If a page or section is in a different language, skip it entirely — do not flag spelling or grammar in non-primary languages. Do not flag brand names, technical terms, or proper nouns in any language.
 
 **RESPONSIVE DUPLICATES — read before auditing:**
 Modern sites ship BOTH mobile and desktop versions of components in the same HTML. Seeing the same text twice is intentional responsive design, not a content issue. CSS class attributes have been removed from the HTML you receive, so use structural clues to identify them.
@@ -399,6 +403,8 @@ How to spot them:
 - Do NOT flag numbers, text, or values inside interactive components (sliders, counters, animated number displays, progress bars). These show a snapshot state at scrape time — values like "0 seconds", "$0", or garbled text inside animated elements are NOT content errors.
 - Do NOT flag garbled or partially-encoded text (e.g. "secure0n*d", "3x7K") inside a single isolated element — it is likely a text animation or encoding artifact captured mid-render, not a real content issue.
 - Do NOT flag form field labels that mix parameter names and type annotations — this is standard developer tooling UI, not a copywriting error.
+- Do NOT flag text adjacent to UI badge/tag/label elements (shown as [Badge: text] in the HTML) as a word-merging or concatenation error — these are intentional inline UI chips.
+- Do NOT flag invisible, zero-width, or non-printable characters (U+FEFF, U+200B, etc.) as content issues. These are encoding artifacts from CMS systems or web frameworks and do not affect how text renders or reads — flagging them is always a false positive.
 
 Pages are truncated at an HTML tag boundary and marked with "[Content truncated due to length]". DO NOT flag content near this marker as incomplete — it is an extraction limit, not a real site issue. Large pages may appear as "part 1 of 2" / "part 2 of 2" — treat them as one continuous page.
 
@@ -413,6 +419,18 @@ ${categoryInstructions[category]}
 - The manifest shows code structure, NOT functionality
 
 If you encounter bot protection, return: BOT_PROTECTION_OR_FIREWALL_BLOCKED
+
+**SEVERITY RUBRIC — assign carefully:**
+- critical: broken functionality, completely wrong information, accessibility blocker (e.g. missing alt on key image, factual error that misleads users, nav link 404)
+- medium: misleading content, inconsistent terminology across pages, style violations that affect trust (e.g. product name spelled two ways, ambiguous pricing claim)
+- low: minor style preferences, nitpicks, cosmetic inconsistencies (e.g. trailing period in one CTA vs none in others)
+
+**Examples:**
+- critical: "professionalism: pricing page says \\"Free forever\\" but signup says \\"14-day trial\\" — contradictory claim that misleads users" (severity: critical)
+- medium: "credibility: \\"AI-powered\\" used on homepage but \\"machine learning\\" used on features — inconsistent terminology" (severity: medium)
+- low: "professionalism: footer copyright year is 2023, should be 2024" (severity: low)
+
+**NOT critical (common severity inflation):** style/readability preferences (long paragraphs, jargon, passive voice) → low. Minor grammar that doesn't change meaning → low.
 
 For every issue, provide:
 - page_url: The URL where issue was found
@@ -442,7 +460,7 @@ ${activeIssues && activeIssues !== '[]' ? `\n# Active Issues\n\nVerify if these 
  * Same signature as buildCategoryAuditPrompt so it can be swapped in directly.
  */
 export function buildLiberalCategoryAuditPrompt(
-  category: "Language" | "Facts & Consistency" | "Links & Formatting",
+  category: "Language" | "Facts & Consistency" | "Formatting",
   urlsToAudit: string[],
   manifestText: string,
   excludedIssues: string,
@@ -458,7 +476,7 @@ export function buildLiberalCategoryAuditPrompt(
 - Spelling inconsistencies
 - Awkward phrasing
 
-DO NOT report Facts/Consistency or Links/Formatting issues.`,
+DO NOT report Facts/Consistency or Formatting issues.`,
 
     "Facts & Consistency": `Focus ONLY on Facts & Consistency issues:
 - Factual errors or incorrect information
@@ -471,9 +489,9 @@ When reporting cross-page contradictions, ALWAYS quote the exact text from BOTH 
 Good: 'credibility: "file never touches our servers" (FAQ) contradicts "relayed through our server" (Transparency)'
 Bad: 'credibility: FAQ claim contradicts transparency page'
 
-DO NOT report Language or Links/Formatting issues.`,
+DO NOT report Language or Formatting issues.`,
 
-    "Links & Formatting": `Focus ONLY on Formatting & UX issues:
+    "Formatting": `Focus ONLY on Formatting & UX issues:
 - Formatting problems (inconsistent styles, broken layouts)
 - Layout issues affecting readability
 - Visual hierarchy problems
@@ -503,7 +521,7 @@ ${urlListText}
 
 Do NOT audit any other pages. Focus only on these specific URLs.
 
-**Language detection:** Detect the language of each page from its content. Write all output (issue_description, suggested_fix) in that same language.
+**Language detection:** Detect the primary language of the site from its homepage. Write all output in that language. Audit ONLY content in the primary language. If a page or section is in a different language, skip it entirely — do not flag spelling or grammar in non-primary languages. Do not flag brand names, technical terms, or proper nouns in any language.
 
 **RESPONSIVE DUPLICATES — read before auditing:**
 Modern sites ship BOTH mobile and desktop versions of components in the same HTML. Seeing the same text twice is intentional responsive design, not a content issue. CSS class attributes have been removed from the HTML you receive, so use structural clues to identify them.
@@ -517,6 +535,8 @@ How to spot them:
 - Do NOT flag numbers, text, or values inside interactive components (sliders, counters, animated number displays, progress bars). These show a snapshot state at scrape time — values like "0 seconds", "$0", or garbled text inside animated elements are NOT content errors.
 - Do NOT flag garbled or partially-encoded text (e.g. "secure0n*d", "3x7K") inside a single isolated element — it is likely a text animation or encoding artifact captured mid-render, not a real content issue.
 - Do NOT flag form field labels that mix parameter names and type annotations — this is standard developer tooling UI, not a copywriting error.
+- Do NOT flag text adjacent to UI badge/tag/label elements (shown as [Badge: text] in the HTML) as a word-merging or concatenation error — these are intentional inline UI chips.
+- Do NOT flag invisible, zero-width, or non-printable characters (U+FEFF, U+200B, etc.) as content issues. These are encoding artifacts from CMS systems or web frameworks and do not affect how text renders or reads — flagging them is always a false positive.
 
 Pages are truncated at an HTML tag boundary and marked with "[Content truncated due to length]". DO NOT flag content near this marker as incomplete — it is an extraction limit, not a real site issue. Large pages may appear as "part 1 of 2" / "part 2 of 2" — treat them as one continuous page.
 
@@ -531,6 +551,18 @@ If you encounter bot protection, return: BOT_PROTECTION_OR_FIREWALL_BLOCKED
 **Report the same issue on each page it appears** — don't deduplicate across pages. Severity is optional and defaults to "medium" if uncertain.
 
 **When flagging repeated or redundant content**, list the specific pages where it appears and how many times. Don't just say "repeated" — say where.
+
+**SEVERITY RUBRIC — assign carefully:**
+- critical: broken functionality, completely wrong information, accessibility blocker (e.g. missing alt on key image, factual error that misleads users, nav link 404)
+- medium: misleading content, inconsistent terminology across pages, style violations that affect trust (e.g. product name spelled two ways, ambiguous pricing claim)
+- low: minor style preferences, nitpicks, cosmetic inconsistencies (e.g. trailing period in one CTA vs none in others)
+
+**Examples:**
+- critical: "professionalism: pricing page says \\"Free forever\\" but signup says \\"14-day trial\\" — contradictory claim that misleads users" (severity: critical)
+- medium: "credibility: \\"AI-powered\\" used on homepage but \\"machine learning\\" used on features — inconsistent terminology" (severity: medium)
+- low: "professionalism: footer copyright year is 2023, should be 2024" (severity: low)
+
+**NOT critical (common severity inflation):** style/readability preferences (long paragraphs, jargon, passive voice) → low. Minor grammar that doesn't change meaning → low. Missing articles (a/an/the) in non-headline positions → low.
 
 For every issue, provide:
 - page_url: The URL where issue was found
@@ -563,9 +595,9 @@ export function buildCheckerPrompt(
   category: string
 ): string {
   const categoryVerification: Record<string, string> = {
-    "Language": "Confirm the exact quoted text exists in the HTML AND contains the claimed error. Valid stylistic choices (brand voice, intentional tone) are not errors. Regional spelling (UK vs US English) on a locale-targeted site is a valid concern, not a stylistic choice. If the claimed error text appears inside an animated number component, counter, or interactive widget (look for `inert` attributes on sibling elements, or custom elements like `<number-flow-react>`), mark confirmed: false — these are scrape-time snapshots, not real content.",
+    "Language": "Confirm the exact quoted text exists in the HTML AND contains the claimed error. Valid stylistic choices (brand voice, intentional tone) are not errors. Regional spelling (UK vs US English) on a locale-targeted site is a valid concern, not a stylistic choice. If the claimed error text appears inside an animated number component, counter, or interactive widget (look for `inert` attributes on sibling elements, or custom elements like `<number-flow-react>`), mark confirmed: false — these are scrape-time snapshots, not real content. If the issue claims invisible characters, zero-width characters, or non-printable characters, search for the exact codepoint (U+200B, U+FEFF, U+200C, etc.) in the HTML evidence. If no such codepoint is present, mark confirmed: false.",
     "Facts & Consistency": "Confirm the claimed text/data is present. You can verify internal consistency (numbers matching across sections) but not external facts. If the text exists and the inconsistency is real within the page, confirm. Cross-page contradictions are valid. If an issue claims page A contradicts page B, look for evidence from both pages in the excerpts. If the claimed value appears inside an interactive component (slider, counter, progress bar), mark confirmed: false — it is a snapshot state, not a real content error.",
-    "Links & Formatting": "Confirm the HTML structure supports the claim (empty alt, wrong heading level, missing aria). Layout/render issues that can't be verified from static HTML → mark uncertain. If the issue describes garbled or scrambled text inside a single isolated element, check for signs of animation (sibling elements with `inert`, custom web components, or repeated character sets 0-9) — if present, mark confirmed: false.",
+    "Formatting": "Confirm the HTML structure supports the claim (empty alt, wrong heading level, missing aria). Layout/render issues that can't be verified from static HTML → mark uncertain. If the issue describes garbled or scrambled text inside a single isolated element, check for signs of animation (sibling elements with `inert`, custom web components, or repeated character sets 0-9) — if present, mark confirmed: false. If the issue claims missing visual indicators (checkmarks, icons, dots, slide markers) that would only be visible in a rendered browser, mark confirmed: false — static HTML cannot verify CSS/SVG rendering.",
   }
 
   const verificationInstruction = categoryVerification[category]

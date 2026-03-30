@@ -406,11 +406,15 @@ export function formatFirecrawlForPrompt(manifest: AuditManifest): string {
       // doesn't burn tokens on page 2+. Element manifest still runs on raw HTML (unaffected).
       const chunks = compressHtmlToChunks(stripHtmlNoise(page.html), page.url)
 
-      // Deduplicate shared structural blocks (nav, header, footer) across pages
+      // Deduplicate shared structural blocks (nav, header, footer) across pages.
+      // Fingerprint includes text + href values so a nav with the same text but different
+      // links (e.g. localized navs) is NOT treated as a duplicate.
       const $c = cheerio.load(chunks.join(''), { decodeEntities: false })
       for (const tag of ['nav', 'header', 'footer'] as const) {
         $c(tag).each((_i, el) => {
-          const fp = `${tag}:${$c(el).text().replace(/\s+/g, ' ').trim().slice(0, 300)}`
+          const text = $c(el).text().replace(/\s+/g, ' ').trim()
+          const hrefs = $c(el).find('a[href]').map((_i2, a) => $c(a).attr('href') || '').toArray()
+          const fp = `${tag}:${text.slice(0, 200)}:${hrefs.slice(0, 5).join(',')}`
           if (seenBlocks.has(fp)) {
             $c(el).replaceWith(`<${tag}>[Same as Page 1]</${tag}>`)
           } else {
@@ -468,12 +472,16 @@ export function formatPagesForChecker(
   for (const page of pages) {
     output += `## Page: ${page.url}\n\n`
     if (page.html) {
-      // Same pipeline as formatFirecrawlForPrompt: strip → compress (60K limit, DOM chunking fallback)
-      // Element manifest intentionally omitted here — the checker only needs to verify whether
-      // a claimed issue exists in the HTML. The compressed HTML is sufficient for that;
-      // the manifest is redundant and adds ~15-20% token overhead.
-      const content = compressHtmlWithLogging(stripHtmlNoise(page.html), page.url)
-      output += `${content}\n\n`
+      // Use compressHtmlToChunks so both chunks are included for checker verification.
+      // Previously only chunk 1 was sent (compressHtmlWithLogging), causing the checker
+      // to miss issues in the second half of long pages.
+      const chunks = compressHtmlToChunks(stripHtmlNoise(page.html), page.url)
+      if (chunks.length === 1) {
+        output += `${chunks[0]}\n\n`
+      } else {
+        output += `**part 1 of 2:**\n${chunks[0]}\n\n`
+        output += `**part 2 of 2:**\n${chunks[1]}\n\n`
+      }
     }
     output += '---\n\n'
   }

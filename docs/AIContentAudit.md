@@ -812,11 +812,11 @@ If hash changes → page changed.
 
 **Health Score Formula** ✅ COMPLETE
 
-* ✅ Start at 100 - Implemented in `lib/health-score.ts`
-* ✅ Subtract: low×1, medium×3, critical×7 (severity-weighted active issues) - Implemented
-* ✅ Subtract: critical_pages_with_errors×10 (pages with at least one critical-severity issue) - Implemented
-* ✅ Exclude ignored issues from calculation - Implemented via `audit_issue_states` filtering
+* ✅ Formula: `100 - low*0.5 - med*2 - crit*4 - critPages*5` - Implemented in `lib/health-score.ts`
+* ✅ Only active issues count (status = 'active')
+* ✅ critPages = unique pages with at least one critical-severity issue
 * ✅ Clamp result to 0-100 - Implemented with Math.max/Math.min
+* ✅ Canonical formula used everywhere - route.ts calls calculateHealthScore from lib/health-score.ts
 
 **Health Score API** ✅ COMPLETE
 
