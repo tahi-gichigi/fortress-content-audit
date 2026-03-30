@@ -26,7 +26,7 @@ export function createMockAuditData(origin: string = 'https://example.com', issu
   }
   const issues: Array<{
     page_url: string
-    category: 'Language' | 'Facts & Consistency' | 'Links & Formatting'
+    category: 'Language' | 'Facts & Consistency' | 'Formatting'
     issue_description: string
     severity: 'low' | 'medium' | 'critical'
     suggested_fix: string
@@ -35,7 +35,7 @@ export function createMockAuditData(origin: string = 'https://example.com', issu
   // Issue templates with realistic examples
   const issueTemplates: Array<{
     page_url: string
-    category: 'Language' | 'Facts & Consistency' | 'Links & Formatting'
+    category: 'Language' | 'Facts & Consistency' | 'Formatting'
     issue_description: string
     severity: 'low' | 'medium' | 'critical'
     suggested_fix: string
@@ -119,35 +119,35 @@ export function createMockAuditData(origin: string = 'https://example.com', issu
     },
     {
       page_url: `${baseUrl}/products`,
-      category: 'Links & Formatting',
+      category: 'Formatting',
       issue_description: "trust: Page is missing an H1 tag, which hurts SEO and page structure.",
       severity: 'medium',
       suggested_fix: "Add H1 tag with primary keyword.",
     },
     {
       page_url: `${baseUrl}/blog`,
-      category: 'Links & Formatting',
+      category: 'Formatting',
       issue_description: "trust: Blog listing page is missing an H1 tag.",
       severity: 'medium',
       suggested_fix: "Add H1 tag to blog listing page.",
     },
     {
       page_url: `${baseUrl}/page1`,
-      category: 'Links & Formatting',
+      category: 'Formatting',
       issue_description: "credibility: Duplicate meta description used on multiple pages, reducing SEO effectiveness.",
       severity: 'low',
       suggested_fix: "Create unique meta descriptions for each page.",
     },
     {
       page_url: `${baseUrl}/resources`,
-      category: 'Links & Formatting',
+      category: 'Formatting',
       issue_description: "frustration: Link to /old-page returns 404 error.",
       severity: 'critical',
       suggested_fix: "Fix or remove broken link—update URL or redirect to correct page.",
     },
     {
       page_url: `${baseUrl}/docs`,
-      category: 'Links & Formatting',
+      category: 'Formatting',
       issue_description: "frustration: Link to /deprecated-feature returns 404 error.",
       severity: 'critical',
       suggested_fix: "Fix or remove broken link—update URL or redirect to correct page.",

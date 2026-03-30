@@ -94,7 +94,7 @@ export function SiteDiscoveryCard({ discoveredPages, auditedUrls, isAuthenticate
           <div className="space-y-2 text-sm">
             <p>• Language (grammar, spelling, clarity)</p>
             <p>• Facts & Consistency (accuracy, brand voice)</p>
-            <p>• Links & Formatting (broken links, navigation)</p>
+            <p>• Formatting (layout, visual hierarchy)</p>
           </div>
         </div>
       </CardContent>

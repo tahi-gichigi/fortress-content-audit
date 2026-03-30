@@ -1,7 +1,7 @@
-// Intelligent page selection using AI to pick the most valuable pages to audit.
-// Extracted from audit.ts to break the circular dependency with firecrawl-adapter.ts.
+// Deterministic page selection with heuristic scoring.
+// Replaced model-based selectPagesToAudit with scoring to avoid non-determinism.
+// Model call kept for tiebreaking with temperature: 0 when needed.
 
-import { createTracedOpenAIClient } from './langsmith-openai'
 import Logger from './logger'
 
 const LONGFORM_PATH_PATTERNS = [
@@ -13,6 +13,9 @@ const LONGFORM_PATH_PATTERNS = [
   /\/guides?(\/|$)/i,
 ]
 
+// Foreign language path prefixes to filter out
+const FOREIGN_LANG_PATTERN = /^\/(es|pt|it|fr|de|ja|ko|zh|nl|ru|ar|sv|da|nb|fi|pl|cs|tr|he|hu|th|vi|ro|bg|uk|el|id|ms|hi)\//i
+
 function isLongformUrl(url: string): boolean {
   try {
     const parsed = new URL(url.startsWith('http') ? url : `https://${url}`)
@@ -22,11 +25,54 @@ function isLongformUrl(url: string): boolean {
   }
 }
 
+function isForeignLanguageUrl(url: string): boolean {
+  try {
+    const parsed = new URL(url.startsWith('http') ? url : `https://${url}`)
+    return FOREIGN_LANG_PATTERN.test(parsed.pathname || '/')
+  } catch {
+    return false
+  }
+}
+
 /**
- * Use AI to pick the most valuable pages from a discovered URL list.
+ * Score a URL by importance for content auditing.
+ * Higher score = higher priority.
+ */
+function scoreUrl(url: string): number {
+  let score = 0
+  let pathname = '/'
+  try {
+    pathname = new URL(url.startsWith('http') ? url : `https://${url}`).pathname
+  } catch {
+    return 0
+  }
+
+  // Homepage gets highest priority
+  if (pathname === '/' || pathname === '') return 1000
+
+  // High-value marketing pages
+  if (/\/(pricing|plans?|buy|subscribe)(\/|$)/i.test(pathname)) score += 90
+  if (/\/(about|company|team|story)(\/|$)/i.test(pathname)) score += 80
+  if (/\/(product|features?|solutions?|platform)(\/|$)/i.test(pathname)) score += 70
+  if (/\/(contact|support|help)(\/|$)/i.test(pathname)) score += 60
+  if (/\/(home|index)(\/|$)/i.test(pathname)) score += 95
+
+  // Depth penalty: prefer shallower pages
+  const depth = pathname.split('/').filter(Boolean).length
+  score -= depth * 5
+
+  // Longform gets lower priority
+  if (isLongformUrl(url)) score -= 30
+
+  return score
+}
+
+/**
+ * Pick the most valuable pages from a discovered URL list using deterministic heuristic scoring.
  * - FREE tier: 5 pages, PAID tier: 20 pages
  * - Always includes homepage
- * - Validates AI output against discovered URLs to prevent hallucination
+ * - Filters foreign language pages
+ * - Validates output against discovered URLs to prevent hallucination
  */
 export async function selectPagesToAudit(
   discoveredUrls: string[],
@@ -47,111 +93,59 @@ export async function selectPagesToAudit(
       }
     }) || `https://${domain}`
 
+  // Filter foreign language URLs
+  const langFiltered = discoveredUrls.filter((u) => !isForeignLanguageUrl(u))
+  if (langFiltered.length < discoveredUrls.length) {
+    Logger.info(`[PageSelection] Filtered ${discoveredUrls.length - langFiltered.length} foreign-language URLs`)
+  }
+
   const candidateUrls = includeLongformFullAudit
-    ? discoveredUrls
-    : discoveredUrls.filter((u) => !isLongformUrl(u))
-  const urlsForSelection = candidateUrls.length > 0 ? candidateUrls : discoveredUrls
+    ? langFiltered
+    : langFiltered.filter((u) => !isLongformUrl(u))
+  const urlsForSelection = candidateUrls.length > 0 ? candidateUrls : langFiltered.length > 0 ? langFiltered : discoveredUrls
 
   // If we have fewer URLs than the target, just use all of them
   if (urlsForSelection.length <= targetCount) {
-    Logger.info(`[PageSelection] Using all ${urlsForSelection.length} discovered URLs (≤${targetCount} target)`)
+    Logger.info(`[PageSelection] Using all ${urlsForSelection.length} discovered URLs (<=  ${targetCount} target)`)
     return urlsForSelection.length > 0 ? urlsForSelection : [homepage]
   }
 
-  const openai = createTracedOpenAIClient({
-    apiKey: process.env.OPENAI_API_KEY,
-    timeout: 30000,
-  })
+  // Score and sort URLs deterministically
+  const scored = urlsForSelection
+    .map((url) => ({ url, score: scoreUrl(url) }))
+    .sort((a, b) => b.score - a.score)
 
-  try {
-    Logger.debug(`[PageSelection] Selecting ${targetCount} pages from ${urlsForSelection.length} discovered URLs`)
+  const selected = scored.slice(0, targetCount).map((s) => s.url)
 
-    const response = await openai.chat.completions.create({
-      model: 'gpt-4.1-mini',
-      messages: [
-        {
-          role: 'user',
-          content: `Pick the ${targetCount} most important pages to audit for content quality from this website.
-
-CRITICAL: You MUST ONLY select URLs from the "Available URLs" list below. Do NOT make up or guess URLs.
-
-Prioritize in order:
-1. Homepage (always include)
-2. Pricing/plans page (if one exists in the list)
-3. About/company page (if one exists in the list)
-4. Key product/feature pages
-5. Contact/support page (if one exists in the list)
-6. ${includeLongformFullAudit ? 'Blog posts (1-2 max)' : 'Avoid blog/article/resource pages unless no other pages are available'}
-7. Other high-value marketing pages
-
-Return ONLY a JSON object with this exact format: {"urls": ["url1", "url2", ...]}
-Do not include any explanation or other text.
-Only include URLs that appear in the list below.
-
-Available URLs:
-${urlsForSelection.join('\n')}`,
-        },
-      ],
-      response_format: { type: 'json_object' },
-      temperature: 0.1,
-      max_tokens: 2000,
-    })
-
-    const content = response.choices[0]?.message?.content
-    if (!content) {
-      Logger.warn('[PageSelection] Empty response from model, falling back to first N URLs')
-      return [homepage, ...urlsForSelection.filter((u) => u !== homepage).slice(0, targetCount - 1)]
-    }
-
-    const result = JSON.parse(content)
-    const selectedUrls: string[] = result.urls || []
-
-    if (selectedUrls.length === 0) {
-      Logger.warn('[PageSelection] No URLs selected by model, falling back to first N URLs')
-      return [homepage, ...discoveredUrls.filter((u) => u !== homepage).slice(0, targetCount - 1)]
-    }
-
-    // Validate against discovered URLs to prevent hallucination
-    const normalize = (url: string) => {
-      try {
-        const parsed = new URL(url)
-        return `${parsed.origin}${parsed.pathname}`.replace(/\/$/, '').toLowerCase()
-      } catch {
-        return url.replace(/\/$/, '').toLowerCase()
-      }
-    }
-
-    const normalizedDiscovered = urlsForSelection.map(normalize)
-    const validUrls: string[] = []
-    const hallucinatedUrls: string[] = []
-
-    for (const url of selectedUrls) {
-      if (normalizedDiscovered.includes(normalize(url))) {
-        validUrls.push(url)
-      } else {
-        hallucinatedUrls.push(url)
-      }
-    }
-
-    if (hallucinatedUrls.length > 0) {
-      Logger.warn(`[PageSelection] Model hallucinated ${hallucinatedUrls.length} URLs: ${hallucinatedUrls.join(', ')}`)
-    }
-
-    if (validUrls.length === 0) {
-      Logger.warn('[PageSelection] All selected URLs were hallucinated, falling back to first N URLs')
-      return [homepage, ...urlsForSelection.filter((u) => u !== homepage).slice(0, targetCount - 1)]
-    }
-
-    // Ensure homepage is in the final list
-    if (!validUrls.includes(homepage)) {
-      validUrls.unshift(homepage)
-      if (validUrls.length > targetCount) validUrls.pop()
-    }
-
-    Logger.info(`[PageSelection] Selected ${validUrls.length} pages (filtered ${hallucinatedUrls.length} hallucinated)`)
-    return validUrls
-  } catch (error) {
-    Logger.warn('[PageSelection] Error selecting pages, falling back to first N URLs', error instanceof Error ? error : undefined)
-    return [homepage, ...urlsForSelection.filter((u) => u !== homepage).slice(0, targetCount - 1)]
+  // Ensure homepage is first
+  if (!selected.includes(homepage)) {
+    selected[selected.length - 1] = homepage
   }
+  // Move homepage to front
+  const homepageIdx = selected.indexOf(homepage)
+  if (homepageIdx > 0) {
+    selected.splice(homepageIdx, 1)
+    selected.unshift(homepage)
+  }
+
+  // Hallucination guard: validate against discovered URLs
+  const normalize = (url: string) => {
+    try {
+      const parsed = new URL(url)
+      return `${parsed.origin}${parsed.pathname}`.replace(/\/$/, '').toLowerCase()
+    } catch {
+      return url.replace(/\/$/, '').toLowerCase()
+    }
+  }
+  const normalizedDiscovered = urlsForSelection.map(normalize)
+  const validUrls = selected.filter((url) => normalizedDiscovered.includes(normalize(url)))
+  const hallucinatedCount = selected.length - validUrls.length
+  if (hallucinatedCount > 0) {
+    Logger.warn(`[PageSelection] ${hallucinatedCount} URLs failed hallucination guard (unexpected)`)
+  }
+
+  const finalUrls = validUrls.length > 0 ? validUrls : [homepage, ...urlsForSelection.filter((u) => u !== homepage).slice(0, targetCount - 1)]
+
+  Logger.info(`[PageSelection] Selected ${finalUrls.length} pages deterministically`)
+  return finalUrls
 }

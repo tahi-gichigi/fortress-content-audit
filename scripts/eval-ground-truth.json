@@ -1,0 +1,336 @@
+{
+  "_meta": {
+    "description": "Ground truth for audit quality evaluation. Curated from QA testing (Notion 2c265922) and production eval runs (docs/eval-baseline.md).",
+    "lastUpdated": "2026-03-27",
+    "sources": [
+      "Notion: AIContentAudit Test two-pass model checker improvements (2c265922)",
+      "Notion: AIContentAudit Fix systemic issues round 2 (7edda1f2)",
+      "docs/eval-baseline.md Run 5 & 6"
+    ]
+  },
+  "sites": [
+    {
+      "domain": "seline.so",
+      "tier": "PAID",
+      "notes": "Primary benchmark site. Analytics tool with Tailwind UI, animated number components, Radix accordions.",
+      "knownIssues": [
+        {
+          "id": "sel-1",
+          "description": "immidiately typo",
+          "matchPatterns": [
+            "immidiately",
+            "immediately"
+          ],
+          "category": "Language",
+          "expectedSeverity": "medium",
+          "page_url_pattern": "/docs/install-seline",
+          "source": "QA round 2 \u2014 confirmed real, found in raw HTML"
+        },
+        {
+          "id": "sel-2",
+          "description": "monitize typo",
+          "matchPatterns": [
+            "monitize",
+            "monetize"
+          ],
+          "category": "Language",
+          "expectedSeverity": "medium",
+          "page_url_pattern": "",
+          "source": "eval-baseline.md Run 6"
+        },
+        {
+          "id": "sel-3",
+          "description": "Wait a coupe minutes typo",
+          "matchPatterns": [
+            "coupe minutes",
+            "couple minutes"
+          ],
+          "category": "Language",
+          "expectedSeverity": "medium",
+          "page_url_pattern": "/docs/stripe",
+          "source": "eval-baseline.md Run 6 \u2014 accordion content"
+        },
+        {
+          "id": "sel-4",
+          "description": "20/80 rule should be 80/20 rule",
+          "matchPatterns": [
+            "20/80 rule",
+            "80/20"
+          ],
+          "category": "Facts & Consistency",
+          "expectedSeverity": "medium",
+          "page_url_pattern": "/seline-vs-posthog",
+          "source": "eval-baseline.md Run 6 \u2014 accordion content"
+        },
+        {
+          "id": "sel-5",
+          "description": "IP adresses typo",
+          "matchPatterns": [
+            "IP adresses",
+            "IP addresses"
+          ],
+          "category": "Language",
+          "expectedSeverity": "medium",
+          "page_url_pattern": "",
+          "source": "eval-baseline.md Run 2 \u2014 confirmed at confidence 1.0"
+        },
+        {
+          "id": "sel-6",
+          "description": "Key takeway typo",
+          "matchPatterns": [
+            "takeway",
+            "takeaway"
+          ],
+          "category": "Language",
+          "expectedSeverity": "medium",
+          "page_url_pattern": "",
+          "source": "eval-baseline.md Run 2 \u2014 confirmed at confidence 1.0"
+        },
+        {
+          "id": "sel-7",
+          "description": "Find the your checkout flow \u2014 grammar error",
+          "matchPatterns": [
+            "Find the your",
+            "find the your"
+          ],
+          "category": "Language",
+          "expectedSeverity": "medium",
+          "page_url_pattern": "",
+          "source": "QA round 2 \u2014 confirmed as real issue (appeared twice)"
+        },
+        {
+          "id": "sel-8",
+          "description": "Pricing inconsistencies across comparison pages",
+          "matchPatterns": [
+            "$9",
+            "$14",
+            "$24",
+            "pricing"
+          ],
+          "category": "Facts & Consistency",
+          "expectedSeverity": "medium",
+          "page_url_pattern": "",
+          "source": "eval-baseline.md Run 6 \u2014 cross-page contradiction"
+        }
+      ],
+      "falsePositivePatterns": [
+        {
+          "id": "sel-fp-1",
+          "pattern": "placeholder number|0123456789",
+          "reason": "Animated number component (number-flow-react). Inert digits are not content."
+        },
+        {
+          "id": "sel-fp-2",
+          "pattern": "time on page 0 seconds|0 seconds",
+          "reason": "Dynamic counter captured at scrape-time zero state."
+        },
+        {
+          "id": "sel-fp-3",
+          "pattern": "secure0n\\*d|secure0nd",
+          "reason": "Text animation captured mid-render, not a real encoding issue."
+        },
+        {
+          "id": "sel-fp-4",
+          "pattern": "parameter list mixes label|developer tooling",
+          "reason": "Standard developer tooling UI, not a copywriting error."
+        },
+        {
+          "id": "sel-fp-5",
+          "pattern": "stray .A. character|stray A",
+          "reason": "Hidden span unwrapped into adjacent text. Fixed by hidden-class widening."
+        }
+      ]
+    },
+    {
+      "domain": "dub.co",
+      "tier": "PAID",
+      "notes": "Link management tool. Clean Tailwind UI, responsive duplicates previously caused issues.",
+      "knownIssues": [
+        {
+          "id": "dub-1",
+          "description": "word-class typo",
+          "matchPatterns": [
+            "word-class",
+            "world-class"
+          ],
+          "category": "Language",
+          "expectedSeverity": "medium",
+          "page_url_pattern": "",
+          "source": "QA round 2 \u2014 consistent across runs"
+        },
+        {
+          "id": "dub-2",
+          "description": "Gather insights grammar issue",
+          "matchPatterns": [
+            "Gather insights"
+          ],
+          "category": "Language",
+          "expectedSeverity": "low",
+          "page_url_pattern": "",
+          "source": "QA round 2 \u2014 consistent across runs"
+        },
+        {
+          "id": "dub-3",
+          "description": "Understand how what your audience \u2014 grammar",
+          "matchPatterns": [
+            "how what your",
+            "how what"
+          ],
+          "category": "Language",
+          "expectedSeverity": "medium",
+          "page_url_pattern": "",
+          "source": "QA round 2 \u2014 consistent across runs"
+        },
+        {
+          "id": "dub-4",
+          "description": "Product Hunt is is \u2014 duplicate word",
+          "matchPatterns": [
+            "is is",
+            "Hunt is is"
+          ],
+          "category": "Language",
+          "expectedSeverity": "low",
+          "page_url_pattern": "",
+          "source": "QA round 2 \u2014 consistent across runs"
+        }
+      ],
+      "falsePositivePatterns": [
+        {
+          "id": "dub-fp-1",
+          "pattern": "DubRead more|DubRead",
+          "reason": "Whitespace collapse merged adjacent elements. Fixed in html-compressor."
+        },
+        {
+          "id": "dub-fp-2",
+          "pattern": "stray .A. character|stray A",
+          "reason": "Hidden span unwrapped into adjacent text. Fixed by hidden-class widening."
+        },
+        {
+          "id": "dub-fp-3",
+          "pattern": "carousel.*slide indicators|dots.*indicators",
+          "reason": "Visual/layout issue not verifiable from HTML \u2014 render-dependent."
+        }
+      ]
+    },
+    {
+      "domain": "plausible.io",
+      "tier": "PAID",
+      "notes": "Privacy-focused analytics. Many 403s from bot protection, some Spanish content mixed in.",
+      "knownIssues": [],
+      "falsePositivePatterns": [
+        {
+          "id": "pla-fp-1",
+          "pattern": "invisible.*character|zero.?width.*character|hidden.*character|non.?printable",
+          "reason": "Model hallucinated zero-width characters that don't exist in HTML."
+        },
+        {
+          "id": "pla-fp-2",
+          "pattern": "HTTP 403|returned error.*403",
+          "reason": "Server blocks crawlers with 403 but pages work in browser. Fixed: 403 treated as inconclusive."
+        },
+        {
+          "id": "pla-fp-3",
+          "pattern": "Give us feedback.*403|public roadmap.*403",
+          "reason": "Specific 403 false positives from plausible.io QA. Links work in browser."
+        }
+      ]
+    },
+    {
+      "domain": "justcancel.io",
+      "tier": "PAID",
+      "notes": "Cancel guide directory. Repeated content across guide pages is intentional.",
+      "knownIssues": [
+        {
+          "id": "jc-1",
+          "description": "1,100+ Cancel Guides \u2014 clarity issue flagged twice with different wording",
+          "matchPatterns": [
+            "1,100+ Cancel Guides",
+            "1100"
+          ],
+          "category": "Language",
+          "expectedSeverity": "low",
+          "page_url_pattern": "",
+          "source": "QA round 2 \u2014 real but should be deduped"
+        }
+      ],
+      "falsePositivePatterns": []
+    },
+    {
+      "domain": "beehiiv.com",
+      "tier": "PAID",
+      "notes": "Newsletter platform. Badge/label spans caused word-merging false positives.",
+      "knownIssues": [],
+      "falsePositivePatterns": [
+        {
+          "id": "bee-fp-1",
+          "pattern": "Dynamic ContentNew|ContentNew",
+          "reason": "Badge span 'New' merged into adjacent text during compression. Fixed with [Badge: text] placeholder."
+        },
+        {
+          "id": "bee-fp-2",
+          "pattern": "Paid subscriptions.*checkmarks|Digital Products.*indicators",
+          "reason": "Visual indicators are present but not visible in HTML. Render-dependent false positive."
+        },
+        {
+          "id": "bee-fp-3",
+          "pattern": "AINewsletterGenerator|missing spaces",
+          "reason": "Inline tag unwrapping merged words. Fixed with space insertion on unwrap."
+        }
+      ]
+    },
+    {
+      "domain": "cal.com",
+      "tier": "PAID",
+      "notes": "Scheduling tool. Mixed-language content (Portuguese, Italian) on primary pages. Download link returns 404 to crawlers but works in browser.",
+      "knownIssues": [],
+      "falsePositivePatterns": [
+        {
+          "id": "cal-fp-1",
+          "pattern": "Desktop App.*404|download.*404",
+          "reason": "Download link returns 404 to HEAD/GET but works in browser. Inconclusive, not broken."
+        },
+        {
+          "id": "cal-fp-2",
+          "pattern": "portuguese|italian|spanish|idioma|lingua",
+          "reason": "Mixed-language content on primary pages. Foreign language sections are intentional localization."
+        }
+      ]
+    },
+    {
+      "domain": "linear.app",
+      "tier": "PAID",
+      "notes": "Project management tool. Text animations and Spanish content mixed in.",
+      "knownIssues": [],
+      "falsePositivePatterns": [
+        {
+          "id": "lin-fp-1",
+          "pattern": "secure0n\\\\*d|secure0nd|encoding.*glitch",
+          "reason": "Text animation captured mid-render, not a real encoding issue."
+        },
+        {
+          "id": "lin-fp-2",
+          "pattern": "spanish|foreign.*language",
+          "reason": "Spanish content sections flagged as errors. Intentional localization."
+        }
+      ]
+    },
+    {
+      "domain": "lottiefiles.com",
+      "tier": "PAID",
+      "notes": "Animation platform. SVG-heavy. Bot protection returns 403 on many pages but links work in browser.",
+      "knownIssues": [],
+      "falsePositivePatterns": [
+        {
+          "id": "lot-fp-1",
+          "pattern": "HTTP 403|returned error.*403|returned.*403",
+          "reason": "Bot protection returns 403 to crawlers but pages work in browser. Fixed: 403 treated as inconclusive."
+        },
+        {
+          "id": "lot-fp-2",
+          "pattern": "<path[\\s>]|d=\"[MCLHVSQTAZmclhvsqtaz]|SVG path data|SVG coordinate data|path\\s+d=",
+          "reason": "SVG path coordinate data (d= attributes, <path> tags) exposed in audit results. Should be collapsed by compressor. Pattern updated 2026-03-29 to avoid matching text content that mentions SVG as a word."
+        }
+      ]
+    }
+  ]
+}

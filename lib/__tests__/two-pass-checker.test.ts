@@ -109,7 +109,7 @@ describe('buildLiberalCategoryAuditPrompt — recall orientation', () => {
   })
 
   it('targets all three categories with correct focus blocks', () => {
-    for (const category of ['Language', 'Facts & Consistency', 'Links & Formatting'] as const) {
+    for (const category of ['Language', 'Facts & Consistency', 'Formatting'] as const) {
       const prompt = buildLiberalCategoryAuditPrompt(category, urls, manifest, noExcluded, noActive)
       expect(prompt).toContain(`auditing for ${category} issues ONLY`)
     }
@@ -193,9 +193,9 @@ describe('buildCheckerPrompt — skeptical quality gate', () => {
     expect(prompt).toContain('Cross-page contradictions')
   })
 
-  it('uses Formatting-specific verification criteria when category is Links & Formatting', () => {
-    const fmtIssues = [{ category: 'Links & Formatting', issue_description: 'accessibility: image missing alt text in hero' }]
-    const prompt = buildCheckerPrompt(snippetsText, fmtIssues, 'Links & Formatting')
+  it('uses Formatting-specific verification criteria when category is Formatting', () => {
+    const fmtIssues = [{ category: 'Formatting', issue_description: 'accessibility: image missing alt text in hero' }]
+    const prompt = buildCheckerPrompt(snippetsText, fmtIssues, 'Formatting')
     expect(prompt).toContain('HTML structure supports the claim')
     expect(prompt).toContain('uncertain')
   })
@@ -317,13 +317,12 @@ describe('applyCheckerDecisions — filtering logic', () => {
     expect(result.map(r => r.issue_description)).toEqual(['A', 'C'])
   })
 
-  it('keeps all issues when no verification found for an index (safe default)', () => {
-    // Missing verification → confirmed defaults to true, confidence to 0.5
+  it('drops issues when no verification found for an index (fail-safe default)', () => {
+    // Fix A: Missing verification → confirmed defaults to false (fail-safe), confidence to 0.5.
+    // Previously defaulted to true, which let unverified issues through.
     const issues = [baseIssue()]
     const result = applyCheckerDecisions(issues, []) // no verifications at all
-    expect(result).toHaveLength(1)
-    expect(result[0].confidence).toBe(0.5)
-    expect(result[0].evidence).toBe('')
+    expect(result).toHaveLength(0)
   })
 
   it('returns empty array when given empty issues', () => {

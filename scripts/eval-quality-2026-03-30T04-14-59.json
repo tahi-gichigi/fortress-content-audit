@@ -1,0 +1,1913 @@
+{
+  "timestamp": "2026-03-30T04:14:59.906Z",
+  "groundTruthVersion": "2026-03-27",
+  "sites": [
+    {
+      "domain": "seline.so",
+      "pagesAudited": 20,
+      "totalIssues": 37,
+      "recall": 0.375,
+      "precision": 1,
+      "severityAccuracy": 1,
+      "falsePositiveRate": 0,
+      "knownIssuesFound": 3,
+      "knownIssuesTotal": 8,
+      "falsePositivesDetected": 0,
+      "estimatedCost": 0.6000000000000001,
+      "durationMs": 173785,
+      "recallDetails": [
+        {
+          "groundTruthId": "sel-1",
+          "groundTruthDescription": "immidiately typo",
+          "found": false
+        },
+        {
+          "groundTruthId": "sel-2",
+          "groundTruthDescription": "monitize typo",
+          "found": true,
+          "matchedIssue": {
+            "page_url": "https://seline.com",
+            "category": "Language",
+            "issue_description": "professionalism: In the free-plan Q&A, \"We don't monitize or share your data with third parties.\" contains a spelling error in \"monitize\".",
+            "severity": "medium",
+            "suggested_fix": "Change \"monitize\" to the correct spelling \"monetize\".",
+            "evidence": "We don't monitize or share your data with third parties.",
+            "confidence": 1
+          },
+          "severityCorrect": true
+        },
+        {
+          "groundTruthId": "sel-3",
+          "groundTruthDescription": "Wait a coupe minutes typo",
+          "found": false
+        },
+        {
+          "groundTruthId": "sel-4",
+          "groundTruthDescription": "20/80 rule should be 80/20 rule",
+          "found": false
+        },
+        {
+          "groundTruthId": "sel-5",
+          "groundTruthDescription": "IP adresses typo",
+          "found": true,
+          "matchedIssue": {
+            "page_url": "https://seline.com/gdpr",
+            "category": "Language",
+            "issue_description": "professionalism: In the data tables, \"We do not use IP adresses for any sort of lookups\" contains the misspelling \"adresses\".",
+            "severity": "medium",
+            "suggested_fix": "Change \"adresses\" to \"addresses\".",
+            "evidence": "We do not use IP adresses for any sort of lookups",
+            "confidence": 1
+          },
+          "severityCorrect": true
+        },
+        {
+          "groundTruthId": "sel-6",
+          "groundTruthDescription": "Key takeway typo",
+          "found": true,
+          "matchedIssue": {
+            "page_url": "https://seline.com/gdpr",
+            "category": "Language",
+            "issue_description": "professionalism: \"Key takeway - no private data gets saved on our servers.\" contains a spelling error and an informal dash.",
+            "severity": "medium",
+            "suggested_fix": "Change to \"Key takeaway: no private data gets saved on our servers.\"",
+            "evidence": "<p>Key takeway - no private data gets saved on our servers.</p>",
+            "confidence": 1
+          },
+          "severityCorrect": true
+        },
+        {
+          "groundTruthId": "sel-7",
+          "groundTruthDescription": "Find the your checkout flow — grammar error",
+          "found": false
+        },
+        {
+          "groundTruthId": "sel-8",
+          "groundTruthDescription": "Pricing inconsistencies across comparison pages",
+          "found": false
+        }
+      ],
+      "falsePositiveDetails": [],
+      "allIssues": [
+        {
+          "page_url": "https://seline.com",
+          "category": "Language",
+          "issue_description": "professionalism: In the founder note, the sentence \"Looking forward to have you on board!\" is ungrammatical; the correct form after \"looking forward to\" is a gerund.",
+          "severity": "medium",
+          "suggested_fix": "Change \"Looking forward to have you on board!\" to \"Looking forward to having you on board!\"",
+          "evidence": "<div>Looking forward to have you on board!</div>",
+          "confidence": 1
+        },
+        {
+          "page_url": "https://seline.com",
+          "category": "Language",
+          "issue_description": "professionalism: In the free-plan Q&A, \"We don't monitize or share your data with third parties.\" contains a spelling error in \"monitize\".",
+          "severity": "medium",
+          "suggested_fix": "Change \"monitize\" to the correct spelling \"monetize\".",
+          "evidence": "We don't monitize or share your data with third parties.",
+          "confidence": 1
+        },
+        {
+          "page_url": "https://seline.com",
+          "category": "Language",
+          "issue_description": "professionalism: In multiple CTAs, the phrase \"You are just couple minutes away from bringing your dashboard to life.\" is missing an article, which reads slightly non‑native.",
+          "severity": "medium",
+          "suggested_fix": "Change to \"You are just a couple of minutes away from bringing your dashboard to life.\" (or \"a couple minutes\" if you prefer a slightly more informal style).",
+          "evidence": "You are just couple minutes away from bringing your dashboard to life.",
+          "confidence": 1
+        },
+        {
+          "page_url": "https://seline.com",
+          "category": "Language",
+          "issue_description": "professionalism: In the \"Lightweight\" bullet, \"making it 23x times lighter than Google Analytics script\" is redundant; \"x\" already implies \"times\".",
+          "severity": "low",
+          "suggested_fix": "Change \"23x times lighter\" to either \"23x lighter\" or \"23 times lighter\".",
+          "evidence": "our script weighs only ~2kb, making it 23x times lighter than Google Analytics script.",
+          "confidence": 1
+        },
+        {
+          "page_url": "https://seline.com/pricing",
+          "category": "Language",
+          "issue_description": "professionalism: In the FAQ, \"We don't monitize or share your data with third parties.\" contains the misspelling \"monitize\".",
+          "severity": "medium",
+          "suggested_fix": "Replace \"monitize\" with \"monetize\".",
+          "evidence": "<div>We don't monitize or share your data with third parties.</div>",
+          "confidence": 1
+        },
+        {
+          "page_url": "https://seline.com/ai-website-analytics",
+          "category": "Language",
+          "issue_description": "professionalism: In the founder note, \"Looking forward to have you on board!\" is ungrammatical; \"to\" should be followed by a gerund.",
+          "severity": "medium",
+          "suggested_fix": "Change \"Looking forward to have you on board!\" to \"Looking forward to having you on board!\"",
+          "evidence": "<div>Looking forward to have you on board!</div>",
+          "confidence": 1
+        },
+        {
+          "page_url": "https://seline.com/ai-website-analytics",
+          "category": "Language",
+          "issue_description": "professionalism: In the Q&A, \"We don't monitize or share your data with third parties.\" contains a spelling mistake.",
+          "severity": "medium",
+          "suggested_fix": "Correct \"monitize\" to \"monetize\".",
+          "evidence": "We don't monitize or share your data with third parties.",
+          "confidence": 1
+        },
+        {
+          "page_url": "https://seline.com/ai-website-analytics",
+          "category": "Language",
+          "issue_description": "professionalism: Several example prompts (e.g. \"How well our blog converts?\", \"Where our users drop off?\") are missing auxiliary verbs, which sounds non‑native.",
+          "severity": "medium",
+          "suggested_fix": "Update to full questions such as \"How well does our blog convert?\" and \"Where do our users drop off?\"",
+          "evidence": "<button>How well our blog converts?</button> ... <button>Where our users drop off?</button>",
+          "confidence": 1
+        },
+        {
+          "page_url": "https://seline.com/gdpr",
+          "category": "Language",
+          "issue_description": "professionalism: \"We use as minimal amount of sub-processors as possible.\" is awkward; \"amount\" is not idiomatic for countable nouns.",
+          "severity": "medium",
+          "suggested_fix": "Change to \"We use as few sub‑processors as possible.\"",
+          "evidence": "We use as minimal amount of sub-processors as possible.",
+          "confidence": 1
+        },
+        {
+          "page_url": "https://seline.com/gdpr",
+          "category": "Language",
+          "issue_description": "professionalism: In the data tables, \"We do not use IP adresses for any sort of lookups\" contains the misspelling \"adresses\".",
+          "severity": "medium",
+          "suggested_fix": "Change \"adresses\" to \"addresses\".",
+          "evidence": "We do not use IP adresses for any sort of lookups",
+          "confidence": 1
+        },
+        {
+          "page_url": "https://seline.com/gdpr",
+          "category": "Language",
+          "issue_description": "professionalism: \"Key takeway - no private data gets saved on our servers.\" contains a spelling error and an informal dash.",
+          "severity": "medium",
+          "suggested_fix": "Change to \"Key takeaway: no private data gets saved on our servers.\"",
+          "evidence": "<p>Key takeway - no private data gets saved on our servers.</p>",
+          "confidence": 1
+        },
+        {
+          "page_url": "https://seline.com/gdpr",
+          "category": "Language",
+          "issue_description": "professionalism: \"We do not set cookies to our clients' visitors' browsers.\" is non‑idiomatic preposition use.",
+          "severity": "medium",
+          "suggested_fix": "Change to \"We do not set cookies on our clients' visitors' browsers.\"",
+          "evidence": "<p>We do not set cookies to our clients' visitors' browsers.</p>",
+          "confidence": 1
+        },
+        {
+          "page_url": "https://seline.com/privacy",
+          "category": "Language",
+          "issue_description": "professionalism: As in the GDPR page, \"We do not use IP adresses for any sort of lookups\" repeats the misspelling \"adresses\".",
+          "severity": "medium",
+          "suggested_fix": "Correct \"adresses\" to \"addresses\".",
+          "evidence": "We do not use IP adresses for any sort of lookups and we never store them",
+          "confidence": 1
+        },
+        {
+          "page_url": "https://seline.com/privacy",
+          "category": "Language",
+          "issue_description": "professionalism: \"Key takeway - no private data gets saved on our servers.\" repeats the spelling error \"takeway\".",
+          "severity": "medium",
+          "suggested_fix": "Change \"takeway\" to \"takeaway\" and consider using a colon: \"Key takeaway: no private data gets saved on our servers.\"",
+          "evidence": "Key takeway - no private data gets saved on our servers.",
+          "confidence": 1
+        },
+        {
+          "page_url": "https://seline.com/revenue-analytics",
+          "category": "Language",
+          "issue_description": "professionalism: In the founder note, \"Looking forward to have you on board!\" uses the wrong verb form after \"to\".",
+          "severity": "medium",
+          "suggested_fix": "Change it to \"Looking forward to having you on board!\"",
+          "evidence": "Looking forward to have you on board!",
+          "confidence": 1
+        },
+        {
+          "page_url": "https://seline.com/revenue-analytics",
+          "category": "Language",
+          "issue_description": "professionalism: In the Q&A, \"We don't monitize or share your data with third parties.\" contains a spelling mistake.",
+          "severity": "medium",
+          "suggested_fix": "Replace \"monitize\" with \"monetize\".",
+          "evidence": "We don't monitize or share your data with third parties.",
+          "confidence": 1
+        },
+        {
+          "page_url": "https://seline.com/revenue-analytics",
+          "category": "Language",
+          "issue_description": "professionalism: The recurring CTA text \"You are just couple minutes away from bringing your dashboard to life.\" is missing an article.",
+          "severity": "medium",
+          "suggested_fix": "Use \"You are just a couple of minutes away from bringing your dashboard to life.\"",
+          "evidence": "You are just couple minutes away from bringing your dashboard to life.",
+          "confidence": 1
+        },
+        {
+          "page_url": "https://seline.com/revenue-analytics",
+          "category": "Language",
+          "issue_description": "professionalism: As on the homepage, \"making it 23x times lighter than Google Analytics script\" is redundant.",
+          "severity": "low",
+          "suggested_fix": "Change \"23x times lighter\" to \"23x lighter\" or \"23 times lighter\".",
+          "evidence": "making it 23x times lighter than Google Analytics script.",
+          "confidence": 1
+        },
+        {
+          "page_url": "https://seline.com/seline-vs-google-analytics",
+          "category": "Language",
+          "issue_description": "professionalism: The phrase \"You are just couple minutes away from bringing your dashboard to life.\" in the closing CTA is missing the article \"a\".",
+          "severity": "medium",
+          "suggested_fix": "Change to \"You are just a couple of minutes away from bringing your dashboard to life.\"",
+          "evidence": "You are just couple minutes away from bringing your dashboard to life.",
+          "confidence": 1
+        },
+        {
+          "page_url": "https://seline.com/seline-vs-plausible",
+          "category": "Language",
+          "issue_description": "professionalism: \"You are just a couple minutes away from bringing your dashboard to life.\" appears in the closing CTA and, while understandable, sounds slightly more natural with \"of\".",
+          "severity": "low",
+          "suggested_fix": "Consider \"You are just a couple of minutes away from bringing your dashboard to life.\" for smoother phrasing.",
+          "evidence": "<div>You are just a couple minutes away from bringing your dashboard to life.</div>",
+          "confidence": 0.96
+        },
+        {
+          "page_url": "https://seline.com/seline-vs-posthog",
+          "category": "Language",
+          "issue_description": "professionalism: In the summary, \"Seline's feature set is carefully cherry-picked to bring the 20/80 rule to the core.\" is jargon-heavy and a bit unclear.",
+          "severity": "low",
+          "suggested_fix": "Rephrase to something clearer like \"Seline's feature set is carefully cherry‑picked to focus on the 20% of features that deliver 80% of the value.\"",
+          "evidence": "Seline's feature set is carefully cherry-picked to bring the 20/80 rule to the core.",
+          "confidence": 0.98
+        },
+        {
+          "page_url": "https://seline.com/seline-vs-posthog",
+          "category": "Language",
+          "issue_description": "professionalism: The closing CTA text \"You are just couple minutes away from bringing your dashboard to life.\" is missing the article \"a\".",
+          "severity": "medium",
+          "suggested_fix": "Change it to \"You are just a couple of minutes away from bringing your dashboard to life.\"",
+          "evidence": "You are just couple minutes away from bringing your dashboard to life.",
+          "confidence": 1
+        },
+        {
+          "page_url": "https://seline.com/shopify-analytics",
+          "category": "Language",
+          "issue_description": "professionalism: In the \"Lightweight\" bullet, \"making it 23x times lighter than Google Analytics script\" repeats the redundant \"x times\" construction.",
+          "severity": "low",
+          "suggested_fix": "Update to \"making it 23x lighter than the Google Analytics script\" or \"23 times lighter\".",
+          "evidence": "making it 23x times lighter than Google Analytics script.",
+          "confidence": 1
+        },
+        {
+          "page_url": "https://seline.com/shopify-analytics",
+          "category": "Language",
+          "issue_description": "professionalism: In the founder note, \"Looking forward to have you on board!\" is ungrammatical.",
+          "severity": "medium",
+          "suggested_fix": "Change to \"Looking forward to having you on board!\"",
+          "evidence": "Looking forward to have you on board!",
+          "confidence": 1
+        },
+        {
+          "page_url": "https://seline.com/shopify-analytics",
+          "category": "Language",
+          "issue_description": "professionalism: In the Q&A, \"We don't monitize or share your data with third parties.\" again uses the misspelling \"monitize\".",
+          "severity": "medium",
+          "suggested_fix": "Correct \"monitize\" to \"monetize\".",
+          "evidence": "We don't monitize or share your data with third parties.",
+          "confidence": 1
+        },
+        {
+          "page_url": "https://seline.com/shopify-analytics",
+          "category": "Language",
+          "issue_description": "professionalism: The recurring CTA \"You are just couple minutes away from bringing your dashboard to life.\" is missing an article.",
+          "severity": "medium",
+          "suggested_fix": "Change to \"You are just a couple of minutes away from bringing your dashboard to life.\"",
+          "evidence": "You are just couple minutes away from bringing your dashboard to life.",
+          "confidence": 1
+        },
+        {
+          "page_url": "https://seline.com/simple-web-analytics",
+          "category": "Language",
+          "issue_description": "professionalism: In the \"Lightweight\" bullet, \"our script is only ~2kb, 23x lighter than Google Analytics\" appears correctly here but elsewhere on the site \"23x times\" is used; consistency would improve polish.",
+          "severity": "low",
+          "suggested_fix": "Ensure all instances use a consistent form like \"23x lighter\" instead of \"23x times lighter\".",
+          "evidence": "Our script is only ~2kb, 23x lighter than Google Analytics. ... making it 23x times lighter",
+          "confidence": 0.98
+        },
+        {
+          "page_url": "https://seline.com/simple-web-analytics",
+          "category": "Language",
+          "issue_description": "professionalism: In the founder note, \"Looking forward to have you on board!\" repeats the incorrect verb form.",
+          "severity": "medium",
+          "suggested_fix": "Change to \"Looking forward to having you on board!\"",
+          "evidence": "<div>Looking forward to have you on board!</div>",
+          "confidence": 1
+        },
+        {
+          "page_url": "https://seline.com/simple-web-analytics",
+          "category": "Language",
+          "issue_description": "professionalism: In the Q&A answer about the free plan, \"We don't monitize or share your data with third parties.\" again misspells \"monetize\".",
+          "severity": "medium",
+          "suggested_fix": "Replace \"monitize\" with \"monetize\".",
+          "evidence": "We don't monitize or share your data with third parties.",
+          "confidence": 1
+        },
+        {
+          "page_url": "https://seline.com/simple-web-analytics",
+          "category": "Language",
+          "issue_description": "professionalism: The prompt examples (e.g. \"Where our users drop off?\", \"What is bounce rate?\") are slightly ungrammatical.",
+          "severity": "medium",
+          "suggested_fix": "Update to e.g. \"Where do our users drop off?\" and \"What is the bounce rate?\" while keeping the same meaning.",
+          "evidence": "\"How well our blog converts?\" ... \"Where our users drop off?\" in Q&A text",
+          "confidence": 1
+        },
+        {
+          "page_url": "https://seline.com/simple-web-analytics",
+          "category": "Language",
+          "issue_description": "professionalism: The CTA \"You are just couple minutes away from bringing your dashboard to life.\" is missing \"a\".",
+          "severity": "medium",
+          "suggested_fix": "Change to \"You are just a couple of minutes away from bringing your dashboard to life.\"",
+          "evidence": "You are just couple minutes away from bringing your dashboard to life.",
+          "confidence": 1
+        },
+        {
+          "page_url": "https://seline.com/google-analytics-terms",
+          "category": "Language",
+          "issue_description": "professionalism: The heading and term \"Traffic Aquisition\" are misspelled; the correct term is \"Traffic Acquisition\".",
+          "severity": "medium",
+          "suggested_fix": "Change all visible instances of \"Traffic Aquisition\" to \"Traffic Acquisition\".",
+          "evidence": "<h3>Traffic Aquisition<svg></svg></h3>",
+          "confidence": 1
+        },
+        {
+          "page_url": "https://seline.com/google-analytics-terms",
+          "category": "Language",
+          "issue_description": "professionalism: In the closing CTA, \"You are just couple minutes away from bringing your dashboard to life.\" omits the article \"a\".",
+          "severity": "medium",
+          "suggested_fix": "Update to \"You are just a couple of minutes away from bringing your dashboard to life.\"",
+          "evidence": "You are just couple minutes away from bringing your dashboard to life.",
+          "confidence": 1
+        },
+        {
+          "page_url": "https://seline.com/imprint",
+          "category": "Language",
+          "issue_description": "professionalism: \"Contact at\" as a standalone label reads a bit incomplete.",
+          "severity": "low",
+          "suggested_fix": "Change \"Contact at\" to \"Contact\" or \"Contact us at\".",
+          "evidence": "<div>Contact at</div>",
+          "confidence": 1
+        },
+        {
+          "page_url": "https://seline.com/terms-and-conditions",
+          "category": "Language",
+          "issue_description": "professionalism: In section 8, the sentence \"The Services does not offer users to submit or post content.\" has subject–verb disagreement and awkward phrasing.",
+          "severity": "medium",
+          "suggested_fix": "Change to \"The Services do not allow users to submit or post content.\"",
+          "evidence": "<div>The Services does not offer users to submit or post content. </div>",
+          "confidence": 1
+        },
+        {
+          "page_url": "https://seline.com/terms-and-conditions",
+          "category": "Language",
+          "issue_description": "professionalism: In the limitation of liability section, \"the twelve (12) mONTH PERIOD\" includes \"mONTH\" with incorrect capitalization.",
+          "severity": "medium",
+          "suggested_fix": "Correct \"mONTH\" to \"month\" so the phrase reads \"twelve (12) month period\" (or \"twelve (12) months\").",
+          "evidence": "during the twelve (12) mONTH PERIOD PRIOR TO ANY CAUSE OF ACTION",
+          "confidence": 1
+        },
+        {
+          "page_url": "https://seline.com/terms-and-conditions",
+          "category": "Formatting",
+          "issue_description": "professionalism: In the Privacy Policy section the visible URL text is \"https://seline.com/privacy-policy\" but the actual policy lives at \"/privacy\" elsewhere on the site, creating a mismatched/obsolete-looking slug in the copy that can undermine trust even though the link works.",
+          "severity": "low",
+          "suggested_fix": "Update the visible URL text in the Terms & conditions page to match the current privacy policy URL pattern (e.g. change \"https://seline.com/privacy-policy\" to \"https://seline.com/privacy\") or rephrase it as a regular text link (\"Privacy Policy\") instead of a hard‑coded URL.",
+          "evidence": "<div>We care about data privacy... <a href=\"https://seline.com/privacy\" target=\"_blank\">https://seline.com/privacy-policy</a></div>",
+          "confidence": 1
+        }
+      ]
+    },
+    {
+      "domain": "dub.co",
+      "pagesAudited": 20,
+      "totalIssues": 5,
+      "recall": 0.5,
+      "precision": 1,
+      "severityAccuracy": 1,
+      "falsePositiveRate": 0,
+      "knownIssuesFound": 2,
+      "knownIssuesTotal": 4,
+      "falsePositivesDetected": 0,
+      "estimatedCost": 0.75,
+      "durationMs": 44384,
+      "recallDetails": [
+        {
+          "groundTruthId": "dub-1",
+          "groundTruthDescription": "word-class typo",
+          "found": true,
+          "matchedIssue": {
+            "page_url": "https://dub.co/contact/sales",
+            "category": "Language",
+            "issue_description": "professionalism: The tagline \"Giving superpowers to word-class companies\" contains a typo (\"word-class\" instead of \"world-class\"), which looks careless and inconsistent with other pages that use \"world-class companies\".",
+            "severity": "medium",
+            "suggested_fix": "Change the text to \"Giving superpowers to world-class companies\" to fix the typo and align with usage on other pages.",
+            "evidence": "<a href=\"https://dub.co/customers\"><p>Giving superpowers to word-class companies</p>",
+            "confidence": 1
+          },
+          "severityCorrect": true
+        },
+        {
+          "groundTruthId": "dub-2",
+          "groundTruthDescription": "Gather insights grammar issue",
+          "found": false
+        },
+        {
+          "groundTruthId": "dub-3",
+          "groundTruthDescription": "Understand how what your audience — grammar",
+          "found": true,
+          "matchedIssue": {
+            "page_url": "https://dub.co/solutions/creators",
+            "category": "Language",
+            "issue_description": "clarity: The sentence \"Understand how what your audience is interested in, how your affiliate campaigns are tracking, and oversee complete content performance.\" is ungrammatical (\"how what\") and awkwardly structured, which makes it harder to read.",
+            "severity": "medium",
+            "suggested_fix": "Rewrite the sentence for grammatical correctness and flow, for example: \"Understand what your audience is interested in, how your affiliate campaigns are performing, and get a complete view of content performance.\"",
+            "evidence": "<h3>Detailed analytics</h3><p>Understand how what your audience is interested in, how your affiliate campaigns are tracking, and oversee complete content performance.</p>",
+            "confidence": 1
+          },
+          "severityCorrect": true
+        },
+        {
+          "groundTruthId": "dub-4",
+          "groundTruthDescription": "Product Hunt is is — duplicate word",
+          "found": false
+        }
+      ],
+      "falsePositiveDetails": [],
+      "allIssues": [
+        {
+          "page_url": "https://dub.co/solutions/creators",
+          "category": "Language",
+          "issue_description": "clarity: The sentence \"Understand how what your audience is interested in, how your affiliate campaigns are tracking, and oversee complete content performance.\" is ungrammatical (\"how what\") and awkwardly structured, which makes it harder to read.",
+          "severity": "medium",
+          "suggested_fix": "Rewrite the sentence for grammatical correctness and flow, for example: \"Understand what your audience is interested in, how your affiliate campaigns are performing, and get a complete view of content performance.\"",
+          "evidence": "<h3>Detailed analytics</h3><p>Understand how what your audience is interested in, how your affiliate campaigns are tracking, and oversee complete content performance.</p>",
+          "confidence": 1
+        },
+        {
+          "page_url": "https://dub.co/contact/sales",
+          "category": "Language",
+          "issue_description": "professionalism: The tagline \"Giving superpowers to word-class companies\" contains a typo (\"word-class\" instead of \"world-class\"), which looks careless and inconsistent with other pages that use \"world-class companies\".",
+          "severity": "medium",
+          "suggested_fix": "Change the text to \"Giving superpowers to world-class companies\" to fix the typo and align with usage on other pages.",
+          "evidence": "<a href=\"https://dub.co/customers\"><p>Giving superpowers to word-class companies</p>",
+          "confidence": 1
+        },
+        {
+          "page_url": "https://dub.co/careers",
+          "category": "Language",
+          "issue_description": "clarity: In the benefits section, \"Annual learning & development – Courses, book, and conferences to help your role.\" is grammatically off (\"book\" should be plural, and \"to help your role\" is awkward).",
+          "severity": "medium",
+          "suggested_fix": "Revise this line to something like: \"Courses, books, and conferences to help you grow in your role.\"",
+          "evidence": "<h3>Annual learning &amp; development</h3><p>Courses, book, and conferences to help your role.</p>",
+          "confidence": 1
+        },
+        {
+          "page_url": "https://dub.co",
+          "category": "Facts & Consistency",
+          "issue_description": "credibility: The homepage states \"Join 100,000+ customers who use our link attribution platform\" while the About page says \"We power ... for 1,000+ companies globally.\" The order‑of‑magnitude difference (100,000+ customers vs 1,000+ companies) is not clearly explained and may confuse readers about the actual scale of adoption.",
+          "severity": "medium",
+          "suggested_fix": "Clarify the relationship between \"customers\" and \"companies\" (e.g. specify that 1,000+ companies account for 100,000+ individual users or workspaces) and align the phrasing across pages so the scale figures are clearly consistent.",
+          "evidence": "<p>Join 100,000+ customers who use our link attribution platform to take their marketing efforts to the next level.</p> ... <p>Dub is a modern, open-source link attribution platform. We power ... for 1,000+ companies globally.</p>",
+          "confidence": 0.98
+        },
+        {
+          "page_url": "https://dub.co/about",
+          "category": "Facts & Consistency",
+          "issue_description": "credibility: The About page says \"Dub is a modern, open-source link attribution platform. We power ... for 1,000+ companies globally\" while the homepage claims \"Join 100,000+ customers who use our link attribution platform.\" Without explanation of whether \"customers\" includes individual users within companies, these differing figures can appear contradictory.",
+          "severity": "medium",
+          "suggested_fix": "Update the About copy to explicitly relate \"1,000+ companies\" to the broader \"100,000+ customers\" figure, or harmonize both metrics (e.g. use the same metric on both pages or clearly label them as different measures such as companies vs total accounts).",
+          "evidence": "<p>Dub is a modern, open-source link attribution platform. We power ... for 1,000+ companies globally.</p> ... <p>Join 100,000+ customers who use our link attribution platform to take their marketing efforts to the next level.</p>",
+          "confidence": 0.98
+        }
+      ]
+    },
+    {
+      "domain": "plausible.io",
+      "pagesAudited": 20,
+      "totalIssues": 6,
+      "recall": 1,
+      "precision": 1,
+      "severityAccuracy": 1,
+      "falsePositiveRate": 0,
+      "knownIssuesFound": 0,
+      "knownIssuesTotal": 0,
+      "falsePositivesDetected": 0,
+      "estimatedCost": 0.6000000000000001,
+      "durationMs": 51372,
+      "recallDetails": [],
+      "falsePositiveDetails": [],
+      "allIssues": [
+        {
+          "page_url": "https://plausible.io/vs-cloudflare-web-analytics",
+          "category": "Language",
+          "issue_description": "professionalism: The sentence \"This doesn’t necessary have to mean anything bad as Cloudflare unlike Google has no interest in the ad-tech world\" uses the incorrect form \"necessary\" instead of the adverb \"necessarily\", which is a grammatical error.",
+          "severity": "medium",
+          "suggested_fix": "Change \"doesn’t necessary have to mean\" to \"doesn’t necessarily have to mean\" to correct the grammar.",
+          "evidence": "This doesn’t necessary have to mean anything bad as Cloudflare unlike Google has no interest in the ad-tech world",
+          "confidence": 1
+        },
+        {
+          "page_url": "https://plausible.io/privacy-focused-web-analytics",
+          "category": "Language",
+          "issue_description": "professionalism: In the sentence \"You can start your free trial here</a>a﻿nd utilize our GA4 to Plausible transition guide\", there is an extraneous \"a\" immediately after the closing link tag, producing \"herea﻿nd\" when rendered.",
+          "severity": "medium",
+          "suggested_fix": "Remove the stray \"a\" so the text reads \"start your free trial here and utilize our GA4 to Plausible transition guide\".",
+          "evidence": "You can <a href=\"https://plausible.io/register\">start your free trial here</a>a﻿nd utilize our <a href=\"https://plausible.io/blog/ga-to-plausible-transition\">GA4 to Plausible transition guide</a>.",
+          "confidence": 0.98
+        },
+        {
+          "page_url": "https://plausible.io/changelog",
+          "category": "Language",
+          "issue_description": "professionalism: In the \"Limited dashboard sharing\" section, the phrase \"share only a segment of you stats\" uses \"you\" instead of the correct possessive pronoun \"your\", which is a clear typo.",
+          "severity": "medium",
+          "suggested_fix": "Change \"segment of you stats\" to \"segment of your stats\".",
+          "evidence": "share only a segment of you stats</a>.",
+          "confidence": 1
+        },
+        {
+          "page_url": "https://plausible.io/enterprise-web-analytics",
+          "category": "Language",
+          "issue_description": "clarity: The sentence \"If you’re looking for a web analytics tool that can cover your needs right from handling high volumes of data, privacy-friendliness, accuracy of stats, state-of-the-art security practices, and is still easy to use\" is grammatically awkward and mixes a list of nouns with a clause \"and is still easy to use\" that does not parallel the earlier items.",
+          "severity": "low",
+          "suggested_fix": "Rephrase for parallel structure, for example: \"If you’re looking for a web analytics tool that can cover your needs — from handling high volumes of data, privacy-friendliness, accurate stats, and state-of-the-art security practices, to still being easy to use — here’s everything you need to know.\"",
+          "evidence": "If you’re looking for a web analytics tool that can cover your needs right from handling high volumes of data, privacy-friendliness, accuracy of stats, state-of-the-art security practices, and is still easy to use",
+          "confidence": 0.9
+        },
+        {
+          "page_url": "https://plausible.io/simple-web-analytics",
+          "category": "Language",
+          "issue_description": "professionalism: In the description of web analytics, the phrase \"to figure out what they’re doing well and what no so well\" contains a typo; \"no\" should be \"not\" (\"what not so well\").",
+          "severity": "medium",
+          "suggested_fix": "Change \"what no so well\" to \"what not so well\".",
+          "evidence": "to figure out what they’re doing well and what no so well and to see what they can do to improve",
+          "confidence": 1
+        },
+        {
+          "page_url": "https://plausible.io/privacy-focused-web-analytics",
+          "category": "Formatting",
+          "issue_description": "professionalism: Near the end of the page, the sentence \"You can start your free trial here</a>a﻿nd utilize our GA4 to Plausible transition guide\" has an extra \"a\" immediately after the link and a visible join in \"a﻿nd\", which looks like a markup/spacing error and slightly hurts readability.",
+          "severity": "low",
+          "suggested_fix": "Remove the stray \"a\" outside the link and ensure the text reads smoothly as \"…start your free trial here and utilize our GA4 to Plausible transition guide.\"",
+          "evidence": "You can <a href=\"https://plausible.io/register\">start your free trial here</a>a﻿nd utilize our",
+          "confidence": 0.99
+        }
+      ]
+    },
+    {
+      "domain": "justcancel.io",
+      "pagesAudited": 20,
+      "totalIssues": 49,
+      "recall": 0,
+      "precision": 1,
+      "severityAccuracy": 1,
+      "falsePositiveRate": 0,
+      "knownIssuesFound": 0,
+      "knownIssuesTotal": 1,
+      "falsePositivesDetected": 0,
+      "estimatedCost": 0.75,
+      "durationMs": 82913,
+      "recallDetails": [
+        {
+          "groundTruthId": "jc-1",
+          "groundTruthDescription": "1,100+ Cancel Guides — clarity issue flagged twice with different wording",
+          "found": false
+        }
+      ],
+      "falsePositiveDetails": [],
+      "allIssues": [
+        {
+          "page_url": "https://www.justcancel.io",
+          "category": "Language",
+          "issue_description": "professionalism: The homepage \"From the Blog\" section uses the U.S. spelling \"I Canceled Everything — saved $1,613/year, here's what happened\", while many internal pages use the U.K. spelling \"I Cancelled Everything\" for the same article title, creating a site-wide spelling inconsistency.",
+          "severity": "low",
+          "suggested_fix": "Standardize the article title spelling across the site (e.g., use \"I Canceled Everything\" everywhere to match U.S. English).",
+          "evidence": "<a href=\"/blog/cancel-everything-experiment\">🧪 I Canceled Everything — saved $1,613/year...</a> ... <a href=\"/blog/cancel-everything-experiment\">I Cancelled Everything — Saved $1,613/yr →</a>",
+          "confidence": 0.99
+        },
+        {
+          "page_url": "https://www.justcancel.io/vs-rocket-money",
+          "category": "Language",
+          "issue_description": "professionalism: In the \"Related Reading\" list, the article title is written as \"I Cancelled Everything — Saved $1,613/yr →\", which conflicts with the homepage's \"I Canceled Everything\" spelling and creates an inconsistent user experience.",
+          "severity": "low",
+          "suggested_fix": "Change \"I Cancelled Everything — Saved $1,613/yr →\" to \"I Canceled Everything — Saved $1,613/yr →\" to match the homepage and maintain consistent U.S. spelling.",
+          "evidence": "<h2>Related Reading</h2><ul><li><a href=\"/blog/cancel-everything-experiment\">I Cancelled Everything — Saved $1,613/yr →</a></li></ul>",
+          "confidence": 0.99
+        },
+        {
+          "page_url": "https://www.justcancel.io/vs-trim",
+          "category": "Language",
+          "issue_description": "professionalism: The \"Related Reading\" item \"I Cancelled Everything — Saved $1,613/yr →\" uses \"Cancelled\" while the homepage uses \"Canceled\" for the same article, causing spelling inconsistency.",
+          "severity": "low",
+          "suggested_fix": "Update the link text to \"I Canceled Everything — Saved $1,613/yr →\" for consistent spelling.",
+          "evidence": "<a href=\"/blog/cancel-everything-experiment\">🧪 I Canceled Everything — saved $1,613/year...</a> vs <a href=\"/blog/cancel-everything-experiment\">I Cancelled Everything — Saved $1,613/yr →</a>",
+          "confidence": 0.99
+        },
+        {
+          "page_url": "https://www.justcancel.io/vs-truebill",
+          "category": "Language",
+          "issue_description": "professionalism: The related article title appears as \"I Cancelled Everything — Saved $1,613/yr →\", which conflicts with the U.S. spelling \"I Canceled Everything\" used on the homepage.",
+          "severity": "low",
+          "suggested_fix": "Replace \"I Cancelled Everything — Saved $1,613/yr →\" with \"I Canceled Everything — Saved $1,613/yr →\" on this page.",
+          "evidence": "Homepage: \"I Canceled Everything — saved $1,613/year\"; Related Reading: \"I Cancelled Everything — Saved $1,613/yr →\"",
+          "confidence": 0.99
+        },
+        {
+          "page_url": "https://www.justcancel.io/vs-mint",
+          "category": "Language",
+          "issue_description": "professionalism: Under \"Related Reading\", the link text \"I Cancelled Everything — Saved $1,613/yr →\" uses \"Cancelled\" instead of the \"Canceled\" spelling used on the homepage for the same post.",
+          "severity": "low",
+          "suggested_fix": "Align the spelling by changing the text here to \"I Canceled Everything — Saved $1,613/yr →\".",
+          "evidence": "<li><a href=\"/blog/cancel-everything-experiment\">I Cancelled Everything — Saved $1,613/yr →</a></li>",
+          "confidence": 0.99
+        },
+        {
+          "page_url": "https://www.justcancel.io/vs-billshark",
+          "category": "Language",
+          "issue_description": "professionalism: The recurring related-reading link \"I Cancelled Everything — Saved $1,613/yr →\" uses U.K. spelling, whereas the homepage uses \"I Canceled Everything\", leading to inconsistent spelling across pages.",
+          "severity": "low",
+          "suggested_fix": "Standardize this link text to \"I Canceled Everything — Saved $1,613/yr →\" on this page.",
+          "evidence": "US spelling on home: \"I Canceled Everything\" vs UK spelling in lists: \"I Cancelled Everything — Saved $1,613/yr →\"",
+          "confidence": 0.99
+        },
+        {
+          "page_url": "https://www.justcancel.io/vs-pocketguard",
+          "category": "Language",
+          "issue_description": "professionalism: The article title \"I Cancelled Everything — Saved $1,613/yr →\" in the \"Related Reading\" list conflicts with the homepage's \"I Canceled Everything\" spelling, which can subtly reduce perceived polish.",
+          "severity": "low",
+          "suggested_fix": "Use \"I Canceled Everything — Saved $1,613/yr →\" here to keep spelling consistent with the homepage.",
+          "evidence": "<a href=\"/blog/cancel-everything-experiment\">I Cancelled Everything — Saved $1,613/yr →</a> (multiple \"Related Reading\" blocks)",
+          "confidence": 0.99
+        },
+        {
+          "page_url": "https://www.justcancel.io/vs-copilot-money",
+          "category": "Language",
+          "issue_description": "professionalism: This page's \"Related Reading\" section uses \"I Cancelled Everything — Saved $1,613/yr →\" while the homepage uses \"I Canceled Everything\", mixing U.K. and U.S. spellings for the same content.",
+          "severity": "low",
+          "suggested_fix": "Change the link text to \"I Canceled Everything — Saved $1,613/yr →\" for consistency in spelling.",
+          "evidence": "Home \"From the Blog\": \"I Canceled Everything...\"; comparison pages \"Related Reading\": \"I Cancelled Everything — Saved $1,613/yr →\"",
+          "confidence": 0.99
+        },
+        {
+          "page_url": "https://www.justcancel.io/vs-hiatus",
+          "category": "Language",
+          "issue_description": "professionalism: The related-articles list contains \"I Cancelled Everything — Saved $1,613/yr →\", which conflicts with the U.S. spelling \"I Canceled Everything\" used on the homepage.",
+          "severity": "low",
+          "suggested_fix": "Edit the link label to \"I Canceled Everything — Saved $1,613/yr →\" to align with the homepage spelling.",
+          "evidence": "<h2>Related Reading</h2>...<a href=\"/blog/cancel-everything-experiment\">I Cancelled Everything — Saved $1,613/yr →</a>",
+          "confidence": 0.99
+        },
+        {
+          "page_url": "https://www.justcancel.io/vs-personal-capital",
+          "category": "Language",
+          "issue_description": "professionalism: The repeated link text \"I Cancelled Everything — Saved $1,613/yr →\" in \"Related Reading\" is inconsistent with the homepage title \"I Canceled Everything\", mixing different English variants.",
+          "severity": "low",
+          "suggested_fix": "Update this reference to \"I Canceled Everything — Saved $1,613/yr →\" for consistent spelling.",
+          "evidence": "Repeated list item text: \"I Cancelled Everything — Saved $1,613/yr →\" vs homepage \"I Canceled Everything\"",
+          "confidence": 0.99
+        },
+        {
+          "page_url": "https://www.justcancel.io/vs-clarity-money",
+          "category": "Language",
+          "issue_description": "professionalism: In the \"Related Reading\" bullets, the article title is written as \"I Cancelled Everything — Saved $1,613/yr →\", which does not match the \"I Canceled Everything\" spelling on the homepage and creates a minor inconsistency.",
+          "severity": "low",
+          "suggested_fix": "Change the spelling here to \"I Canceled Everything — Saved $1,613/yr →\".",
+          "evidence": "<li><a href=\"/blog/cancel-everything-experiment\">I Cancelled Everything — Saved $1,613/yr →</a></li> (in bullets)",
+          "confidence": 0.99
+        },
+        {
+          "page_url": "https://www.justcancel.io/vs-subby",
+          "category": "Language",
+          "issue_description": "professionalism: This page lists \"I Cancelled Everything — Saved $1,613/yr →\" under \"Related Reading\", using \"Cancelled\" instead of the homepage's \"Canceled\" for the same article.",
+          "severity": "low",
+          "suggested_fix": "Replace \"I Cancelled Everything — Saved $1,613/yr →\" with \"I Canceled Everything — Saved $1,613/yr →\" to standardize spelling.",
+          "evidence": "\"I Cancelled Everything — Saved $1,613/yr →\" appears under many <h2>Related Reading</h2> sections",
+          "confidence": 0.99
+        },
+        {
+          "page_url": "https://www.justcancel.io/vs-prism",
+          "category": "Language",
+          "issue_description": "professionalism: The related-reading entry \"I Cancelled Everything — Saved $1,613/yr →\" uses U.K. spelling while the homepage uses U.S. \"I Canceled Everything\", leading to avoidable inconsistency.",
+          "severity": "low",
+          "suggested_fix": "Use the U.S. spelling \"I Canceled Everything — Saved $1,613/yr →\" here to match the primary article title.",
+          "evidence": "UK \"Cancelled\" in related-reading link vs US \"Canceled\" in home blog link for same URL /blog/cancel-everything-experiment",
+          "confidence": 0.99
+        },
+        {
+          "page_url": "https://www.justcancel.io/vs-simplifi",
+          "category": "Language",
+          "issue_description": "professionalism: The \"Related Reading\" list includes \"I Cancelled Everything — Saved $1,613/yr →\", which conflicts with the homepage's \"I Canceled Everything\" spelling choice.",
+          "severity": "low",
+          "suggested_fix": "Standardize to \"I Canceled Everything — Saved $1,613/yr →\" on this page.",
+          "evidence": "<a href=\"/blog/cancel-everything-experiment\">I Cancelled Everything — Saved $1,613/yr →</a> conflicts with home \"I Canceled Everything\"",
+          "confidence": 0.99
+        },
+        {
+          "page_url": "https://www.justcancel.io/vs-ynab",
+          "category": "Language",
+          "issue_description": "professionalism: The related article link \"I Cancelled Everything — Saved $1,613/yr →\" uses \"Cancelled\" whereas the homepage uses \"Canceled\", making the spelling inconsistent across the site.",
+          "severity": "low",
+          "suggested_fix": "Update the text to \"I Canceled Everything — Saved $1,613/yr →\" here.",
+          "evidence": "\"I Cancelled Everything — Saved $1,613/yr →\" uses \"Cancelled\" whereas home uses \"I Canceled Everything\"",
+          "confidence": 0.99
+        },
+        {
+          "page_url": "https://www.justcancel.io/vs-bobby",
+          "category": "Language",
+          "issue_description": "professionalism: Under \"Related Reading\", the link \"I Cancelled Everything — Saved $1,613/yr →\" differs from the homepage spelling \"I Canceled Everything\", mixing English variants.",
+          "severity": "low",
+          "suggested_fix": "Change \"I Cancelled Everything — Saved $1,613/yr →\" to \"I Canceled Everything — Saved $1,613/yr →\" for consistency.",
+          "evidence": "Under Related Reading: <a ...>I Cancelled Everything — Saved $1,613/yr →</a> vs home: \"I Canceled Everything\"",
+          "confidence": 0.99
+        },
+        {
+          "page_url": "https://www.justcancel.io/vs-emma",
+          "category": "Language",
+          "issue_description": "professionalism: The page uses \"I Cancelled Everything — Saved $1,613/yr →\" in the related-articles section, which is inconsistent with the homepage title \"I Canceled Everything\" for the same blog post.",
+          "severity": "low",
+          "suggested_fix": "Edit the link text to \"I Canceled Everything — Saved $1,613/yr →\" to maintain uniform spelling.",
+          "evidence": "Related-articles section text: \"I Cancelled Everything — Saved $1,613/yr →\"; homepage: \"I Canceled Everything — saved $1,613/year\"",
+          "confidence": 0.99
+        },
+        {
+          "page_url": "https://www.justcancel.io/vs-subscript",
+          "category": "Language",
+          "issue_description": "professionalism: In multiple \"Related Reading\" blocks, the article title appears as \"I Cancelled Everything — Saved $1,613/yr →\", which conflicts with the homepage's \"I Canceled Everything\" and introduces spelling inconsistency.",
+          "severity": "low",
+          "suggested_fix": "Replace all instances of \"I Cancelled Everything — Saved $1,613/yr →\" on this page with \"I Canceled Everything — Saved $1,613/yr →\".",
+          "evidence": "Multiple pages show <li><a href=\"/blog/cancel-everything-experiment\">I Cancelled Everything — Saved $1,613/yr →</a></li>",
+          "confidence": 0.99
+        },
+        {
+          "page_url": "https://www.justcancel.io/vs-trackmysubs",
+          "category": "Language",
+          "issue_description": "professionalism: This page's \"Related Reading\" sections use the title \"I Cancelled Everything — Saved $1,613/yr →\", which is inconsistent with the U.S. spelling \"I Canceled Everything\" used on the homepage.",
+          "severity": "low",
+          "suggested_fix": "Update the spelling here to \"I Canceled Everything — Saved $1,613/yr →\" to align with the rest of the site.",
+          "evidence": "This page's Related Reading: \"I Cancelled Everything — Saved $1,613/yr →\" vs home: \"I Canceled Everything — saved $1,613/year\"",
+          "confidence": 0.99
+        },
+        {
+          "page_url": "https://www.justcancel.io/vs-trim",
+          "category": "Facts & Consistency",
+          "issue_description": "credibility: The page states \"In 2022, Trim was acquired by OneMain Financial, a consumer lending company.\" but Trim was actually acquired by OneMain Financial in 2021, not 2022 — this is a factual error about the acquisition date.",
+          "severity": "medium",
+          "suggested_fix": "Update the sentence to reflect the correct acquisition year (2021) and, if desired, add a qualifier like \"in 2021\" with a source check.",
+          "evidence": "<p>...In 2022, Trim was acquired by OneMain Financial, a consumer lending company.</p>",
+          "confidence": 0.9
+        },
+        {
+          "page_url": "https://www.justcancel.io/vs-clarity-money",
+          "category": "Facts & Consistency",
+          "issue_description": "credibility: The page claims \"The app shut down in 2023\" referring to Clarity Money, but Clarity Money was discontinued earlier (Goldman Sachs shut the app down around 2021), so the 2023 shutdown date is inaccurate.",
+          "severity": "medium",
+          "suggested_fix": "Correct the shutdown timing for Clarity Money (e.g. change \"in 2023\" to the accurate year and, if needed, phrase it as \"was shut down around [correct year]\" after verifying the exact date).",
+          "evidence": "<p>Clarity Money was acquired by Goldman Sachs in 2018 and folded into Marcus. The app shut down in 2023.</p>",
+          "confidence": 0.9
+        },
+        {
+          "page_url": "https://www.justcancel.io",
+          "category": "Facts & Consistency",
+          "issue_description": "clarity: In the \"Hardest Subscriptions to Cancel\" section the Noom tile is labeled \"Noom Medium\" while the dedicated listing on the cancel index page describes \"Noom very hard\" — this inconsistent difficulty rating can confuse users about how hard Noom is to cancel.",
+          "severity": "low",
+          "suggested_fix": "Align the Noom difficulty label on the homepage with the difficulty used on the main cancel index (either both \"medium\" or both \"very hard\" after deciding which is correct).",
+          "evidence": "<section><h2>Hardest Subscriptions to Cancel</h2>...<a href=\"https://www.justcancel.io/cancel/noom\">Noom Medium</a>...<a href=\"https://www.justcancel.io/cancel/noom\">Noom very hard</a>",
+          "confidence": 0.99
+        },
+        {
+          "page_url": "https://www.justcancel.io/cancel",
+          "category": "Facts & Consistency",
+          "issue_description": "clarity: The Health & Fitness list describes \"Noom very hard\" while the homepage \"Hardest Subscriptions to Cancel\" section labels Noom as \"Noom Medium\" — this cross-page inconsistency in difficulty rating may mislead users about how challenging the cancellation process is.",
+          "severity": "low",
+          "suggested_fix": "Make the Noom difficulty rating consistent across the cancel index and homepage by choosing one difficulty level based on your research and updating the other location to match.",
+          "evidence": "<div><h2>💪 Health &amp; Fitness</h2>...<a href=\"https://www.justcancel.io/cancel/noom\">Noom very hard</a>...<section><h2>Hardest Subscriptions to Cancel</h2>...Noom Medium</section>",
+          "confidence": 0.99
+        },
+        {
+          "page_url": "https://www.justcancel.io/cancel",
+          "category": "Facts & Consistency",
+          "issue_description": "clarity: Under Business & Productivity, there are three separate entries for Monday.com — \"Monday.com easy\" (linked as /mondaycom), another \"Monday.com easy\" (linked as /monday-com), and \"Monday.com hard\" (linked as /monday) — identical product naming with different difficulty levels and multiple variants is confusing and appears inconsistent.",
+          "severity": "low",
+          "suggested_fix": "Clarify the Monday.com entries by either consolidating them or explicitly distinguishing the plans/contexts and aligning difficulty labels where they refer to the same product experience.",
+          "evidence": "<a href=\"https://www.justcancel.io/cancel/mondaycom\">Monday.com easy</a><a href=\"https://www.justcancel.io/cancel/monday-com\">Monday.com easy</a><a href=\"https://www.justcancel.io/cancel/monday\">Monday.com hard</a>",
+          "confidence": 1
+        },
+        {
+          "page_url": "https://www.justcancel.io/cancel",
+          "category": "Facts & Consistency",
+          "issue_description": "clarity: QuickBooks appears twice with similar names but different difficulty ratings — \"QuickBooks Online medium\" (\"QuickBooks Online\" in link text) and \"QuickBooks Online hard\" (\"QuickBooks Online\" without qualifier in link text) — without explanation this looks like an inconsistent assessment of the same product.",
+          "severity": "low",
+          "suggested_fix": "Either merge the QuickBooks Online entries into one with a single difficulty rating or clearly differentiate them (e.g. by plan or channel) so users understand why the difficulty differs.",
+          "evidence": "<a href=\"https://www.justcancel.io/cancel/quickbooks-online\">QuickBooks Online medium</a><a href=\"https://www.justcancel.io/cancel/quickbooks\">QuickBooks Online hard</a>",
+          "confidence": 1
+        },
+        {
+          "page_url": "https://www.justcancel.io/cancel",
+          "category": "Facts & Consistency",
+          "issue_description": "clarity: The header text says \"Step-by-step guides for 1189+ services\" while the search placeholder and multiple other pages consistently describe \"1,100+ cancel guides\" — this numerical mismatch (1189+ vs 1,100+) can make users question which figure is accurate.",
+          "severity": "low",
+          "suggested_fix": "Standardize the count by either using the same rounded figure everywhere (e.g. \"1,100+\" on this page as well) or updating all references to a single, current number after recounting the guides.",
+          "evidence": "<h1>Cancel Any Subscription</h1><p>Step-by-step guides for 1189+ services...</p>...placeholder=\"Search 1,100+ cancel guides",
+          "confidence": 1
+        },
+        {
+          "page_url": "https://www.justcancel.io",
+          "category": "Facts & Consistency",
+          "issue_description": "clarity: The homepage promotes \"✅ 1,100+ cancel guides\" while many comparison pages and product descriptions emphasize \"Cancel links for 440+ services\" — although \"guides\" and \"cancel links\" may be different things, the differing counts without explanation can be confusing about how broad the product coverage actually is.",
+          "severity": "low",
+          "suggested_fix": "Briefly clarify the distinction between total cancel guides (1,100+) and services with direct cancel links (440+) so users understand why the numbers differ.",
+          "evidence": "homepage: \"✅ 1,100+ cancel guides\" ... vs-rocket-money: \"<p>Cancel links for 440+ services</p>\"",
+          "confidence": 0.98
+        },
+        {
+          "page_url": "https://www.justcancel.io/vs-rocket-money",
+          "category": "Facts & Consistency",
+          "issue_description": "clarity: This page states \"Cancel links for 440+ services\" while the cancel index advertises guides for \"1189+ services\" and the homepage says \"1,100+ cancel guides\" — without explanation, the smaller 440+ figure may appear inconsistent with the broader counts.",
+          "severity": "low",
+          "suggested_fix": "Explicitly state that 440+ refers to services with direct cancel links while the larger 1,100+ number refers to all written guides, or update the count if it has grown.",
+          "evidence": "vs-trim: \"<p>440+ cancel links</p>\"... /cancel: \"Step-by-step guides for 1189+ services.\" ... homepage: \"1,100+ Cancel Guides\"",
+          "confidence": 0.98
+        },
+        {
+          "page_url": "https://www.justcancel.io/vs-trim",
+          "category": "Facts & Consistency",
+          "issue_description": "clarity: This comparison page highlights \"440+ cancel links\" while the main cancel index mentions \"1189+ services\" and the homepage touts \"1,100+ cancel guides\" — the different figures without context can make users unsure how many services are truly supported.",
+          "severity": "low",
+          "suggested_fix": "Add a short explanation distinguishing between the number of full guides vs. the subset that have direct cancel links, and ensure the 440+ figure is up to date.",
+          "evidence": "vs-rocket-money: \"Cancel links for 440+ services\"... /cancel: \"1189+ services\"... homepage: \"✅ 1,100+ cancel guides\"",
+          "confidence": 0.98
+        },
+        {
+          "page_url": "https://www.justcancel.io/cancel",
+          "category": "Formatting",
+          "issue_description": "clarity: The HTML near the end of the page is malformed, with `<footer>` content injected into the middle of the \"Creator & Education\" section (e.g., `...<a href=\"https://www.justcancel.io/cancel/coursera\" [section=\"\" truncated]<footer=\"\"></a><div><a href=\"https://www.justcancel.io/cancel/coursera\" [section=\"\" truncated]<footer=\"\"></a><div>...`). This likely breaks the visual layout and can confuse users trying to browse the final category.",
+          "severity": "medium",
+          "suggested_fix": "Correct the HTML structure for the \"Creator & Education\" section so that all subscription links render inside that section and the footer appears only once at the bottom of the page.",
+          "evidence": "...<a href=\"https://www.justcancel.io/cancel/coursera-plus\">Coursera Plus easy</a><a href=\"https://www.justcancel.io/cancel/coursera\"[truncated]...\n<footer><div><div><div><h3>Tools</h3>...",
+          "confidence": 0.96
+        },
+        {
+          "page_url": "https://www.justcancel.io/cancel",
+          "category": "Formatting",
+          "issue_description": "frustration: Several services appear multiple times within the same category lists (e.g., \"Amazon Kids+\" listed twice in Entertainment & Media, \"CuriosityStream\" twice, \"EveryPlate\" and \"Purple Carrot\" twice in Food & Meal Kits, \"Snap Kitchen\" twice, \"Tesla Premium Connectivity\" twice in Technology, multiple Monday.com, Instacart+, Twitch Subscription entries, etc.), which clutters the UI and makes scanning the list harder.",
+          "severity": "medium",
+          "suggested_fix": "Deduplicate identical services within each category list so that each subscription appears only once with a single difficulty label.",
+          "evidence": "<a href=\"https://www.justcancel.io/cancel/amazon-kids-plus\">Amazon Kids+ easy</a><a href=\"https://www.justcancel.io/cancel/amazon-kids-plus\">Amazon Kids+ easy</a>...",
+          "confidence": 0.98
+        },
+        {
+          "page_url": "https://www.justcancel.io/vs-rocket-money",
+          "category": "Formatting",
+          "issue_description": "frustration: The \"More Comparisons\" and \"Related Reading\" blocks are repeated three separate times down the page with identical content, which creates visual noise and breaks reading flow when scrolling through the comparison.",
+          "severity": "low",
+          "suggested_fix": "Show the \"More Comparisons\" and \"Related Reading\" sections only once per page (e.g., at the end of the article) instead of repeating them after each subsection.",
+          "evidence": "<div><h2>More Comparisons</h2>...Rocket Money...\n...\n<div><h2>More Comparisons</h2>...Rocket Money...\n...\n<div><h2>More Comparisons</h2>...Rocket Money...",
+          "confidence": 0.98
+        },
+        {
+          "page_url": "https://www.justcancel.io/vs-trim",
+          "category": "Formatting",
+          "issue_description": "frustration: The same \"More Comparisons\" and \"Related Reading\" blocks are repeated four times on the page, directly after each benefit section, which makes the layout feel redundant and forces extra scrolling.",
+          "severity": "low",
+          "suggested_fix": "Consolidate the repeated \"More Comparisons\" and \"Related Reading\" sections into a single instance near the bottom of the page.",
+          "evidence": "vs-trim: ...<p>No bank connection</p>...<h2>More Comparisons</h2>...\n...<p>$5 one-time — not a subscription</p>...<h2>More Comparisons</h2>...\n...<p>Your data stays in your browser</p>...<h2>More Comparisons</h2>...\n...<p>440+ cancel links</p>...<h2>More Comparisons</h2>...",
+          "confidence": 0.98
+        },
+        {
+          "page_url": "https://www.justcancel.io/vs-truebill",
+          "category": "Formatting",
+          "issue_description": "frustration: Identical \"More Comparisons\" and \"Related Reading\" sections appear three times on the page, interrupting the narrative about why people switch and making the content feel repetitive.",
+          "severity": "low",
+          "suggested_fix": "Keep only one \"More Comparisons\" and one \"Related Reading\" block on the page and remove the duplicated instances between sections.",
+          "evidence": "vs-truebill: ...<p>Bank connection concerns</p>...<h2>More Comparisons</h2>...\n...<p>Monthly subscription fatigue</p>...<h2>More Comparisons</h2>...\n...<p>Data privacy</p>...<h2>More Comparisons</h2>...",
+          "confidence": 0.98
+        },
+        {
+          "page_url": "https://www.justcancel.io/vs-mint",
+          "category": "Formatting",
+          "issue_description": "frustration: The \"More Comparisons\" and \"Related Reading\" link clusters are duplicated three times (after each step 1/2/3 panel), which adds repetitive blocks that distract from the core explanation of how Just Cancel works.",
+          "severity": "low",
+          "suggested_fix": "Display a single combined \"More Comparisons\" / \"Related Reading\" area after the main how‑it‑works steps instead of repeating it after each step.",
+          "evidence": "vs-mint: ...<div>1</div>...<h2>More Comparisons</h2>...\n...<div>2</div>...<h2>More Comparisons</h2>...\n...<div>3</div>...<h2>More Comparisons</h2>...",
+          "confidence": 0.98
+        },
+        {
+          "page_url": "https://www.justcancel.io/vs-billshark",
+          "category": "Formatting",
+          "issue_description": "frustration: The same \"More Comparisons\" and \"Related Reading\" sections are shown four times on the page, once after each major block, which leads to a cluttered layout and unnecessary repetition.",
+          "severity": "low",
+          "suggested_fix": "Limit the \"More Comparisons\" and \"Related Reading\" sections to a single instance near the bottom of the comparison page.",
+          "evidence": "vs-billshark: ...<div>What Billshark Does</div>...<h2>More Comparisons</h2>...\n...<div>What Just Cancel Does</div>...<h2>More Comparisons</h2>...\n...<div>Pricing Comparison</div>...<h2>More Comparisons</h2>...\n...<div>When to Use Which</div>...<h2>More Comparisons</h2>...",
+          "confidence": 0.98
+        },
+        {
+          "page_url": "https://www.justcancel.io/vs-pocketguard",
+          "category": "Formatting",
+          "issue_description": "frustration: \"More Comparisons\" and \"Related Reading\" blocks with identical content appear four times on the page, diluting the focus of the PocketGuard vs Just Cancel comparison.",
+          "severity": "low",
+          "suggested_fix": "Remove the extra repeated \"More Comparisons\" / \"Related Reading\" blocks and keep only one set at the end of the page.",
+          "evidence": "vs-pocketguard: ...<div>The Core Difference</div>...<h2>More Comparisons</h2>...\n...<div>Pricing Comparison</div>...<h2>More Comparisons</h2>...\n...<div>Privacy</div>...<h2>More Comparisons</h2>...\n...<div>The Irony</div>...<h2>More Comparisons</h2>...",
+          "confidence": 0.99
+        },
+        {
+          "page_url": "https://www.justcancel.io/vs-copilot-money",
+          "category": "Formatting",
+          "issue_description": "frustration: The page repeats the same \"More Comparisons\" and \"Related Reading\" sections four times (after each major section and again after the pricing table), which makes the page feel longer and more repetitive than necessary.",
+          "severity": "low",
+          "suggested_fix": "Consolidate the navigation/related-content blocks into a single set at the bottom of the page to streamline the layout.",
+          "evidence": "vs-copilot-money: ...<div>What Copilot Money Does</div>...<h2>More Comparisons</h2>...\n...<div>What Just Cancel Does</div>...<h2>More Comparisons</h2>...\n...<div>Pricing Comparison</div>...<h2>More Comparisons</h2>...\n...<div>When to Use Which</div>...<h2>More Comparisons</h2>...",
+          "confidence": 0.99
+        },
+        {
+          "page_url": "https://www.justcancel.io/vs-hiatus",
+          "category": "Formatting",
+          "issue_description": "frustration: Identical \"More Comparisons\" and \"Related Reading\" panels are rendered four times throughout the Hiatus comparison, cluttering the page and breaking visual hierarchy.",
+          "severity": "low",
+          "suggested_fix": "Show the \"More Comparisons\" and \"Related Reading\" content only once per page rather than repeating after each content block.",
+          "evidence": "vs-hiatus: ...<div>What Hiatus Does</div>...<h2>More Comparisons</h2>...\n...<div>What Just Cancel Does</div>...<h2>More Comparisons</h2>...\n...<div>Pricing Comparison</div>...<h2>More Comparisons</h2>...\n...<div>When to Use Which</div>...<h2>More Comparisons</h2>...",
+          "confidence": 0.99
+        },
+        {
+          "page_url": "https://www.justcancel.io/vs-personal-capital",
+          "category": "Formatting",
+          "issue_description": "frustration: The Empower/Personal Capital comparison page repeats the same \"More Comparisons\" and \"Related Reading\" link groups four times, which makes the scrolling experience feel redundant.",
+          "severity": "low",
+          "suggested_fix": "Retain a single instance of the \"More Comparisons\" and \"Related Reading\" sections at the end of the page and remove the repeated earlier copies.",
+          "evidence": "vs-personal-capital: ...<div>The Key Difference</div>...<h2>More Comparisons</h2>...\n...<div>Comparison</div>...<h2>More Comparisons</h2>...\n...<div>When Empower Makes Sense</div>...<h2>More Comparisons</h2>...\n...<div>The Best Approach</div>...<h2>More Comparisons</h2>...",
+          "confidence": 0.99
+        },
+        {
+          "page_url": "https://www.justcancel.io/vs-clarity-money",
+          "category": "Formatting",
+          "issue_description": "frustration: The page includes the identical \"More Comparisons\" and \"Related Reading\" sidebars four times, overshadowing the core Clarity Money vs Just Cancel explanation with repeated navigation blocks.",
+          "severity": "low",
+          "suggested_fix": "Reduce the duplication by placing one consolidated \"More Comparisons\" / \"Related Reading\" section near the conclusion of the page.",
+          "evidence": "vs-clarity-money: ...<div>What Happened to Clarity Money?</div>...<h2>More Comparisons</h2>...\n...<div>Comparison</div>...<h2>More Comparisons</h2>...\n...<div>What Clarity Money Did Well</div>...<h2>More Comparisons</h2>...\n...<div>Why Just Cancel Is Different</div>...<h2>More Comparisons</h2>...",
+          "confidence": 0.99
+        },
+        {
+          "page_url": "https://www.justcancel.io/vs-subby",
+          "category": "Formatting",
+          "issue_description": "frustration: The Subby comparison repeats the same \"More Comparisons\" and \"Related Reading\" sections four separate times (after each main block and the feature table), which adds unnecessary vertical length and visual repetition.",
+          "severity": "low",
+          "suggested_fix": "Keep only one occurrence of the \"More Comparisons\" and \"Related Reading\" blocks at the bottom and remove intermediate duplicates.",
+          "evidence": "vs-subby: ...<div>What Subby Does</div>...<h2>More Comparisons</h2>...\n...<div>What Just Cancel Does</div>...<h2>More Comparisons</h2>...\n...<div>Feature Comparison</div>...<h2>More Comparisons</h2>...\n...<div>When to Use Which</div>...<h2>More Comparisons</h2>...",
+          "confidence": 0.99
+        },
+        {
+          "page_url": "https://www.justcancel.io/vs-prism",
+          "category": "Formatting",
+          "issue_description": "frustration: The Prism comparison page displays the same \"More Comparisons\" and \"Related Reading\" clusters four times, which can annoy users who see the same links repeated as they scroll.",
+          "severity": "low",
+          "suggested_fix": "Display the \"More Comparisons\" and \"Related Reading\" sections just once near the end of the content instead of after every content section.",
+          "evidence": "vs-prism: ...<div>What Prism Did</div>...<h2>More Comparisons</h2>...\n...<div>What Just Cancel Does</div>...<h2>More Comparisons</h2>...\n...<div>Comparison</div>...<h2>More Comparisons</h2>...\n...<div>Looking for a Prism Alternative?</div>...<h2>More Comparisons</h2>...",
+          "confidence": 0.99
+        },
+        {
+          "page_url": "https://www.justcancel.io/vs-simplifi",
+          "category": "Formatting",
+          "issue_description": "frustration: Identical \"More Comparisons\" and \"Related Reading\" sections appear four times on the Simplifi comparison page, disrupting the reading experience with repeated link blocks.",
+          "severity": "low",
+          "suggested_fix": "Consolidate these navigation/related content sections into a single block at the bottom of the page.",
+          "evidence": "vs-simplifi: ...<div>What Simplifi Does</div>...<h2>More Comparisons</h2>...\n...<div>What Just Cancel Does</div>...<h2>More Comparisons</h2>...\n...<div>Pricing Comparison</div>...<h2>More Comparisons</h2>...\n...<div>When to Use Which</div>...<h2>More Comparisons</h2>...",
+          "confidence": 0.99
+        },
+        {
+          "page_url": "https://www.justcancel.io/vs-ynab",
+          "category": "Formatting",
+          "issue_description": "frustration: The YNAB comparison repeats the same \"More Comparisons\" and \"Related Reading\" modules four times, which clutters the visual layout and may feel like unnecessary duplication to readers.",
+          "severity": "low",
+          "suggested_fix": "Remove the extra copies and keep one \"More Comparisons\" / \"Related Reading\" area at the end of the page.",
+          "evidence": "vs-ynab: ...<div>What YNAB Does</div>...<h2>More Comparisons</h2>...\n...<div>What Just Cancel Does</div>...<h2>More Comparisons</h2>...\n...<div>Pricing Comparison</div>...<h2>More Comparisons</h2>...\n...<div>When to Use Which</div>...<h2>More Comparisons</h2>...",
+          "confidence": 0.99
+        },
+        {
+          "page_url": "https://www.justcancel.io/vs-bobby",
+          "category": "Formatting",
+          "issue_description": "frustration: The Bobby comparison page renders the identical \"More Comparisons\" and \"Related Reading\" link sections four times, leading to redundant content and extra scrolling for users.",
+          "severity": "low",
+          "suggested_fix": "Limit the \"More Comparisons\" and \"Related Reading\" sections to a single, final block instead of repeating them between every section.",
+          "evidence": "vs-bobby: ...<div>The Key Difference</div>...<h2>More Comparisons</h2>...\n...<div>Comparison</div>...<h2>More Comparisons</h2>...\n...<div>When Bobby Makes Sense</div>...<h2>More Comparisons</h2>...\n...<div>The Best Combo</div>...<h2>More Comparisons</h2>...",
+          "confidence": 0.99
+        },
+        {
+          "page_url": "https://www.justcancel.io/vs-emma",
+          "category": "Formatting",
+          "issue_description": "frustration: The Emma comparison includes the same \"More Comparisons\" and \"Related Reading\" content four times throughout the page, which weakens the visual hierarchy and makes the page feel repetitive.",
+          "severity": "low",
+          "suggested_fix": "Show the cross-links (\"More Comparisons\" / \"Related Reading\") only once after the main comparison and remove redundant instances.",
+          "evidence": "vs-emma: ...<div>What Emma Does</div>...<h2>More Comparisons</h2>...\n...<div>Comparison</div>...<h2>More Comparisons</h2>...\n...<div>The Subscription App Irony (Again)</div>...<h2>More Comparisons</h2>...\n...<div>When Emma Makes Sense</div>...<h2>More Comparisons</h2>...",
+          "confidence": 0.99
+        },
+        {
+          "page_url": "https://www.justcancel.io/vs-subscript",
+          "category": "Formatting",
+          "issue_description": "frustration: The Subscript comparison page repeats the identical \"More Comparisons\" and \"Related Reading\" blocks three times (after steps 1, 2, and 3), which interrupts the step-by-step flow and adds repeated content.",
+          "severity": "low",
+          "suggested_fix": "Present the \"More Comparisons\" and \"Related Reading\" sections a single time after the three-step explanation.",
+          "evidence": "vs-subscript: ...<div>1</div>...<h2>More Comparisons</h2>...\n...<div>2</div>...<h2>More Comparisons</h2>...\n...<div>3</div>...<h2>More Comparisons</h2>...",
+          "confidence": 0.99
+        },
+        {
+          "page_url": "https://www.justcancel.io/vs-trackmysubs",
+          "category": "Formatting",
+          "issue_description": "frustration: The TrackMySubs comparison contains the same \"More Comparisons\" and \"Related Reading\" clusters four times, which results in a visually repetitive page and distracts from the key comparison content.",
+          "severity": "low",
+          "suggested_fix": "Remove intermediate duplicates and leave one consolidated \"More Comparisons\" / \"Related Reading\" section near the bottom of the page.",
+          "evidence": "vs-trackmysubs: ...<div>The Key Difference</div>...<h2>More Comparisons</h2>...\n...<div>Comparison</div>...<h2>More Comparisons</h2>...\n...<div>When TrackMySubs Makes Sense</div>...<h2>More Comparisons</h2>...\n...<div>The Best Approach</div>...<h2>More Comparisons</h2>...",
+          "confidence": 0.99
+        }
+      ]
+    },
+    {
+      "domain": "beehiiv.com",
+      "pagesAudited": 20,
+      "totalIssues": 17,
+      "recall": 1,
+      "precision": 1,
+      "severityAccuracy": 1,
+      "falsePositiveRate": 0,
+      "knownIssuesFound": 0,
+      "knownIssuesTotal": 0,
+      "falsePositivesDetected": 0,
+      "estimatedCost": 0.75,
+      "durationMs": 71717,
+      "recallDetails": [],
+      "falsePositiveDetails": [],
+      "allIssues": [
+        {
+          "page_url": "https://www.beehiiv.com/about",
+          "category": "Language",
+          "issue_description": "professionalism: The team title \"Perfomance Analyst\" for \"LJ Simpson\" contains a spelling error; \"Perfomance\" is misspelled.",
+          "severity": "medium",
+          "suggested_fix": "Change the title to \"Performance Analyst\" to correct the spelling.",
+          "evidence": "<div><h2>LJ Simpson</h2><p>Perfomance Analyst</p></div>",
+          "confidence": 1
+        },
+        {
+          "page_url": "https://www.beehiiv.com/features/automations",
+          "category": "Language",
+          "issue_description": "clarity: In the FAQ section, the question \"Can I integrate beehiiv automations with other tools?\" appears twice. The first occurrence is answered with \"Yes, beehiiv provides advanced analytics to track metrics like open rates, click-through rates, and conversions for each automation...\", which does not answer the integration question and instead repeats analytics information.",
+          "severity": "medium",
+          "suggested_fix": "Replace the first occurrence’s answer with unique content about integrations or remove the duplicated question so that each FAQ question is answered directly and only once.",
+          "evidence": "<details><summary>Can I integrate beehiiv automations with other tools?</summary><section><p>Yes, beehiiv provides advanced analytics to track metrics like open rates...</p></section></details><details><summary>Can I integrate beehiiv automations with other tools?</summary>",
+          "confidence": 1
+        },
+        {
+          "page_url": "https://www.beehiiv.com/features/analytics",
+          "category": "Language",
+          "issue_description": "clarity: In the FAQ section, the question \"Does the editor support collaboration?\" is followed by an answer that begins \"The key benefits include real-time subscriber insights, advanced engagement metrics, revenue tracking...\" which describes analytics benefits and does not address collaboration at all, suggesting a copy‑paste error.",
+          "severity": "medium",
+          "suggested_fix": "Either replace the question with one about analytics benefits or update the answer to describe whether and how the editor supports collaboration.",
+          "evidence": "<details><summary>Does the editor support collaboration?</summary><section><p>The key benefits include real-time subscriber insights, advanced engagement metrics...</p></section></details>",
+          "confidence": 1
+        },
+        {
+          "page_url": "https://www.beehiiv.com/features/paid-subscriptions",
+          "category": "Language",
+          "issue_description": "clarity: In the FAQ section, the question \"Can I use beehiiv's analytics to improve subscriber engagement?\" appears twice in succession with the same answer, creating redundant content.",
+          "severity": "low",
+          "suggested_fix": "Remove one of the duplicate question-and-answer entries or replace it with a distinct FAQ to avoid repetition.",
+          "evidence": "<details><summary>Can I use beehiiv's analytics to improve subscriber engagement?</summary><section><p>Yes, you can use the insights from beehiiv's analytics to refine your content strategy...</p></section></details><details><summary>Can I use beehiiv's analytics to improve subscriber engagement?</summary><section><p>Yes, you can use the insights from beehiiv's analytics...",
+          "confidence": 1
+        },
+        {
+          "page_url": "https://www.beehiiv.com/features/recommendations",
+          "category": "Language",
+          "issue_description": "clarity: In the step list, one button label is jumbled: \"Select newsletters in your beehiiv dashboard, filtering by niche, popularity, content style, and relevance to your target audience.Choose Who to Recommend\" combines description text and the step title without proper order or punctuation.",
+          "severity": "medium",
+          "suggested_fix": "Reformat this step as two clearly separated parts, for example: title \"Step 1 – Choose Who to Recommend\" and description \"Select newsletters in your beehiiv dashboard, filtering by niche, popularity, content style, and relevance to your target audience.\"",
+          "evidence": "<button><div>Select newsletters in your beehiiv dashboard, filtering by niche, popularity, content style, and relevance to your target audience.<div>Choose Who to Recommend</div></div></button>",
+          "confidence": 1
+        },
+        {
+          "page_url": "https://www.beehiiv.com/privacy",
+          "category": "Language",
+          "issue_description": "clarity: In the purposes list, the bullet \"to provide our Website and its functionality, contents and services to;\" ends abruptly with \"to;\" and has no object, making it a sentence fragment.",
+          "severity": "medium",
+          "suggested_fix": "Complete the bullet by adding the missing object (e.g., \"to you\") or remove \"to\" entirely so it reads smoothly, such as \"to provide our Website and its functionality, contents, and services.\"",
+          "evidence": "<ul><li>to provide our Website and its functionality, contents and services to;</li>",
+          "confidence": 1
+        },
+        {
+          "page_url": "https://www.beehiiv.com/privacy",
+          "category": "Language",
+          "issue_description": "clarity: In the \"Other California Privacy Rights\" section, the paragraph beginning \"California Civil Code Section 1798.83 (California’s “Shine the Light” law) permits users...\" is repeated twice almost verbatim, resulting in redundant content.",
+          "severity": "low",
+          "suggested_fix": "Remove one of the duplicate \"California Civil Code Section 1798.83\" paragraphs so the explanation of Shine the Light rights appears only once.",
+          "evidence": "<p>California Civil Code Section 1798.83 (California’s “Shine the Light” law) permits users...</p><p>California Civil Code Section 1798.83 (California’s “Shine the Light” law) permits users of our Digital Services...",
+          "confidence": 1
+        },
+        {
+          "page_url": "https://www.beehiiv.com/aup",
+          "category": "Language",
+          "issue_description": "clarity: In the \"Adult Content and Services\" section, the sentences \"This includes links to pornographic websites or adult subscription platforms (e.g., OnlyFans), as well, the promotion of escort services, adult webcam streams...\" and \"Sexually explicit AI-generated or manipulated imagery, such as deepfakes, as well, non-consensual or exploitative sexual content is strictly prohibited.\" use the phrase \"as well,\" incorrectly mid‑clause, making them grammatically awkward.",
+          "severity": "low",
+          "suggested_fix": "Replace \"as well,\" with \"as well as\" in both sentences, for example: \"...platforms (e.g., OnlyFans), as well as the promotion of escort services...\" and \"...AI-generated or manipulated imagery, such as deepfakes, as well as non-consensual or exploitative sexual content is strictly prohibited.\"",
+          "evidence": "This includes links to pornographic websites or adult subscription platforms (e.g., OnlyFans), as well, the promotion of escort services...\nSexually explicit AI-generated or manipulated imagery, such as deepfakes, as well, non-consensual or exploitative sexual content is strictly prohibited.",
+          "confidence": 1
+        },
+        {
+          "page_url": "https://www.beehiiv.com/aup",
+          "category": "Language",
+          "issue_description": "clarity: In the \"Adult Content and Services\" section, the sentence \"In addition, any material that exploits children under eighteen (18) years of age including non-consensual sex acts, child sexual abuse material (CSAM)...\" is missing a comma after \"years of age,\" which makes the clause harder to parse.",
+          "severity": "low",
+          "suggested_fix": "Add a comma after \"years of age\" so the sentence reads \"children under eighteen (18) years of age, including non-consensual sex acts, child sexual abuse material (CSAM)...\"",
+          "evidence": "In addition, any material that exploits children under eighteen (18) years of age including non-consensual sex acts, child sexual abuse material (CSAM)...",
+          "confidence": 0.99
+        },
+        {
+          "page_url": "https://www.beehiiv.com/features/automations",
+          "category": "Facts & Consistency",
+          "issue_description": "clarity: On the FAQ list, the question \"Can I integrate beehiiv automations with other tools?\" appears twice with different answers. The first instance answers, \"Yes, beehiiv provides advanced analytics to track metrics like open rates, click-through rates, and conversions for each automation. This helps you optimize performance over time.\", which describes analytics rather than integrations, while a later FAQ with the same question correctly states, \"Yes, beehiiv supports integrations via API, webhooks, and through no-code tools like Zapier and Make.\" This conflicting content can confuse users about whether the FAQ is about integrations or analytics.",
+          "severity": "medium",
+          "suggested_fix": "Update or remove the first \"Can I integrate beehiiv automations with other tools?\" FAQ so that it either has the correct integrations-focused answer or is merged with the later, accurate entry.",
+          "evidence": "<details><summary>Can I integrate beehiiv automations with other tools?</summary><section><p>Yes, beehiiv provides advanced analytics...</p></section></details><details><summary>Can I integrate beehiiv automations with other tools?</summary><section><p>Yes, beehiiv supports integrations via API, webhooks...",
+          "confidence": 0.99
+        },
+        {
+          "page_url": "https://www.beehiiv.com/features/analytics",
+          "category": "Facts & Consistency",
+          "issue_description": "clarity: In the FAQ on this page, the question \"Does the editor support collaboration?\" is answered with, \"The key benefits include real-time subscriber insights, advanced engagement metrics, revenue tracking, traffic analysis, time comparisons for performance trends, subscriber status monitoring, predictive analytics, and seamless data export options from our email newsletter analytics dashboard.\" This answer does not address collaboration at all and instead repeats analytics benefits, which is inconsistent with the question and likely a copy-paste error.",
+          "severity": "medium",
+          "suggested_fix": "Either replace the answer under \"Does the editor support collaboration?\" with a response that clearly addresses collaboration support, or remove this FAQ if collaboration is out of scope for the analytics page.",
+          "evidence": "<details><summary>Does the editor support collaboration?</summary><section><p>The key benefits include real-time subscriber insights, advanced engagement metrics, revenue tracking, traffic analysis...",
+          "confidence": 0.99
+        },
+        {
+          "page_url": "https://www.beehiiv.com/features/paid-subscriptions",
+          "category": "Facts & Consistency",
+          "issue_description": "professionalism: In the FAQ list, the question \"Can I use beehiiv's analytics to improve subscriber engagement?\" appears twice in succession with the identical answer, \"Yes, you can use the insights from beehiiv's analytics to refine your content strategy and improve subscriber engagement.\" This duplication looks unintentional and reduces the perceived polish of the page.",
+          "severity": "low",
+          "suggested_fix": "Remove one of the duplicate \"Can I use beehiiv's analytics to improve subscriber engagement?\" FAQ entries so the question appears only once.",
+          "evidence": "<details><summary>Can I use beehiiv's analytics to improve subscriber engagement?</summary><section><p>Yes, you can use the insights from beehiiv's analytics...</p></section></details><details><summary>Can I use beehiiv's analytics to improve subscriber engagement?</summary><section><p>Yes, you can use the insights from beehiiv's analytics...",
+          "confidence": 0.99
+        },
+        {
+          "page_url": "https://www.beehiiv.com/features/api-and-integrations",
+          "category": "Facts & Consistency",
+          "issue_description": "clarity: In the FAQ at the bottom of the page, the question \"How is authentication handled?\" has an empty `<section>` with no answer content. This omission leaves an important technical question unanswered and may cause confusion for developers evaluating the API.",
+          "severity": "medium",
+          "suggested_fix": "Add a concise explanation under \"How is authentication handled?\" describing the authentication method (e.g., token-based/Bearer tokens with REST JSON requests), or remove the question if the information cannot yet be provided.",
+          "evidence": "<details><summary>How is authentication handled?</summary><section></section></details>",
+          "confidence": 1
+        },
+        {
+          "page_url": "https://www.beehiiv.com/features/automations",
+          "category": "Formatting",
+          "issue_description": "clarity: In the FAQ, the question “Can I integrate beehiiv automations with other tools?” appears twice, and the first instance is paired with an answer about analytics (“Yes, beehiiv provides advanced analytics to track metrics like open rates...”) rather than integrations, which makes the section confusing and suggests a copy/paste formatting error.",
+          "severity": "medium",
+          "suggested_fix": "Update the first occurrence of this FAQ item so that either the question or the answer is corrected to match, or remove the duplicate question entirely and ensure the integrations-related answer appears only once under the correct heading.",
+          "evidence": "<details><summary>Can I integrate beehiiv automations with other tools?</summary><section><p>Yes, beehiiv provides advanced analytics to track metrics like open rates...</p></section></details><details><summary>Can I integrate beehiiv automations with other tools?</summary>",
+          "confidence": 1
+        },
+        {
+          "page_url": "https://www.beehiiv.com/features/analytics",
+          "category": "Formatting",
+          "issue_description": "clarity: In the FAQ, the entry titled “Does the editor support collaboration?” has an answer that repeats the benefits of the analytics dashboard rather than addressing collaboration, indicating a misaligned heading/answer pairing.",
+          "severity": "medium",
+          "suggested_fix": "Retitle this FAQ item to match the existing answer or replace the answer text with content that directly addresses whether and how the editor supports collaboration.",
+          "evidence": "<details><summary>Does the editor support collaboration?</summary><section><p>The key benefits include real-time subscriber insights, advanced engagement metrics, revenue tracking...</p></section></details>",
+          "confidence": 1
+        },
+        {
+          "page_url": "https://www.beehiiv.com/features/paid-subscriptions",
+          "category": "Formatting",
+          "issue_description": "frustration: In the FAQ, the question “Can I use beehiiv's analytics to improve subscriber engagement?” appears twice in succession with the same (or nearly identical) answer, creating redundant content and unnecessary scrolling for users.",
+          "severity": "low",
+          "suggested_fix": "Remove one of the duplicate FAQ entries so the question and answer appear only once in the list.",
+          "evidence": "<details><summary>Can I use beehiiv's analytics to improve subscriber engagement?</summary><section><p>Yes, you can use the insights from beehiiv's analytics to refine your content strategy and improve subscriber engagement.</p></section></details><details><summary>Can I use beehiiv's analytics to improve subscriber engagement?</summary>",
+          "confidence": 1
+        },
+        {
+          "page_url": "https://www.beehiiv.com/features/api-and-integrations",
+          "category": "Formatting",
+          "issue_description": "frustration: In the FAQ, the last item “How is authentication handled?” has an empty answer section with no text, leaving users without the expected information and making the FAQ look unfinished.",
+          "severity": "medium",
+          "suggested_fix": "Add a short explanatory answer under “How is authentication handled?” (for example, describing token-based or API key authentication), or remove the question if the information is not yet ready to publish.",
+          "evidence": "<details><summary>How is authentication handled?</summary><section></section></details>",
+          "confidence": 1
+        }
+      ]
+    },
+    {
+      "domain": "cal.com",
+      "pagesAudited": 19,
+      "totalIssues": 23,
+      "recall": 1,
+      "precision": 0.9565217391304348,
+      "severityAccuracy": 1,
+      "falsePositiveRate": 0.043478260869565216,
+      "knownIssuesFound": 0,
+      "knownIssuesTotal": 0,
+      "falsePositivesDetected": 1,
+      "estimatedCost": 0.75,
+      "durationMs": 60105,
+      "recallDetails": [],
+      "falsePositiveDetails": [
+        {
+          "fpId": "cal-fp-2",
+          "pattern": "portuguese|italian|spanish|idioma|lingua",
+          "reason": "Mixed-language content on primary pages. Foreign language sections are intentional localization.",
+          "matchedIssues": [
+            {
+              "page_url": "https://cal.com/help/event-types/sponsor",
+              "category": "Language",
+              "issue_description": "professionalism: The clause \"Cal.com is a commercial open source company and thereby we fully support other open source projects\" uses \"thereby\" in a slightly unidiomatic way.",
+              "severity": "low",
+              "suggested_fix": "Change it to \"Cal.com is a commercial open source company, and therefore we fully support other open source projects\" or \"..., and we fully support other open source projects.\"",
+              "evidence": "Cal.com is a commercial open source company and thereby we fully support other open source projects, whether it’s commercial or non-commercial.",
+              "confidence": 0.99
+            }
+          ]
+        }
+      ],
+      "allIssues": [
+        {
+          "page_url": "https://cal.com/features/app-store",
+          "category": "Language",
+          "issue_description": "professionalism: The sentence \"Our apps let you extend cal.com features, and makes integrating other services effortless.\" has a subject–verb agreement error (\"apps let\" should pair with \"make,\" not \"makes\").",
+          "severity": "medium",
+          "suggested_fix": "Change it to \"Our apps let you extend Cal.com features and make integrating other services effortless.\"",
+          "evidence": "<p>With this in mind, we built an app store. Our apps let you extend cal.com features, and makes integrating other services effortless.</p>",
+          "confidence": 0.99
+        },
+        {
+          "page_url": "https://cal.com/features/app-store",
+          "category": "Language",
+          "issue_description": "clarity: The sentence \"With Cal.com calendar scheduling is simple, effortless and whenever you need it to be fun.\" is awkwardly structured and missing a comma after the introductory phrase.",
+          "severity": "low",
+          "suggested_fix": "Change it to something like \"With Cal.com, calendar scheduling is simple, effortless, and fun whenever you need it to be.\"",
+          "evidence": "<p>With Cal.com calendar scheduling is simple, effortless and whenever you need it to be fun.</p>",
+          "confidence": 0.99
+        },
+        {
+          "page_url": "https://cal.com/docs/platform/atoms/booker",
+          "category": "Language",
+          "issue_description": "professionalism: The phrase \"Below code snippet can be used to render the booker atom:\" is grammatically incomplete and sounds non‑native.",
+          "severity": "medium",
+          "suggested_fix": "Change it to \"The code snippet below can be used to render the Booker atom:\"",
+          "evidence": " <h2><a href=\"https://cal.com/docs/platform/atoms/booker#basic-usage\"...>Basic usage</a></h2> Below code snippet can be used to render the booker atom:",
+          "confidence": 0.99
+        },
+        {
+          "page_url": "https://cal.com/help/event-types/offer-seats",
+          "category": "Language",
+          "issue_description": "professionalism: The sentence \"This feature would be useful for all those businesses, classes, seminars etc. that offer 'seats' as in attendance spots.\" is missing a comma before and after \"etc.\" and reads slightly awkwardly.",
+          "severity": "low",
+          "suggested_fix": "Change it to \"This feature is useful for businesses, classes, seminars, etc., that offer 'seats'—that is, attendance spots.\"",
+          "evidence": "This feature would be useful for all those businesses, classes, seminars etc. that offer “seats” as in attendance spots.",
+          "confidence": 0.99
+        },
+        {
+          "page_url": "https://cal.com/help/event-types/sponsor",
+          "category": "Language",
+          "issue_description": "professionalism: The clause \"Cal.com is a commercial open source company and thereby we fully support other open source projects\" uses \"thereby\" in a slightly unidiomatic way.",
+          "severity": "low",
+          "suggested_fix": "Change it to \"Cal.com is a commercial open source company, and therefore we fully support other open source projects\" or \"..., and we fully support other open source projects.\"",
+          "evidence": "Cal.com is a commercial open source company and thereby we fully support other open source projects, whether it’s commercial or non-commercial.",
+          "confidence": 0.99
+        },
+        {
+          "page_url": "https://cal.com/help/routing/routing-with-attributes",
+          "category": "Language",
+          "issue_description": "professionalism: The term \"Multi Select\" in \"Multi Select is a great option\" is usually written as a single hyphenated modifier.",
+          "severity": "low",
+          "suggested_fix": "Change \"Multi Select\" to \"multi-select\".",
+          "evidence": "<li>For matching use cases, Multi Select is a great option—especially when team members might belong to multiple attribute values.</li>",
+          "confidence": 0.99
+        },
+        {
+          "page_url": "https://cal.com/help/embedding/adding-embed",
+          "category": "Language",
+          "issue_description": "professionalism: In \"Show the embed inline anywhere on the webpage. It let’s you show the embed at a particular place in your webpage.\", \"let’s\" is an incorrect use of the contraction (it should be the verb \"lets\").",
+          "severity": "medium",
+          "suggested_fix": "Change \"It let’s you show\" to \"It lets you show\".",
+          "evidence": "<h2>...Inline</h2> Show the embed inline anywhere on the webpage. It let’s you show the embed at a particular place in your webpage.",
+          "confidence": 0.99
+        },
+        {
+          "page_url": "https://cal.com/help/quick-start/complete-onboarding",
+          "category": "Language",
+          "issue_description": "professionalism: The sentence \"If you wish you can learn more about Setting up your availability\" is missing a comma after the introductory clause.",
+          "severity": "low",
+          "suggested_fix": "Change it to \"If you wish, you can learn more about setting up your availability\" (also consider lowercasing \"Setting\" mid‑sentence).",
+          "evidence": "If you wish you can learn more about <a href=\"https://cal.com/docs/how-to-guides/setting-up-your-availability\"",
+          "confidence": 0.99
+        },
+        {
+          "page_url": "https://cal.com/help/quick-start/complete-onboarding",
+          "category": "Language",
+          "issue_description": "professionalism: The sentence \"Finally, you can personalize your Cal.com booking link by providing a brief description about yourself and uploading a photograph so the people know who they’re booking with.\" is slightly awkward; \"the people\" is unnecessary.",
+          "severity": "low",
+          "suggested_fix": "Change the end to \"...and uploading a photograph so people know who they’re booking with.\"",
+          "evidence": "Finally, you can personalize your Cal.com booking link by providing a brief description about yourself and uploading a photograph so the people know who they’re booking with.",
+          "confidence": 0.99
+        },
+        {
+          "page_url": "https://cal.com/help/event-types/eventtype-id",
+          "category": "Language",
+          "issue_description": "clarity: The sentence \"Event Type ID you can find when you open the settings of your event type.\" is in an unnatural word order and lacks a clear subject.",
+          "severity": "medium",
+          "suggested_fix": "Change it to \"You can find the Event Type ID when you open the settings of your event type.\"",
+          "evidence": "<div>Event Type ID you can find when you open the settings of your event type. Once you do, look for the numbers between the slashes in the URL bar.</div>",
+          "confidence": 0.99
+        },
+        {
+          "page_url": "https://cal.com/help/event-types/how-to-receive-payments",
+          "category": "Language",
+          "issue_description": "professionalism: In step 6, \"Now that stripe is connected to your account\" uses a lowercase \"stripe\" while earlier references use \"Stripe\"; this is an inconsistent capitalization of the brand name.",
+          "severity": "medium",
+          "suggested_fix": "Change \"stripe\" to \"Stripe\" for consistency with earlier usage.",
+          "evidence": "5. Now that stripe is connected to your account, you can either open an existing event type or create a new one 6. In connected apps, you should see stripe.",
+          "confidence": 0.99
+        },
+        {
+          "page_url": "https://cal.com/help/privacy-and-compliance/google-calendar-privacy",
+          "category": "Language",
+          "issue_description": "professionalism: In the \"Data We Access\" heading anchor, the fragment appears as \"data-we-access-only-free%2Fbusy-information\" with a slash encoded; while functional, this renders oddly in the visible heading reference text \"Only Free/Busy Information\" vs fragment and looks slightly untidy.",
+          "severity": "low",
+          "suggested_fix": "If possible, simplify the fragment to avoid including the encoded slash, e.g. \"data-we-access-free-busy-information\" while keeping the visible heading text unchanged.",
+          "evidence": "<li><a href=\"https://cal.com/help/privacy-and-compliance/google-calendar-privacy#data-we-access-only-free%2Fbusy-information\">Data We Access: Only Free/Busy Information</a></li> ... <h3><a href=\"https://cal.com/help/privacy-and-compliance/google-calendar-privacy#data-we-access-only-free/busy-information\"",
+          "confidence": 0.98
+        },
+        {
+          "page_url": "https://cal.com/help/apps-and-integrations/salesforce",
+          "category": "Language",
+          "issue_description": "professionalism: The phrase \"We current support the following types:\" appears twice (under \"On booking, write to a custom field on the attendee record\" and \"On cancelled booking, write to event record instead of deleting event\") and should use the adverb \"currently.\"",
+          "severity": "medium",
+          "suggested_fix": "Change both instances of \"We current support the following types:\" to \"We currently support the following types:\"",
+          "evidence": "The field type in Salesforce. We current support the following types: <ul><li>Text ...</li></ul> ... <h4>...On cancelled booking...</h4> ... The field type in Salesforce. We current support the following types:",
+          "confidence": 0.99
+        },
+        {
+          "page_url": "https://cal.com/help/apps-and-integrations/salesforce",
+          "category": "Language",
+          "issue_description": "professionalism: The sentence \"This option writes to fields on the type of record that is set to create events on\" is awkwardly phrased and slightly unclear.",
+          "severity": "medium",
+          "suggested_fix": "Change it to \"This option writes to fields on the type of record that is configured for event creation.\"",
+          "evidence": "<h4>On booking, write to a custom field on the attendee record</h4> This option writes to fields on the type of record that is set to create events on.",
+          "confidence": 0.99
+        },
+        {
+          "page_url": "https://cal.com/help/quick-start/create-account",
+          "category": "Language",
+          "issue_description": "professionalism: The phrase \"we offer a generous free tier where you get unlimited scheduling with no limits\" is redundant (\"unlimited\" already implies \"no limits\").",
+          "severity": "low",
+          "suggested_fix": "Shorten to \"we offer a generous free tier with unlimited scheduling\".",
+          "evidence": "We offer a generous free tier where you get unlimited scheduling with no limits and all of our features built for individuals",
+          "confidence": 0.99
+        },
+        {
+          "page_url": "https://cal.com/help/apps-and-integrations/build-greeter-app",
+          "category": "Language",
+          "issue_description": "professionalism: The sentence \"App is created now. Go and install it.\" is missing the article \"The\" and sounds informal.",
+          "severity": "low",
+          "suggested_fix": "Change it to \"The app is created now. Go and install it.\" or \"Now that the app is created, go and install it.\"",
+          "evidence": "Step 2: App is created now. Go and install it.",
+          "confidence": 0.99
+        },
+        {
+          "page_url": "https://cal.com/help/apps-and-integrations/build-greeter-app",
+          "category": "Language",
+          "issue_description": "professionalism: The comment \"We shouldn't show the button when app is not installed\" within the explanatory text is missing an article before \"app.\"",
+          "severity": "low",
+          "suggested_fix": "Change it to \"We shouldn't show the button when the app is not installed.\"",
+          "evidence": "// Make sure that greeterApp is installed. We shouldn't show the button when app is not installed",
+          "confidence": 0.99
+        },
+        {
+          "page_url": "https://cal.com/help/apps-and-integrations/apps",
+          "category": "Language",
+          "issue_description": "professionalism: The sentence \"Check out the Cal.com app store now\" is missing ending punctuation, unlike surrounding sentences.",
+          "severity": "low",
+          "suggested_fix": "Add a period so it reads \"Check out the Cal.com app store now.\"",
+          "evidence": "Check out the Cal.com <a href=\"https://cal.com/apps\" target=\"_blank\" rel=\"noreferrer\">app store</a> now <div><svg aria-label=\"Note\"></svg>",
+          "confidence": 0.99
+        },
+        {
+          "page_url": "https://cal.com/help/event-types/offer-seats",
+          "category": "Formatting",
+          "issue_description": "accessibility/professionalism: The main instructional screenshot inside the body uses an empty alt attribute (e.g. `<img alt=\"\" src=\"https://downloads.intercomcdn.com/.../i1600x900-V3uoAv_cFR4n_tmadtm.png\">`), which provides no text alternative for screen‑reader users and weakens accessibility of the UI walkthrough.",
+          "severity": "medium",
+          "suggested_fix": "Add a concise, descriptive alt text for the screenshot (for example, `alt=\"Offer seats setting enabled in Cal.com event type editor\"`) so users of assistive technologies can understand what is shown.",
+          "evidence": "<img alt=\"\" src=\"https://downloads.intercomcdn.com/i/o/1195347848/5997a6b26c8533e1fbc728a5/i1600x900-V3uoAv_cFR4n_tmadtm.png",
+          "confidence": 0.99
+        },
+        {
+          "page_url": "https://cal.com/help/routing/routing-with-attributes",
+          "category": "Formatting",
+          "issue_description": "accessibility/professionalism: Multiple key UI screenshots throughout the article use empty or non-descriptive alt attributes (for example `<img alt=\"\" src=\"https://mintcdn.com/.../team.webp\">`, `attribute.webp`, `routing-form-fields.webp`, etc.), which makes the visual routing configuration steps inaccessible to screen‑reader users.",
+          "severity": "medium",
+          "suggested_fix": "Provide meaningful alt text for each instructional screenshot (e.g. explain what part of the Routing or Attributes UI is shown and what setting is being highlighted) so the written instructions and visuals are both accessible.",
+          "evidence": "<img alt=\"\" src=\"https://mintcdn.com/.../routing/attribute.webp\"",
+          "confidence": 0.99
+        },
+        {
+          "page_url": "https://cal.com/help/quick-start/complete-onboarding",
+          "category": "Formatting",
+          "issue_description": "accessibility/professionalism: The onboarding walkthrough relies on several screenshots that all have empty alt attributes (e.g. `<img alt=\"\" src=\"https://res.cloudinary.com/.../i1600x900-akHcmOHfAXkX_g7isuj.png\">` and subsequent images), so users relying on screen readers get no description of the UI they should be seeing.",
+          "severity": "medium",
+          "suggested_fix": "Add descriptive alt text for each onboarding screenshot (for example, describe the fields and buttons shown on the name/timezone, calendar connection, availability, and profile details screens).",
+          "evidence": "<span aria-owns=\"rmiz-modal-4e6800124dd8\"><img alt=\"\" src=\"https://res.cloudinary.com/djp21wtxm/image/upload/w_1600/v1676954706/i1600x900-akHcmOHfAXkX_g7isuj.png\">",
+          "confidence": 0.99
+        },
+        {
+          "page_url": "https://cal.com/help/availabilities/add-new-availability",
+          "category": "Formatting",
+          "issue_description": "accessibility/professionalism: The primary screenshot illustrating the Availability dashboard (`Screenshot2025-03-12...png`) has an empty alt attribute, so the visual explanation of where to click “+ New” and how the page looks is not available to screen‑reader users.",
+          "severity": "medium",
+          "suggested_fix": "Give the screenshot a clear alt description such as `alt=\"Cal.com Availability dashboard showing '+ New' button to create a new schedule\"` to support non-visual navigation.",
+          "evidence": "<picture><img alt=\"\" src=\"https://mintcdn.com/calcomhelp/.../Screenshot2025-03-122.39.04PM.png",
+          "confidence": 0.99
+        },
+        {
+          "page_url": "https://cal.com/help/apps-and-integrations/build-greeter-app",
+          "category": "Formatting",
+          "issue_description": "clarity/frustration: The Loom video \"Greeter App - Greeter Button demo\" is embedded twice in the same article (two nearly identical `<div src=\"https://www.loom.com/embed/b0fd31cc11444799af7a6f12a01d4321\">` blocks), which creates redundant content, extra scrolling, and potential confusion about whether the videos differ.",
+          "severity": "low",
+          "suggested_fix": "Keep a single embed of the Loom demo video and remove the duplicate block so readers only see one instance of the greeter app demo.",
+          "evidence": "<div src=\"https://www.loom.com/embed/b0fd31cc11444799af7a6f12a01d4321\"> ... </div> ... <div src=\"https://www.loom.com/embed/b0fd31cc11444799af7a6f12a01d4321\">",
+          "confidence": 0.99
+        }
+      ]
+    },
+    {
+      "domain": "linear.app",
+      "pagesAudited": 11,
+      "totalIssues": 8,
+      "recall": 1,
+      "precision": 1,
+      "severityAccuracy": 1,
+      "falsePositiveRate": 0,
+      "knownIssuesFound": 0,
+      "knownIssuesTotal": 0,
+      "falsePositivesDetected": 0,
+      "estimatedCost": 0.75,
+      "durationMs": 36166,
+      "recallDetails": [],
+      "falsePositiveDetails": [],
+      "allIssues": [
+        {
+          "page_url": "https://linear.app",
+          "category": "Language",
+          "issue_description": "professionalism: The hero CTA text \"Issue tracking is dead linear.app/next →\" reads as a single run-on phrase without clear separation between the statement and the URL, which harms clarity and looks like a spacing/punctuation error.",
+          "severity": "low",
+          "suggested_fix": "Add clear separation or punctuation, for example: \"Issue tracking is dead. linear.app/next →\" or split into two lines so the URL is visually distinct from the sentence.",
+          "evidence": "<a rel=\"noopener\" href=\"https://linear.app/next\"><div>Issue tracking is dead linear.app/next →</div></a>",
+          "confidence": 0.99
+        },
+        {
+          "page_url": "https://linear.app",
+          "category": "Facts & Consistency",
+          "issue_description": "credibility: The homepage claims \"Linear powers over 25,000 product teams\" while other pages say \"more than 25,000 companies\" and \"More than 25,000 Linear users\" — reusing the same approximate figure for teams, companies, and users creates ambiguity about what is actually being counted (teams vs companies vs users).",
+          "severity": "medium",
+          "suggested_fix": "Clarify and differentiate the metrics (e.g., use distinct, accurate numbers for product teams, customer companies, and Slack community users) or standardize on a single clearly defined metric across all pages.",
+          "evidence": "<p>Linear powers over 25,000 product teams. From ambitious startups to major enterprises.</p> ... <p>Trusted by more than 25,000 companies</p> ... More than 25,000 Linear users...",
+          "confidence": 1
+        },
+        {
+          "page_url": "https://linear.app/plan",
+          "category": "Facts & Consistency",
+          "issue_description": "credibility: The Plan page repeats the claim \"Linear powers over 25,000 product teams\" while other pages state \"more than 25,000 companies\" and \"More than 25,000 Linear users\", making it unclear whether 25,000 refers to teams, companies, or users and potentially overstating reach by using the same number for multiple categories.",
+          "severity": "medium",
+          "suggested_fix": "Align this claim with the clarified site-wide metric (e.g., change to the same phrasing and number used elsewhere once standardized, or explicitly specify how many teams vs companies).",
+          "evidence": "Plan page: <p>Linear powers over 25,000 product teams. From ambitious startups to major enterprises.</p> ... Pricing: <p>Trusted by more than 25,000 companies</p> ... Contact: More than 25,000 Linear users",
+          "confidence": 1
+        },
+        {
+          "page_url": "https://linear.app/pricing",
+          "category": "Facts & Consistency",
+          "issue_description": "credibility: The Pricing page says \"Trusted by more than 25,000 companies\" while the homepage and Plan page say \"Linear powers over 25,000 product teams\" and the Contact page says \"More than 25,000 Linear users\" — using the same round number for different entities (companies, teams, users) is confusing and can undermine trust in the accuracy of the stats.",
+          "severity": "medium",
+          "suggested_fix": "Verify the underlying numbers and either (a) use one consistent, clearly defined metric everywhere, or (b) provide distinct, accurate counts for companies, teams, and users so they are not all represented by the same \"25,000\" figure.",
+          "evidence": "Pricing: <p>Trusted by more than 25,000 companies</p> ... Homepage: <p>Linear powers over 25,000 product teams.</p> ... Contact: \"More than 25,000 Linear users share questions\"",
+          "confidence": 1
+        },
+        {
+          "page_url": "https://linear.app/about",
+          "category": "Facts & Consistency",
+          "issue_description": "credibility: The About page states \"Linear has become the tool of choice for more than 25,000 companies\" while other pages say \"Linear powers over 25,000 product teams\" and \"More than 25,000 Linear users share questions...\"; the reuse of the same threshold for companies, teams, and users without clarification may give a misleading impression of scale.",
+          "severity": "medium",
+          "suggested_fix": "Clarify whether 25,000 refers to companies, teams, or users and adjust the number or phrasing so that each metric is distinct and consistently described across the site.",
+          "evidence": "About: \"tool of choice for more than 25,000 companies\" ... Homepage/Plan: \"Linear powers over 25,000 product teams\" ... Contact: \"More than 25,000 Linear users\"",
+          "confidence": 1
+        },
+        {
+          "page_url": "https://linear.app/contact",
+          "category": "Facts & Consistency",
+          "issue_description": "credibility: The Contact page says \"More than 25,000 Linear users share questions and best practices in our Slack community\" while other pages claim \"Linear powers over 25,000 product teams\" and \"more than 25,000 companies\"; reusing the same \"25,000\" for the Slack community size, customer companies, and product teams may confuse visitors about which figure is correct for each audience.",
+          "severity": "medium",
+          "suggested_fix": "Confirm the actual Slack community size and either use a distinct, accurate number or qualify it differently (e.g., \"tens of thousands of users\"), ensuring it does not mirror the counts for companies or teams unless they truly are the same metric.",
+          "evidence": "Contact: \"More than 25,000 Linear users share questions and best practices in our Slack community.\" ... Homepage/Plan: \"over 25,000 product teams\" ... Pricing/About: \"more than 25,000 companies\"",
+          "confidence": 1
+        },
+        {
+          "page_url": "https://linear.app/pricing",
+          "category": "Formatting",
+          "issue_description": "clarity: Each paid plan card (Free, Basic, Business) shows two identical “Get started” buttons side by side that go to different destinations (signup vs settings), which is visually redundant and can confuse users because they cannot distinguish the actions from the labels alone.",
+          "severity": "medium",
+          "suggested_fix": "Differentiate the CTAs by either showing only one primary “Get started” button per plan or changing the secondary label to clarify its purpose (e.g. “Manage plan in app”).",
+          "evidence": "<section><hgroup><h3>Free</h3>...<div><a rel=\"noopener\" href=\"https://linear.app/signup\">Get started</a><a rel=\"noopener\" href=\"https://linear.app/settings/plans\">Get started</a></div></section>",
+          "confidence": 0.99
+        },
+        {
+          "page_url": "https://linear.app/integrations/index",
+          "category": "Formatting",
+          "issue_description": "frustration: The “Build your own integration” block at the bottom appears twice in sequence — once with an icon and button and then immediately again as a standalone heading and sentence — creating an unnecessary duplicate section that can feel like a layout glitch.",
+          "severity": "low",
+          "suggested_fix": "Remove one of the “Build your own integration” heading/description instances or merge the content so the message appears only once in a single, clearly structured block.",
+          "evidence": "<div><div><svg></svg><div><h2>Build your own integration</h2>... </div></div><a ...>Start building</a><h2>Build your own integration</h2>Create your own integration...",
+          "confidence": 0.99
+        }
+      ]
+    },
+    {
+      "domain": "lottiefiles.com",
+      "pagesAudited": 20,
+      "totalIssues": 35,
+      "recall": 1,
+      "precision": 1,
+      "severityAccuracy": 1,
+      "falsePositiveRate": 0,
+      "knownIssuesFound": 0,
+      "knownIssuesTotal": 0,
+      "falsePositivesDetected": 0,
+      "estimatedCost": 0.75,
+      "durationMs": 126042,
+      "recallDetails": [],
+      "falsePositiveDetails": [],
+      "allIssues": [
+        {
+          "page_url": "https://lottiefiles.com",
+          "category": "Language",
+          "issue_description": "professionalism: In the integrations tab list, the label \"Premier Pro\" uses an incorrect product name spelling; the correct Adobe product name is \"Premiere Pro\".",
+          "severity": "medium",
+          "suggested_fix": "Change the tab label text from \"Premier Pro\" to \"Premiere Pro\" wherever it appears.",
+          "evidence": "<button type=\"button\" role=\"tab\" aria-selected=\"false\" aria-controls=\"radix-:r11:-content-Premier Pro\">Premier Pro</button>",
+          "confidence": 0.98
+        },
+        {
+          "page_url": "https://lottiefiles.com/pricing/ai",
+          "category": "Language",
+          "issue_description": "clarity: The sentence \"Optimized JSON & dotLottie formats can reduced your file sizes by upto 80%.\" contains grammatical and spacing errors: \"can reduced\" should be \"can reduce\" and \"upto\" should be \"up to\".",
+          "severity": "medium",
+          "suggested_fix": "Revise the sentence to \"Optimized JSON & dotLottie formats can reduce your file sizes by up to 80%.\"",
+          "evidence": "<p>Optimize Lottie file size</p><p>Optimized JSON &amp; dotLottie formats can reduced your file sizes by upto 80%.</p>",
+          "confidence": 0.99
+        },
+        {
+          "page_url": "https://lottiefiles.com/features",
+          "category": "Language",
+          "issue_description": "clarity: In the Individual plan feature list, the sentence \"Optimized JSON & dotLottie formats can reduced your file sizes by upto 80%.\" repeats the same grammatical and spacing errors: \"can reduced\" instead of \"can reduce\" and \"upto\" instead of \"up to\".",
+          "severity": "medium",
+          "suggested_fix": "Update this sentence to \"Optimized JSON & dotLottie formats can reduce your file sizes by up to 80%.\"",
+          "evidence": "<p>Optimize Lottie file size</p><p>Optimized JSON &amp; dotLottie formats can reduced your file sizes by upto 80%.</p>",
+          "confidence": 0.99
+        },
+        {
+          "page_url": "https://lottiefiles.com/platform",
+          "category": "Language",
+          "issue_description": "professionalism: In the Enterprise plan bullet list, the phrase \"Enterprise SSO & advanced securit\" truncates the word \"security\", which looks like a typographical error.",
+          "severity": "medium",
+          "suggested_fix": "Change \"Enterprise SSO & advanced securit\" to \"Enterprise SSO & advanced security\".",
+          "evidence": "<p>Enterprise SSO &amp; advanced securit</p>",
+          "confidence": 0.98
+        },
+        {
+          "page_url": "https://lottiefiles.com/features/premium-lottie-animations",
+          "category": "Language",
+          "issue_description": "professionalism: The hero text \"Highly customizable, production ready animations for Web, Mobile, Figma, Canava, Webflow, Framer & more.\" misspells \"Canva\" as \"Canava\".",
+          "severity": "medium",
+          "suggested_fix": "Correct the product name by changing \"Canava\" to \"Canva\" in that sentence.",
+          "evidence": "<p>Highly customizable, production ready animations for Web, Mobile, Figma, Canava, Webflow, Framer &amp; more.</p>",
+          "confidence": 0.99
+        },
+        {
+          "page_url": "https://lottiefiles.com/features/optimize-lottie",
+          "category": "Language",
+          "issue_description": "clarity: The section heading \"How it works?\" is grammatically awkward phrasing for a question.",
+          "severity": "low",
+          "suggested_fix": "Change the heading to the more natural question \"How does it work?\"",
+          "evidence": "<div><h3>How it works?</h3><article role=\"presentation\">",
+          "confidence": 0.96
+        },
+        {
+          "page_url": "https://lottiefiles.com/features/edit-lottie",
+          "category": "Language",
+          "issue_description": "professionalism: In the blog card date, the text \"Mar 30. 2022\" contains an extra period after the day, which looks like a punctuation error.",
+          "severity": "low",
+          "suggested_fix": "Change \"Mar 30. 2022\" to the standard \"Mar 30, 2022\" (or another consistent date style used elsewhere).",
+          "evidence": "<div><h5>How to Edit Lottie Animations With the Lottie Editor</h5><p>Mar 30. 2022</p></div>",
+          "confidence": 0.99
+        },
+        {
+          "page_url": "https://lottiefiles.com/features/color-palette",
+          "category": "Language",
+          "issue_description": "professionalism: A linked blog title appears as \"A Beginners's Guide to Color Theory for Motion Design\"; the possessive form \"Beginners's\" is incorrect.",
+          "severity": "medium",
+          "suggested_fix": "Change the title to either \"A Beginner's Guide to Color Theory for Motion Design\" (singular) or \"A Beginners’ Guide to Color Theory for Motion Design\" (plural), and ensure the same correction is reflected in the underlying blog title if needed.",
+          "evidence": "<h5>A Beginners's Guide to Color Theory for Motion Design</h5>",
+          "confidence": 0.99
+        },
+        {
+          "page_url": "https://lottiefiles.com/features/collaborate-with-team",
+          "category": "Language",
+          "issue_description": "professionalism: The sentence \"LotteFiles’ workspaces work for teams of all sizes and across all org structures.\" misspells the brand name as \"LotteFiles\" instead of \"LottieFiles\".",
+          "severity": "medium",
+          "suggested_fix": "Correct the brand spelling by changing \"LotteFiles’ workspaces\" to \"LottieFiles’ workspaces\".",
+          "evidence": "<p>LotteFiles’ workspaces work for teams of all sizes and across all org structures.</p>",
+          "confidence": 0.99
+        },
+        {
+          "page_url": "https://lottiefiles.com/careers",
+          "category": "Language",
+          "issue_description": "clarity: In \"Enjoy perks like remote work, flexible hours, and unlimited time-offs, all aimed at encouraging sustained high performance.\", the phrase \"time-offs\" is nonstandard and sounds awkward.",
+          "severity": "low",
+          "suggested_fix": "Revise the phrase to \"unlimited time off\" so the sentence reads more naturally: \"...remote work, flexible hours, and unlimited time off...\"",
+          "evidence": "Enjoy perks like remote work, flexible hours, and unlimited time-offs, all aimed at encouraging sustained high performance.",
+          "confidence": 0.99
+        },
+        {
+          "page_url": "https://lottiefiles.com/careers",
+          "category": "Language",
+          "issue_description": "professionalism: In the paragraph \"...our team stays curious, passionate, and committed to learning.We deeply value ownership...\", there is a missing space after the period in \"learning.We\".",
+          "severity": "low",
+          "suggested_fix": "Insert a space after the period so it reads \"learning. We deeply value ownership...\"",
+          "evidence": "our team stays curious, passionate, and committed to learning.We deeply value ownership",
+          "confidence": 0.99
+        },
+        {
+          "page_url": "https://lottiefiles.com/customers",
+          "category": "Language",
+          "issue_description": "professionalism: In the case study highlight blocks, \"Inforgraphics\" is misspelled in phrases such as \"Websites & blogs, Inforgraphics\" and \"In-App Animations, Inforgraphics, Loader\"; the correct term is \"Infographics\".",
+          "severity": "medium",
+          "suggested_fix": "Change every occurrence of \"Inforgraphics\" on this page (for example in the CNN and Tazapay-related snippets) to \"Infographics\".",
+          "evidence": "<a href=\"https://lottiefiles.com/case-studies/cnn-create\" rel=\"noopener\"><img ...><p>Websites &amp; Blogs, Inforgraphics</p></a>",
+          "confidence": 0.99
+        },
+        {
+          "page_url": "https://lottiefiles.com/case-studies",
+          "category": "Language",
+          "issue_description": "professionalism: Multiple case-study description snippets use the misspelling \"Inforgraphics\" instead of \"Infographics\", for example in \"Websites & Blogs, Inforgraphics\" and \"In-App Animations, Inforgraphics, Loader\".",
+          "severity": "medium",
+          "suggested_fix": "Replace \"Inforgraphics\" with \"Infographics\" in all description snippets where it appears on this page.",
+          "evidence": "<a href=\"https://lottiefiles.com/case-studies/tazapay\" rel=\"noopener\"><img ...><p>In-App Animations, Inforgraphics, Loader, Micro-interaction</p></a>",
+          "confidence": 0.99
+        },
+        {
+          "page_url": "https://lottiefiles.com/case-studies",
+          "category": "Language",
+          "issue_description": "clarity: In the \"cred\" case study card, the description text is just the raw URL \"https://lottiefiles.com/case-studies/cred\", which reads oddly and doesn’t describe the case study like the other cards do.",
+          "severity": "low",
+          "suggested_fix": "Replace the URL string in the description with a short descriptive phrase summarizing the cred case study (for example, \"In-App Animations, Micro-interactions\"), keeping the link target unchanged.",
+          "evidence": "<a href=\"https://lottiefiles.com/case-studies/cred\" rel=\"noopener\"><img ...><p>https://lottiefiles.com/case-studies/cred</p></a>",
+          "confidence": 0.99
+        },
+        {
+          "page_url": "https://lottiefiles.com/features",
+          "category": "Facts & Consistency",
+          "issue_description": "credibility: Pricing amounts on this page conflict with newer pricing elsewhere. Here the \"Individual\" plan is listed as \"$19.99 Per user / month, Billed annually.\" and \"Team\" as \"$24.99 Per user / month, Billed annually.\" with \"Enterprise\" at \"$49.99 Per user / month, Billed annually.\", while the AI pricing page shows \"Individual\" at \"$24.98 Per user / month, Billed annually.\", \"Team\" at \"$34.98 Per user / month, Billed annually.\" and \"Enterprise\" at \"$119.99\" (\"Contact our team for pricing details\").",
+          "severity": "medium",
+          "suggested_fix": "Align the feature page pricing table with the current official prices used on the pricing/ai and platform pages, or clearly mark these prices as legacy if they are no longer available.",
+          "evidence": "Features page: \"Individual\" \"$19.99\" \"Per user / month, Billed annually.\" vs AI pricing: \"Individual\" \"$24.98\" \"Per user / month, Billed annually.\"",
+          "confidence": 0.98
+        },
+        {
+          "page_url": "https://lottiefiles.com/platform",
+          "category": "Facts & Consistency",
+          "issue_description": "credibility: The pricing block near the bottom of this page is inconsistent with the AI pricing page. It lists \"Individual\" at \"$19.99\" and \"Team\" at \"$24.99\" per user/month billed annually, while https://lottiefiles.com/pricing/ai lists \"Individual\" at \"$24.98\", \"Team\" at \"$34.98\" and \"Enterprise\" at \"$119.99\" per user/month billed annually.",
+          "severity": "medium",
+          "suggested_fix": "Update the plan prices on the platform page to match the current pricing/ai values or indicate that different pricing applies for enterprise/AI plans.",
+          "evidence": "Features pricing block: \"Individual\" \"$19.99\" \"Team\" \"$24.99\" vs /pricing/ai: \"Individual\" \"$24.98\" \"Team\" \"$34.98\"",
+          "confidence": 0.98
+        },
+        {
+          "page_url": "https://lottiefiles.com/pricing/ai",
+          "category": "Facts & Consistency",
+          "issue_description": "clarity: Plan prices here differ from those shown in other product pages, creating confusion about the authoritative pricing. This page states \"Individual\" is \"$24.98 Per user / month, Billed annually.\" and \"Team\" is \"$34.98 Per user / month, Billed annually.\", while https://lottiefiles.com/features and https://lottiefiles.com/platform still show \"$19.99\" and \"$24.99\" respectively for the same plan names.",
+          "severity": "medium",
+          "suggested_fix": "Confirm which set of prices is current and add a short note (e.g., that this AI pricing overrides earlier pricing) or update the older pages so all locations show consistent plan pricing.",
+          "evidence": "/pricing/ai: \"Individual\" \"$24.98\" \"Team\" \"$34.98\" vs /features: \"$19.99\" and \"$24.99\"; /platform: \"$19.99\" and \"$24.99\"",
+          "confidence": 0.99
+        },
+        {
+          "page_url": "https://lottiefiles.com/features",
+          "category": "Facts & Consistency",
+          "issue_description": "credibility: The stated size of the premium Lottie library is inconsistent with other pages. Here it says \"over 300,000 eye-catching premium Lottie animations\", while the platform and pricing/ai pages say \"600,000+ premium animations\" and the premium animations feature page says \"650,000+ animations\".",
+          "severity": "medium",
+          "suggested_fix": "Decide on the current accurate count for premium animations and update this page’s \"300,000+\" figure to match that sitewide number.",
+          "evidence": "/features: \"over 300,000 eye-catching premium Lottie animations\" vs /platform: \"600,000+ premium animations\" vs /features/premium-lottie-animations: \"650,000+ animations\"",
+          "confidence": 0.99
+        },
+        {
+          "page_url": "https://lottiefiles.com/platform",
+          "category": "Facts & Consistency",
+          "issue_description": "credibility: The count of premium animations conflicts with other pages. In the pricing section this page promises \"600,000+ premium animations\", but https://lottiefiles.com/features says \"over 300,000 premium Lottie animations\" and https://lottiefiles.com/features/premium-lottie-animations says \"650,000+ animations for every industry, every use-case\".",
+          "severity": "medium",
+          "suggested_fix": "Verify the up‑to‑date premium library count and ensure this page and the various features/premium pages all use the same figure.",
+          "evidence": "/platform plan card: \"600,000+ premium animations\" vs /features: \"over 300,000...\" and premium page: \"650,000+ animations\"",
+          "confidence": 0.99
+        },
+        {
+          "page_url": "https://lottiefiles.com/pricing/ai",
+          "category": "Facts & Consistency",
+          "issue_description": "credibility: The AI pricing page describes access to a \"600,000+ premium Lottie library\", which is inconsistent with https://lottiefiles.com/features (\"over 300,000 premium Lottie animations\") and https://lottiefiles.com/features/premium-lottie-animations (\"650,000+ animations for every industry, every use-case\").",
+          "severity": "medium",
+          "suggested_fix": "Confirm the actual size of the premium library and adjust the \"600,000+\" figure here or on the other pages so all references match.",
+          "evidence": "/pricing/ai: \"600,000+ premium Lottie library\" vs /features: \"over 300,000 premium Lottie animations\" and premium page: \"650,000+ animations\"",
+          "confidence": 0.98
+        },
+        {
+          "page_url": "https://lottiefiles.com/features/premium-lottie-animations",
+          "category": "Facts & Consistency",
+          "issue_description": "credibility: This page’s headline \"650,000+ animations for every industry, every use-case\" disagrees with several other pages that cite different library sizes, including \"Over 800,000+ Free & Premium ready-to-use animations\" on the homepage and \"over 300,000\" or \"600,000+\" premium animations on feature and platform pages.",
+          "severity": "medium",
+          "suggested_fix": "Determine the current correct number of animations available and standardize this headline and related copy so the same count appears across all pages.",
+          "evidence": "Premium page h1: \"650,000+ animations\" vs homepage: \"Over 800,000+ Free & Premium ready-to-use animations.\" and other pages: \"over 300,000\" / \"600,000+\"",
+          "confidence": 0.98
+        },
+        {
+          "page_url": "https://lottiefiles.com",
+          "category": "Facts & Consistency",
+          "issue_description": "credibility: The homepage claims \"Over 800,000+ Free & Premium ready-to-use animations\", but other pages describe smaller libraries such as \"over 300,000 premium Lottie animations\" (features), \"600,000+ premium animations\" (platform/pricing) and \"650,000+ animations\" (premium-lottie-animations).",
+          "severity": "medium",
+          "suggested_fix": "Clarify whether 800,000+ refers to total free + premium assets and make that distinction explicit, or adjust the figure so that all pages use consistent counts for total vs premium animations.",
+          "evidence": "Homepage: \"Over 800,000+ Free & Premium ready-to-use animations.\" vs /features: \"over 300,000 premium\"; /platform: \"600,000+ premium animations\"; premium page: \"650,000+ animations\"",
+          "confidence": 0.98
+        },
+        {
+          "page_url": "https://lottiefiles.com/features",
+          "category": "Facts & Consistency",
+          "issue_description": "credibility: The library size mentioned here (\"over 300,000 eye-catching premium Lottie animations\") conflicts with the broader library statistic on the homepage (\"Over 800,000+ Free & Premium ready-to-use animations\") and with \"650,000+ animations\" claimed on the premium-lottie-animations feature page, which may confuse users about how many assets they are getting.",
+          "severity": "medium",
+          "suggested_fix": "Clarify whether this page is referring only to a subset of premium assets and, if so, label it clearly or update the numbers to remain internally consistent with the overall library size.",
+          "evidence": "/features: \"over 300,000 eye-catching premium Lottie animations\" vs homepage 800,000+ and premium page \"650,000+ animations\"",
+          "confidence": 0.98
+        },
+        {
+          "page_url": "https://lottiefiles.com/features/premium-lottie-animations",
+          "category": "Facts & Consistency",
+          "issue_description": "credibility: The trust metric on this page is inconsistent with other pages. Here it says \"Trusted by 12 million designers & developers from over 280,000 companies worldwide\", whereas the homepage and pricing pages use \"Trusted by 17 million+ designers and developers from over 280,000 companies worldwide\" or \"over 17 million users\".",
+          "severity": "medium",
+          "suggested_fix": "Update the \"12 million\" user count to match the current global figure (e.g., 17 million+) or add context (such as region or timeframe) if the lower figure reflects a specific subset.",
+          "evidence": "Premium page: \"Trusted by 12 million designers & developers from over 280,000 companies\" vs homepage: \"Trusted by 17 million+ designers and developers from over 280,000 companies\"",
+          "confidence": 0.99
+        },
+        {
+          "page_url": "https://lottiefiles.com",
+          "category": "Facts & Consistency",
+          "issue_description": "credibility: User count claims across the site are inconsistent. The homepage states \"Trusted by 17 million+ designers and developers from over 280,000 companies worldwide\", but the premium animations feature page claims only \"Trusted by 12 million designers & developers from over 280,000 companies worldwide\".",
+          "severity": "medium",
+          "suggested_fix": "Confirm the current global user count and ensure all pages, including the premium animations feature page, use the same up‑to‑date figure.",
+          "evidence": "Homepage: \"17 million+ designers and developers\" vs premium page: \"Trusted by 12 million designers & developers\"",
+          "confidence": 0.99
+        },
+        {
+          "page_url": "https://lottiefiles.com/pricing",
+          "category": "Facts & Consistency",
+          "issue_description": "credibility: The hero copy on this pricing page (\"Trusted by over 17 million users and 280,000 companies worldwide.\") conflicts with the \"Trusted by 12 million designers & developers\" wording on https://lottiefiles.com/features/premium-lottie-animations, creating uncertainty about the actual user base size.",
+          "severity": "medium",
+          "suggested_fix": "Align the user count here and on the premium animations feature page to the same verified number, or explain any difference (e.g., time-based growth).",
+          "evidence": "/pricing hero: \"Trusted by over 17 million users and 280,000 companies worldwide.\" vs premium page: \"Trusted by 12 million designers & developers\"",
+          "confidence": 0.99
+        },
+        {
+          "page_url": "https://lottiefiles.com/pricing/ai",
+          "category": "Facts & Consistency",
+          "issue_description": "credibility: This page states \"Trusted by over 17 million users and 280,000 companies worldwide.\", while https://lottiefiles.com/features/premium-lottie-animations still refers to \"12 million designers & developers\"; this discrepancy suggests some counts are outdated.",
+          "severity": "medium",
+          "suggested_fix": "Update all references, including on the premium animations page, so the same total user and company counts are used consistently.",
+          "evidence": "/pricing: \"over 17 million users\" vs /features/premium-lottie-animations: \"Trusted by 12 million designers & developers\"",
+          "confidence": 0.99
+        },
+        {
+          "page_url": "https://lottiefiles.com/platform",
+          "category": "Facts & Consistency",
+          "issue_description": "credibility: The platform page repeats the \"Trusted by 17 million+ designers and developers from over 280,000 companies worldwide\" message, while https://lottiefiles.com/features/premium-lottie-animations uses a lower 12 million figure, creating inconsistent audience statistics.",
+          "severity": "medium",
+          "suggested_fix": "Confirm the current user total and revise the premium animations page so that all trust metrics reflect the same numbers.",
+          "evidence": "/platform: \"Trusted by 17 million+ designers and ... 280,000 companies\" vs premium page: \"Trusted by 12 million designers & developers\"",
+          "confidence": 0.99
+        },
+        {
+          "page_url": "https://lottiefiles.com/customers",
+          "category": "Facts & Consistency",
+          "issue_description": "credibility: The customers page says \"Over 17 million designers, developers and marketers use LottieFiles\", but the premium animations feature page still claims \"Trusted by 12 million designers & developers from over 280,000 companies worldwide\", implying contradictory user counts.",
+          "severity": "medium",
+          "suggested_fix": "Standardize the user count across the customers, homepage, pricing, and premium animations pages to a single, clearly dated figure.",
+          "evidence": "/customers: \"Over 17 million designers, developers and marketers use LottieFiles\" vs premium page: \"Trusted by 12 million designers & developers\"",
+          "confidence": 0.99
+        },
+        {
+          "page_url": "https://lottiefiles.com/enterprise",
+          "category": "Facts & Consistency",
+          "issue_description": "credibility: In the trust metric section this page repeats \"Trusted by 17 million+ designers\" and \"280,000\" companies, while https://lottiefiles.com/features/premium-lottie-animations still mentions only \"12 million\" designers & developers, leading to conflicting audience claims.",
+          "severity": "medium",
+          "suggested_fix": "Update the premium animations page’s user count to 17 million+ or explain why that page uses a different number so enterprise prospects are not confused.",
+          "evidence": "/platform + /enterprise etc.: \"Trusted by 17 million+ designers\" \"280,000 companies\" vs premium page: \"12 million designers & developers\"",
+          "confidence": 0.99
+        },
+        {
+          "page_url": "https://lottiefiles.com/case-studies",
+          "category": "Facts & Consistency",
+          "issue_description": "credibility: The intro mentions \"The world’s best brands, creators, and developers\" and later \"Join 17 million users and 280,000 companies\", while the premium animations feature page still references only \"12 million designers & developers\"; this inconsistency can make the growth story look unreliable.",
+          "severity": "medium",
+          "suggested_fix": "Align the user and company counts claimed on this case studies page and the premium animations page so they reflect the same numbers and timeframe.",
+          "evidence": "/enterprise: \"Join 17 million users and 280,000 companies\" vs premium page: \"Trusted by 12 million designers & developers\"",
+          "confidence": 0.99
+        },
+        {
+          "page_url": "https://lottiefiles.com/security",
+          "category": "Facts & Consistency",
+          "issue_description": "credibility: The security page headline promises \"SOC 2 Aligned Security to Safeguard Your Data\", suggesting alignment rather than certification, whereas other pages (e.g. the enterprise and platform pages) claim \"SOC 2-compliant\" infrastructure and \"SOC 2 compliance\", which implies formal certification; these differing phrases may mislead users about LottieFiles' actual SOC 2 status.",
+          "severity": "medium",
+          "suggested_fix": "Clarify sitewide whether LottieFiles is fully SOC 2 certified or only aligned, then use a single consistent term (\"SOC 2 certified\" or \"SOC 2 aligned\") in all locations.",
+          "evidence": "/security: \"SOC 2 Aligned Security\" vs /enterprise: \"staying fully compliant with SOC 2\" and /platform: \"SOC 2 compliant infrastructure\"",
+          "confidence": 0.98
+        },
+        {
+          "page_url": "https://lottiefiles.com/enterprise",
+          "category": "Facts & Consistency",
+          "issue_description": "credibility: The enterprise hero copy states the platform keeps teams \"fully compliant with SOC 2\", and later sections mention \"SOC 2 compliant infrastructure\", while the dedicated security page only describes \"SOC 2 Aligned Security\" without clearly stating certification; this inconsistency can confuse security-conscious buyers.",
+          "severity": "medium",
+          "suggested_fix": "Confirm whether the organization is SOC 2 certified and adjust this page’s wording (and the security page) so they all describe the same level of SOC 2 adherence.",
+          "evidence": "/enterprise hero: \"staying fully compliant with SOC 2\"; later: \"SOC 2-compliant enterprise-grade security\" vs /security: \"SOC 2 Aligned Security\"",
+          "confidence": 0.98
+        },
+        {
+          "page_url": "https://lottiefiles.com/pricing/ai",
+          "category": "Facts & Consistency",
+          "issue_description": "credibility: In the \"Admin & security\" section of the feature comparison table, \"SOC 2 compliance\" is listed alongside other enterprise features, but the separate security page only commits to \"SOC 2 Aligned Security\", which may indicate alignment rather than formal certification.",
+          "severity": "medium",
+          "suggested_fix": "Verify the SOC 2 posture and either upgrade the security page language to match a certified status or soften the \"SOC 2 compliance\" phrasing here to match the more cautious \"aligned\" wording.",
+          "evidence": "/pricing/ai Admin & security: final line \"SOC 2 compliance\" vs /security: \"SOC 2 Aligned Security\"",
+          "confidence": 0.98
+        },
+        {
+          "page_url": "https://lottiefiles.com/platform",
+          "category": "Facts & Consistency",
+          "issue_description": "credibility: In the plan comparison section, the Enterprise row references \"SOC 2 compliant infrastructure\", but the dedicated security page only refers to \"SOC 2 Aligned Security\" and does not clearly state certification, which could give mixed signals about compliance level.",
+          "severity": "medium",
+          "suggested_fix": "Ensure the platform’s mention of \"SOC 2 compliant infrastructure\" is accurate and harmonize it with the security page language (e.g., explicitly noting certification or changing to \"SOC 2 aligned\" everywhere).",
+          "evidence": "/platform Enterprise plan: \"SOC 2 compliant infrastructure\" vs /security: \"SOC 2 Aligned Security\"",
+          "confidence": 0.98
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "sitesEvaluated": 8,
+    "weightedRecall": 0.38461538461538464,
+    "weightedPrecision": 0.9944444444444445,
+    "meanSeverityAccuracy": 1,
+    "totalCost": 5.7,
+    "totalDurationMs": 646484
+  }
+}

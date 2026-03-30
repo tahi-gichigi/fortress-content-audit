@@ -164,3 +164,58 @@ Example: `"clarity: Repeated greetings block feels redundant and distracting"` �
 | `test-pipeline.ts` | New pipeline inspection harness (35 checks, offline + live modes) |
 | `docs/html-stripping-reference.md` | Updated pipeline overview, decision matrices, resolved gaps |
 | `docs/eval-baseline.md` | Run 5 (Natalie baseline) and Run 6 (ADR-004 eval) documented |
+
+---
+
+## Addendum (2026-03-27): Systemic fixes round 2 + eval harness
+
+### Systemic fixes (PR #6)
+
+Seven fixes addressing issues found during QA round 2 (Notion 7edda1f2):
+
+| Fix | Area | Change |
+|-----|------|--------|
+| A | Health score | Clamp `Math.max(0, ...)` instead of `Math.max(1, ...)` — zero issues = 100, not 99 |
+| B | Checker fail-safe | Missing verification defaults to `confirmed=false` (was true) — unverified issues no longer slip through |
+| C | Page selector | Deterministic scoring heuristic; 18-prefix foreign language filter (`/es/`, `/fr/`, `/de/`...) |
+| D | Link crawler | 403/401 after GET fallback → status `'ok'` (inconclusive), not broken |
+| E | HTML compressor | Badge detection moved before attribute stripping (was no-op); inline tag spacing on unwrap; zero-width character verification |
+| F | Audit prompts | Severity rubric (critical/medium/low definitions + examples); category rename `Links & Formatting` → `Formatting` |
+| G | Nav dedup | Fingerprint includes hrefs: `tag:text:hrefs.join(',')` — prevents false dedup on navs with same text but different links |
+
+**Badge fix (E)**: `compressHtml` had badge detection at line ~133, after attribute stripping at ~112. Since classes were already stripped, the regex `badge|tag|label|chip|pill|status|tier|plan` never matched. Moved badge detection before attribute stripping. Confirmed via test: `<span class="badge">New</span>Feature` → `[Badge: New]Feature`.
+
+**Test suite**: 56 new tests in `lib/__tests__/systemic-fixes-round2.test.ts` covering all 7 fixes. 3 existing tests updated for category rename and fail-safe default change. Total: 239 passing.
+
+### Eval harness (`scripts/eval-quality.ts`)
+
+LangSmith-integrated quality evaluation harness. Runs the production two-pass pipeline on benchmark sites and scores against curated ground truth.
+
+**Ground truth** (`scripts/eval-ground-truth.json`): 5 benchmark sites (seline.so, dub.co, plausible.io, justcancel.io, beehiiv.com) with 14 known real issues and 13 false positive patterns, curated from QA testing and eval runs 1-6.
+
+**Metrics scored per-site:**
+- **Recall**: known issues found / total known issues
+- **Precision**: 1 - (issues matching FP patterns / total reported)
+- **Severity accuracy**: correct severity / matched issues
+- **Issue count**, cost, duration
+
+**LangSmith integration**: Creates a `content-audit-quality` dataset, runs `evaluate()` with per-example evaluators (recall, precision, severity, issue count) and summary evaluators (weighted recall/precision across sites). Results appear as experiments in the `aicontentaudit` project.
+
+**CLI:**
+```
+npx tsx scripts/eval-quality.ts                    # all sites
+npx tsx scripts/eval-quality.ts --site seline.so   # single site
+npx tsx scripts/eval-quality.ts --dry-run           # local only, skip LangSmith
+npx tsx scripts/eval-quality.ts --no-crawl          # use cached HTML
+```
+
+**Files added/changed:**
+
+| File | Change |
+|------|--------|
+| `scripts/eval-quality.ts` | New: LangSmith eval harness |
+| `scripts/eval-ground-truth.json` | New: curated ground truth for 5 benchmark sites |
+| `lib/__tests__/systemic-fixes-round2.test.ts` | New: 56 tests for fixes A-G |
+| `lib/__tests__/two-pass-checker.test.ts` | Updated: category rename, fail-safe default |
+| `lib/html-compressor.ts` | Fix: badge detection moved before attribute stripping |
+| `.gitignore` | Added eval-quality-*.json and scripts/.eval-cache/ |

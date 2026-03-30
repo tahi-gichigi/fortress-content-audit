@@ -14,7 +14,7 @@ import Logger from './logger'
 
 export interface CrawlerIssue {
   page_url: string // Source page where link appears
-  category: 'Links & Formatting'
+  category: 'Links'
   issue_description: string
   severity: 'low' | 'medium' | 'critical'
   suggested_fix: string
@@ -158,9 +158,16 @@ function normalizeUrlForComparison(url: string): string {
   }
 }
 
+const BROWSER_HEADERS = {
+  'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+  'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+  'Accept-Language': 'en-US,en;q=0.5',
+}
+
 /**
  * Check a single link using HEAD request (fast, free)
- * For internal links without bot protection
+ * Falls back to GET if HEAD returns 403/401 (some servers block HEAD).
+ * Treats 403/401 as "inconclusive" (info severity) rather than errors.
  */
 async function checkLinkWithFetch(
   url: string,
@@ -170,19 +177,48 @@ async function checkLinkWithFetch(
 ): Promise<LinkCheckResult> {
   const startTime = Date.now()
 
-  try {
+  const doRequest = async (method: 'HEAD' | 'GET'): Promise<Response> => {
     const controller = new AbortController()
     const timeout = setTimeout(() => controller.abort(), timeoutMs)
+    try {
+      return await fetch(url, {
+        method,
+        redirect: 'follow',
+        signal: controller.signal,
+        headers: BROWSER_HEADERS,
+      })
+    } finally {
+      clearTimeout(timeout)
+    }
+  }
 
-    const response = await fetch(url, {
-      method: 'HEAD',
-      redirect: 'follow',
-      signal: controller.signal
-    })
+  try {
+    let response = await doRequest('HEAD')
+    let statusCode = response.status
 
-    clearTimeout(timeout)
+    // Some servers reject HEAD — retry with GET
+    if (statusCode === 403 || statusCode === 401 || statusCode === 405) {
+      try {
+        const getResponse = await doRequest('GET')
+        statusCode = getResponse.status
+      } catch {
+        // GET also failed; keep original HEAD status
+      }
+    }
+
     const responseTimeMs = Date.now() - startTime
-    const statusCode = response.status
+
+    // 401/403 = inconclusive (server may block crawlers, not necessarily broken)
+    if (statusCode === 401 || statusCode === 403) {
+      return {
+        url,
+        sourceUrl,
+        linkText,
+        status: 'ok', // treat as ok to avoid false-positive issues
+        httpStatus: statusCode,
+        responseTimeMs
+      }
+    }
 
     // 404 = Broken
     if (statusCode === 404) {
@@ -208,7 +244,7 @@ async function checkLinkWithFetch(
       }
     }
 
-    // 4xx (other than 404) = Client error
+    // 4xx (other than 401/403/404) = Client error
     if (statusCode >= 400) {
       return {
         url,
@@ -375,7 +411,7 @@ function resultToIssue(result: LinkCheckResult): CrawlerIssue | null {
     case 'broken':
       return {
         page_url: sourceUrl,
-        category: 'Links & Formatting',
+        category: 'Links',
         severity: httpStatus === 404 ? 'critical' : 'medium',
         issue_description: `broken link: Link "${linkText}" points to ${url}, which returned HTTP ${httpStatus}.`,
         suggested_fix: httpStatus === 404
@@ -386,7 +422,7 @@ function resultToIssue(result: LinkCheckResult): CrawlerIssue | null {
     case 'slow':
       return {
         page_url: sourceUrl,
-        category: 'Links & Formatting',
+        category: 'Links',
         severity: 'low',
         issue_description: `performance: Link "${linkText}" to ${url} took ${responseTimeMs}ms to respond (>3 seconds).`,
         suggested_fix: 'Check if the target server is slow or consider removing the link if it consistently times out.'
@@ -395,7 +431,7 @@ function resultToIssue(result: LinkCheckResult): CrawlerIssue | null {
     case 'error':
       return {
         page_url: sourceUrl,
-        category: 'Links & Formatting',
+        category: 'Links',
         severity: 'medium',
         issue_description: `error: Link "${linkText}" to ${url} returned error${httpStatus ? ` (HTTP ${httpStatus})` : ''}.`,
         suggested_fix: result.error || 'Check the link and verify it is accessible.'
@@ -530,10 +566,30 @@ export async function crawlLinks(
 
   await Promise.all(checkPromises)
 
-  // Convert results to issues
-  const issues = results
+  // Convert results to issues and deduplicate by URL
+  const rawIssues = results
     .map(result => resultToIssue(result))
     .filter((issue): issue is CrawlerIssue => issue !== null)
+
+  // Deduplicate: one issue per broken URL (keep highest severity)
+  const issuesByUrl = new Map<string, CrawlerIssue>()
+  for (const issue of rawIssues) {
+    // Extract URL from issue description for dedup key
+    const urlMatch = issue.issue_description.match(/points to ([^\s,]+)|to ([^\s]+) took|to ([^\s]+) returned/)
+    const targetUrl = urlMatch ? (urlMatch[1] || urlMatch[2] || urlMatch[3]) : issue.issue_description
+    const key = `${issue.page_url}::${targetUrl}`
+    const existing = issuesByUrl.get(key)
+    if (!existing) {
+      issuesByUrl.set(key, issue)
+    } else {
+      // Keep higher severity
+      const severityRank = { critical: 3, medium: 2, low: 1 }
+      const existingRank = severityRank[existing.severity as keyof typeof severityRank] ?? 0
+      const newRank = severityRank[issue.severity as keyof typeof severityRank] ?? 0
+      if (newRank > existingRank) issuesByUrl.set(key, issue)
+    }
+  }
+  const issues = Array.from(issuesByUrl.values())
 
   // Log summary
   const statusCounts = results.reduce((acc, r) => {

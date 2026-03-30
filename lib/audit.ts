@@ -32,10 +32,10 @@ export type AuditTier = keyof typeof AUDIT_TIERS
 // See lib/audit-prompts.ts for prompt definitions
 
 // Zod schemas for structured audit output (new prompt format)
-const AUDIT_CATEGORIES = ["Language", "Facts & Consistency", "Links & Formatting", "Brand voice"] as const
+const AUDIT_CATEGORIES = ["Language", "Facts & Consistency", "Formatting", "Brand voice", "Links"] as const
 export type AuditCategory = (typeof AUDIT_CATEGORIES)[number]
 /** Categories run by category audit prompts (excludes Brand voice, which has its own pass) */
-export type ContentAuditCategory = "Language" | "Facts & Consistency" | "Links & Formatting"
+export type ContentAuditCategory = "Language" | "Facts & Consistency" | "Formatting"
 
 const NewPromptIssueSchema = z.object({
   page_url: z.string(),
@@ -74,6 +74,8 @@ export type AuditResult = {
     evidence?: string
     /** Checker confidence score 0-1 (Pro only) */
     confidence?: number
+    /** Verification status from checker pass */
+    verification_status?: 'verified' | 'unverified' | 'parse_error'
   }>
   pagesAudited: number // Model's self-reported count of pages audited
   discoveredPages: string[] // All internal URLs found by Puppeteer
@@ -158,6 +160,17 @@ function verifyIssuesAgainstHtml(
 
     const allFound = quotedStrings.every(existsInHtml)
     if (allFound) {
+      // Special case: zero-width / invisible character claims need regex verification
+      const isZeroWidthClaim = /invisible character|zero.?width|hidden character|non.?printable/i.test(issue.issue_description)
+      if (isZeroWidthClaim) {
+        const rawHtml = htmlByUrl.get(issue.page_url) || ''
+        const zwRegex = /[\u200B\u200C\u200D\uFEFF\u00AD\u200E\u200F\u2060\u2061-\u2064]/
+        if (!zwRegex.test(rawHtml)) {
+          Logger.warn(`[IssueVerification] Dropped zero-width false positive: "${issue.issue_description}" — no zero-width chars in HTML`)
+          dropped++
+          continue
+        }
+      }
       verified.push(issue)
     } else {
       const missing = quotedStrings.filter(qs => !existsInHtml(qs))
@@ -239,7 +252,7 @@ async function runCheckerPass(
         response = await client.responses.create(params)
       } catch (err) {
         Logger.warn(`[CheckerPass] API call failed for ${category}`, err instanceof Error ? err : undefined)
-        return batchIssues.map(issue => ({ ...issue, evidence: 'Checker call failed', confidence: 0.5 }))
+        return batchIssues.map(issue => ({ ...issue, evidence: 'Checker call failed', confidence: 0.5, verification_status: 'unverified' as const }))
       }
 
       // Poll for completion
@@ -261,17 +274,18 @@ async function runCheckerPass(
         const parsed = JSON.parse(cleaned)
         verifications = parsed?.verifications || []
       } catch {
-        Logger.warn(`[CheckerPass] JSON parse failed for ${category} — keeping all issues`)
-        return batchIssues.map(issue => ({ ...issue, evidence: 'Checker parse error', confidence: 0.5 }))
+        Logger.warn(`[CheckerPass] JSON parse failed for ${category} — keeping all issues as parse_error`)
+        return batchIssues.map(issue => ({ ...issue, evidence: 'Checker parse error', confidence: 0.5, verification_status: 'parse_error' as const }))
       }
 
       // Apply checker decisions using pure filtering logic
-      const verified = applyCheckerDecisions(batchIssues, verifications) as AuditResult["issues"]
+      const verified = (applyCheckerDecisions(batchIssues, verifications) as AuditResult["issues"])
+        .map(issue => ({ ...issue, verification_status: 'verified' as const }))
 
       // Log dropped issues
       for (let i = 0; i < batchIssues.length; i++) {
         const v = verifications.find(v => v.index === i)
-        const confirmed = v?.confirmed ?? true
+        const confirmed = v?.confirmed ?? false
         const confidence = v?.confidence ?? 0.5
         if (!(confirmed === true || (confirmed === 'uncertain' && confidence >= 0.7))) {
           Logger.debug(`[CheckerPass] Dropped: "${batchIssues[i].issue_description}" (confirmed=${confirmed}, confidence=${confidence})`)
@@ -420,7 +434,7 @@ function extractOpenedPagesCount(response: any): number {
 
 // ============================================================================
 // Parallel Mini Audit - FREE tier with 3 concurrent specialized models
-// Runs Language, Facts & Consistency, and Links & Formatting in parallel
+// Runs Language, Facts & Consistency, and Formatting in parallel
 // Uses low reasoning for 2x speed at 50% cost with better issue detection
 // ============================================================================
 
@@ -441,7 +455,7 @@ interface CategoryAuditResult {
   error?: string
 }
 
-// Run a single category audit (Language, Facts & Consistency, Links & Formatting only)
+// Run a single category audit (Language, Facts & Consistency, Formatting only)
 async function runCategoryAudit(
   category: ContentAuditCategory,
   urlsToAudit: string[],
@@ -625,6 +639,56 @@ async function runCategoryAuditWithRetry(
   }
 }
 
+/**
+ * Deduplicate issues within a single audit run by (page_url, normalized description).
+ * Keeps the higher-severity issue when duplicates are found.
+ * Uses substring containment or >80% character overlap as similarity measure.
+ */
+function deduplicateIssues(issues: AuditResult['issues']): AuditResult['issues'] {
+  const normalize = (s: string) => s.toLowerCase().replace(/[^\w\s]/g, '').trim()
+
+  const isSimilar = (a: string, b: string): boolean => {
+    const na = normalize(a)
+    const nb = normalize(b)
+    if (na === nb) return true
+    if (na.includes(nb) || nb.includes(na)) return true
+    // Jaccard-like character overlap: shared chars / max length
+    const setA = new Set(na)
+    const setB = new Set(nb)
+    const shared = [...setA].filter(c => setB.has(c)).length
+    const maxLen = Math.max(setA.size, setB.size)
+    if (maxLen === 0) return true
+    return shared / maxLen > 0.8
+  }
+
+  const severityRank: Record<string, number> = { critical: 3, medium: 2, low: 1 }
+
+  const deduped: AuditResult['issues'] = []
+
+  for (const issue of issues) {
+    const existingIdx = deduped.findIndex(
+      d => d.page_url === issue.page_url && isSimilar(d.issue_description, issue.issue_description)
+    )
+    if (existingIdx === -1) {
+      deduped.push(issue)
+    } else {
+      // Keep higher severity
+      const existingRank = severityRank[deduped[existingIdx].severity] ?? 0
+      const newRank = severityRank[issue.severity] ?? 0
+      if (newRank > existingRank) {
+        deduped[existingIdx] = issue
+      }
+    }
+  }
+
+  const dropped = issues.length - deduped.length
+  if (dropped > 0) {
+    Logger.info(`[Dedup] Removed ${dropped} duplicate issues (${deduped.length} remaining)`)
+  }
+
+  return deduped
+}
+
 // Merge results from parallel audits
 function mergeParallelResults(
   results: CategoryAuditResult[],
@@ -715,7 +779,7 @@ export async function parallelMiniAudit(
     const categoryPromises = [
       runCategoryAuditWithRetry("Language", pagesToAudit, domainHostname, manifestText, issueContext, openai, keywords),
       runCategoryAuditWithRetry("Facts & Consistency", pagesToAudit, domainHostname, manifestText, issueContext, openai, keywords),
-      runCategoryAuditWithRetry("Links & Formatting", pagesToAudit, domainHostname, manifestText, issueContext, openai, keywords),
+      runCategoryAuditWithRetry("Formatting", pagesToAudit, domainHostname, manifestText, issueContext, openai, keywords),
     ]
 
     const brandVoicePromise = options?.brandVoice
@@ -776,7 +840,10 @@ export async function parallelMiniAudit(
 
     // Merge all issues: category + brand voice + link validation
     const linkValidationIssues = firecrawlManifest.linkValidationIssues || []
-    const unverifiedIssues = [...categoryIssues, ...brandVoiceIssues]
+    const mergedForDedup = [...categoryIssues, ...brandVoiceIssues]
+    // Dedup before verification pass
+    const dedupedIssues = deduplicateIssues(mergedForDedup)
+    const unverifiedIssues = dedupedIssues
     // Verify model-generated issues against source HTML, then add link validation (already verified by crawler)
     const issues = [...verifyIssuesAgainstHtml(unverifiedIssues, firecrawlManifest), ...linkValidationIssues]
     const totalDurationMs = Date.now() - startTime
@@ -879,7 +946,7 @@ export async function parallelProAudit(
     const categoryPromisesPro = [
       runCategoryAuditWithRetryPro("Language", pagesToAudit, domainHostname, manifestText, issueContext, openai, keywordsPro),
       runCategoryAuditWithRetryPro("Facts & Consistency", pagesToAudit, domainHostname, manifestText, issueContext, openai, keywordsPro),
-      runCategoryAuditWithRetryPro("Links & Formatting", pagesToAudit, domainHostname, manifestText, issueContext, openai, keywordsPro),
+      runCategoryAuditWithRetryPro("Formatting", pagesToAudit, domainHostname, manifestText, issueContext, openai, keywordsPro),
     ]
 
     const brandVoicePromisePro = options?.brandVoice
@@ -938,7 +1005,9 @@ export async function parallelProAudit(
 
     // Merge all issues: category + brand voice + link validation
     const linkValidationIssuesPro = firecrawlManifest.linkValidationIssues || []
-    const unverifiedIssuesPro = [...categoryIssuesPro, ...brandVoiceIssuesPro]
+    const mergedForDedupPro = [...categoryIssuesPro, ...brandVoiceIssuesPro]
+    // Dedup BEFORE checker pass to reduce checker token cost
+    const unverifiedIssuesPro = deduplicateIssues(mergedForDedupPro)
     // Two-pass verification: model checker replaces regex filter for Pro tier
     // Brand voice issues are also run through the checker for consistency
     const checkedIssues = await runCheckerPass(unverifiedIssuesPro, firecrawlManifest, openai)
@@ -1599,7 +1668,7 @@ Return ONLY valid JSON matching this exact structure:
   "issues": [
     {
       "page_url": "<actual URL from text>",
-      "category": "Language|Facts & Consistency|Links & Formatting",
+      "category": "Language|Facts & Consistency|Formatting",
       "issue_description": "impact_word: concise problem description",
       "severity": "low|medium|critical",
       "suggested_fix": "Direct, actionable fix"

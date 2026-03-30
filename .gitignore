@@ -31,6 +31,8 @@ next-env.d.ts
 
 # Eval and test result artifacts
 eval-results-*.json
+eval-quality-*.json
+scripts/.eval-cache/
 pro-audit-*.json
 parallel-audit-results-*.json
 reliability-test-*.json
