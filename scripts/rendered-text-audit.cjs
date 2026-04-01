@@ -16,6 +16,17 @@
  */
 
 const { chromium } = require('/home/ubuntu/.openclaw/tools/browser/node_modules/playwright')
+const { existsSync, readFileSync } = require('fs')
+const { join } = require('path')
+
+// Load .env.local if present
+const envPath = join(__dirname, '../.env.local')
+if (existsSync(envPath)) {
+  for (const line of readFileSync(envPath, 'utf8').split('\n')) {
+    const m = line.match(/^([A-Z_]+)="?([^"\n]+)"?$/)
+    if (m && !process.env[m[1]]) process.env[m[1]] = m[2]
+  }
+}
 
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY
 
