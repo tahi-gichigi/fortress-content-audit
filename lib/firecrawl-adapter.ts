@@ -10,6 +10,11 @@ import * as cheerio from 'cheerio'
 import Logger from './logger'
 import { compressHtmlWithLogging, compressHtmlToChunks } from './html-compressor'
 
+// Feature flag: use Playwright DOM extraction instead of HTML compress step.
+// When enabled, Firecrawl still handles map + page selection; Playwright replaces
+// the scrape + compress step only. Set USE_PLAYWRIGHT_EXTRACTION=true to enable.
+export const USE_PLAYWRIGHT_EXTRACTION = process.env.USE_PLAYWRIGHT_EXTRACTION === 'true'
+
 // Fallback to old method when Firecrawl unavailable
 import {
   extractElementManifest,
@@ -370,8 +375,134 @@ function extractElementManifestFromHtml(html: string, pageUrl: string): string {
 }
 
 /**
+ * Extract structured visible text from a rendered page using Playwright.
+ * Returns a formatted string of {tag, text, href, section} tuples.
+ * Only used when USE_PLAYWRIGHT_EXTRACTION=true.
+ */
+export async function extractRenderedTextForUrl(url: string): Promise<string> {
+  // Dynamic import to avoid loading Playwright unless needed
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const { chromium } = require('/home/ubuntu/.openclaw/tools/browser/node_modules/playwright')
+  const browser = await chromium.launch({ headless: true })
+  const page = await browser.newPage()
+  try {
+    await page.goto(url, { waitUntil: 'networkidle', timeout: 30000 })
+    await page.waitForTimeout(2000)
+
+    const elements: Array<{ tag: string; text: string; href?: string; section?: string }> = await page.evaluate(() => {
+      const results: Array<{ tag: string; text: string; href?: string; section?: string }> = []
+      const seen = new Set<string>()
+      const SEMANTIC_TAGS = new Set([
+        'h1','h2','h3','h4','h5','h6',
+        'p','li','td','th','caption',
+        'a','button','label','legend',
+        'blockquote','figcaption','summary','dt','dd',
+        'section','article','nav','header','footer','main','aside'
+      ])
+
+      function getNearestSection(node: Element): string {
+        let el: Element | null = node
+        while (el && el !== document.body) {
+          const tag = el.tagName?.toLowerCase()
+          if (['nav','header','footer','main','aside','section','article'].includes(tag)) {
+            return el.getAttribute('aria-label') || el.id || tag
+          }
+          el = el.parentElement
+        }
+        return ''
+      }
+
+      const walker = document.createTreeWalker(
+        document.body,
+        NodeFilter.SHOW_ELEMENT,
+        {
+          acceptNode: (node: Element) => {
+            const style = window.getComputedStyle(node)
+            if (style.display === 'none' || style.visibility === 'hidden' || style.opacity === '0') {
+              return NodeFilter.FILTER_REJECT
+            }
+            if ((node as HTMLElement).offsetHeight === 0 && (node as HTMLElement).offsetWidth === 0) {
+              return NodeFilter.FILTER_REJECT
+            }
+            if (style.position === 'absolute' && style.overflow === 'hidden' &&
+                (node as HTMLElement).offsetWidth <= 1 && (node as HTMLElement).offsetHeight <= 1) {
+              return NodeFilter.FILTER_REJECT
+            }
+            const cls = ((node as HTMLElement).className || '').toString().toLowerCase()
+            if (/\b(sr-only|visually-hidden|screen-reader-text|clip-hidden)\b/.test(cls)) {
+              return NodeFilter.FILTER_REJECT
+            }
+            const tag = node.tagName.toLowerCase()
+            if (['script','style','svg','noscript','iframe','video','audio','canvas','img'].includes(tag)) {
+              return NodeFilter.FILTER_REJECT
+            }
+            return NodeFilter.FILTER_ACCEPT
+          }
+        } as TreeWalker as any
+      )
+
+      let node: Node | null = walker.currentNode
+      while (node) {
+        const el = node as Element
+        const tag = el.tagName?.toLowerCase()
+        if (tag && SEMANTIC_TAGS.has(tag)) {
+          const isContainer = ['section','article','nav','header','footer','main','aside'].includes(tag)
+          let text = ''
+          if (isContainer) {
+            for (const child of el.childNodes) {
+              if (child.nodeType === Node.TEXT_NODE) {
+                text += child.textContent || ''
+              }
+            }
+            text = text.trim()
+          } else {
+            text = (el as HTMLElement).innerText?.replace(/\s+/g, ' ').trim() || ''
+          }
+
+          if (text.length > 2) {
+            const key = `${tag}:${text}`
+            if (!seen.has(key)) {
+              seen.add(key)
+              const entry: { tag: string; text: string; href?: string; section?: string } = { tag, text }
+              if (tag === 'a') {
+                entry.href = (el as HTMLAnchorElement).href || undefined
+              }
+              const section = getNearestSection(el)
+              if (section) entry.section = section
+              results.push(entry)
+            }
+          }
+        }
+        node = walker.nextNode()
+      }
+      return results
+    })
+
+    let output = `# Page: ${url}\n\n`
+    let currentSection = ''
+    for (const el of elements) {
+      if (el.section && el.section !== currentSection) {
+        currentSection = el.section
+        output += `\n--- ${currentSection} ---\n`
+      }
+      const tagLabel = el.tag.toUpperCase()
+      if (el.tag === 'a') {
+        output += `[${tagLabel}] ${el.text} -> ${el.href || ''}\n`
+      } else {
+        output += `[${tagLabel}] ${el.text}\n`
+      }
+    }
+    return output
+  } finally {
+    await browser.close()
+  }
+}
+
+/**
  * Format Firecrawl pages for audit prompts (replaces formatManifestForPrompt).
  * Includes both markdown content AND a structured element manifest from HTML.
+ * When USE_PLAYWRIGHT_EXTRACTION=true, replaces the HTML compress step with
+ * Playwright DOM extraction for cleaner, lower-token input.
  */
 export function formatFirecrawlForPrompt(manifest: AuditManifest): string {
   const { pages } = manifest
@@ -400,7 +531,11 @@ export function formatFirecrawlForPrompt(manifest: AuditManifest): string {
       output += `**Description:** ${page.metadata.description}\n\n`
     }
 
-    if (page.html) {
+    if (USE_PLAYWRIGHT_EXTRACTION && page.renderedText) {
+      // Playwright path: use pre-extracted structured DOM text instead of compressed HTML.
+      // CSS-resolved, JS-rendered, hidden elements already stripped.
+      output += `**Content (Playwright DOM):**\n${page.renderedText}\n\n`
+    } else if (page.html) {
       // Pipeline: stripHtmlNoise → compressHtmlToChunks (up to 2 × 60K chunks).
       // Dedup nav/header/footer before inserting into prompt so repeated chrome
       // doesn't burn tokens on page 2+. Element manifest still runs on raw HTML (unaffected).

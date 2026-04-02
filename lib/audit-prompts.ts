@@ -23,6 +23,9 @@ Audit only the homepage and one additional key public-facing page of a website f
 
 **Language detection:** Detect the primary language of the site from its homepage. Write all output in that language. Audit ONLY content in the primary language. If a page or section is in a different language, skip it entirely — do not flag spelling or grammar in non-primary languages. Do not flag brand names, technical terms, or proper nouns in any language.
 
+**LOCALE AND REGIONAL SPELLING — critical rule:**
+Do NOT flag British/Commonwealth vs American spelling differences unless the page explicitly declares `lang="en-US"`. Words like "programme", "colour", "organisation", "licence", "analyse", "centre", "recognise" are correct British English. If the site appears to be from the UK, Ireland, Australia, or another English-speaking country other than the US, treat British spelling as correct. Only flag regional spelling if: (1) the lang attribute explicitly specifies en-US, or (2) the same word is spelled both ways on the same site (genuine inconsistency).
+
 **RESPONSIVE DUPLICATES — read before auditing:**
 Modern sites ship BOTH mobile and desktop versions of components in the same HTML. Seeing the same text twice is intentional responsive design, not a content issue. CSS class attributes have been removed from the HTML you receive, so use structural clues to identify them.
 
@@ -181,6 +184,9 @@ Audit up to 20 public-facing, top-of-funnel pages of a website for:
 - Formatting (layout problems, visual hierarchy issues, formatting inconsistencies — NOT link issues, those are checked by a separate automated system)
 
 **Language detection:** Detect the primary language of the site from its homepage. Write all output in that language. Audit ONLY content in the primary language. If a page or section is in a different language, skip it entirely — do not flag spelling or grammar in non-primary languages. Do not flag brand names, technical terms, or proper nouns in any language.
+
+**LOCALE AND REGIONAL SPELLING — critical rule:**
+Do NOT flag British/Commonwealth vs American spelling differences unless the page explicitly declares `lang="en-US"`. Words like "programme", "colour", "organisation", "licence", "analyse", "centre", "recognise" are correct British English. If the site appears to be from the UK, Ireland, Australia, or another English-speaking country other than the US, treat British spelling as correct. Only flag regional spelling if: (1) the lang attribute explicitly specifies en-US, or (2) the same word is spelled both ways on the same site (genuine inconsistency).
 
 **RESPONSIVE DUPLICATES — read before auditing:**
 Modern sites ship BOTH mobile and desktop versions of components in the same HTML. Seeing the same text twice is intentional responsive design, not a content issue. CSS class attributes have been removed from the HTML you receive, so use structural clues to identify them.
@@ -391,6 +397,9 @@ Do NOT audit any other pages. Focus only on these specific URLs.
 
 **Language detection:** Detect the primary language of the site from its homepage. Write all output in that language. Audit ONLY content in the primary language. If a page or section is in a different language, skip it entirely — do not flag spelling or grammar in non-primary languages. Do not flag brand names, technical terms, or proper nouns in any language.
 
+**LOCALE AND REGIONAL SPELLING — critical rule:**
+Do NOT flag British/Commonwealth vs American spelling differences unless the page explicitly declares `lang="en-US"`. Words like "programme", "colour", "organisation", "licence", "analyse", "centre", "recognise" are correct British English. If the site appears to be from the UK, Ireland, Australia, or another English-speaking country other than the US, treat British spelling as correct. Only flag regional spelling if: (1) the lang attribute explicitly specifies en-US, or (2) the same word is spelled both ways on the same site (genuine inconsistency).
+
 **RESPONSIVE DUPLICATES — read before auditing:**
 Modern sites ship BOTH mobile and desktop versions of components in the same HTML. Seeing the same text twice is intentional responsive design, not a content issue. CSS class attributes have been removed from the HTML you receive, so use structural clues to identify them.
 
@@ -523,6 +532,9 @@ Do NOT audit any other pages. Focus only on these specific URLs.
 
 **Language detection:** Detect the primary language of the site from its homepage. Write all output in that language. Audit ONLY content in the primary language. If a page or section is in a different language, skip it entirely — do not flag spelling or grammar in non-primary languages. Do not flag brand names, technical terms, or proper nouns in any language.
 
+**LOCALE AND REGIONAL SPELLING — critical rule:**
+Do NOT flag British/Commonwealth vs American spelling differences unless the page explicitly declares `lang="en-US"`. Words like "programme", "colour", "organisation", "licence", "analyse", "centre", "recognise" are correct British English. If the site appears to be from the UK, Ireland, Australia, or another English-speaking country other than the US, treat British spelling as correct. Only flag regional spelling if: (1) the lang attribute explicitly specifies en-US, or (2) the same word is spelled both ways on the same site (genuine inconsistency).
+
 **RESPONSIVE DUPLICATES — read before auditing:**
 Modern sites ship BOTH mobile and desktop versions of components in the same HTML. Seeing the same text twice is intentional responsive design, not a content issue. CSS class attributes have been removed from the HTML you receive, so use structural clues to identify them.
 
@@ -595,7 +607,7 @@ export function buildCheckerPrompt(
   category: string
 ): string {
   const categoryVerification: Record<string, string> = {
-    "Language": "Confirm the exact quoted text exists in the HTML AND contains the claimed error. Valid stylistic choices (brand voice, intentional tone) are not errors. Regional spelling (UK vs US English) on a locale-targeted site is a valid concern, not a stylistic choice. If the claimed error text appears inside an animated number component, counter, or interactive widget (look for `inert` attributes on sibling elements, or custom elements like `<number-flow-react>`), mark confirmed: false — these are scrape-time snapshots, not real content. If the issue claims invisible characters, zero-width characters, or non-printable characters, search for the exact codepoint (U+200B, U+FEFF, U+200C, etc.) in the HTML evidence. If no such codepoint is present, mark confirmed: false.",
+    "Language": "Before confirming, question the premise: ask whether the flagged 'error' is actually correct for this site's locale, brand, or context. Step 1: Is the claimed text actually present in the HTML? If not, mark confirmed: false. Step 2: Could this be valid for the site's locale/context? British/Commonwealth spelling (programme, colour, organisation, licence, analyse, centre, recognise) is correct on non-US sites — check the lang attribute and domain origin. If the site uses lang=\"en\" or lang=\"en-GB\" or is clearly UK/AU/IE, do NOT confirm spelling issues for these words. Step 3: Is the claimed error inside an animated number component or interactive widget (look for `inert` attributes, `<number-flow-react>`)? If so, mark confirmed: false. Step 4: If the issue claims invisible/zero-width characters (U+200B, U+FEFF, U+200C), search for the exact codepoint — if absent, mark confirmed: false. Valid stylistic choices (brand voice, intentional tone) are not errors.",
     "Facts & Consistency": "Confirm the claimed text/data is present. You can verify internal consistency (numbers matching across sections) but not external facts. If the text exists and the inconsistency is real within the page, confirm. Cross-page contradictions are valid. If an issue claims page A contradicts page B, look for evidence from both pages in the excerpts. If the claimed value appears inside an interactive component (slider, counter, progress bar), mark confirmed: false — it is a snapshot state, not a real content error.",
     "Formatting": "Confirm the HTML structure supports the claim (empty alt, wrong heading level, missing aria). Layout/render issues that can't be verified from static HTML → mark uncertain. If the issue describes garbled or scrambled text inside a single isolated element, check for signs of animation (sibling elements with `inert`, custom web components, or repeated character sets 0-9) — if present, mark confirmed: false. If the issue claims missing visual indicators (checkmarks, icons, dots, slide markers) that would only be visible in a rendered browser, mark confirmed: false — static HTML cannot verify CSS/SVG rendering.",
   }

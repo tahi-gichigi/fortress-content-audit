@@ -331,6 +331,77 @@
           "reason": "SVG path coordinate data (d= attributes, <path> tags) exposed in audit results. Should be collapsed by compressor. Pattern updated 2026-03-29 to avoid matching text content that mentions SVG as a word."
         }
       ]
+    },
+    {
+      "domain": "secondhome.io",
+      "tier": "PRO",
+      "notes": "Co-working/co-living space operator. British English site (lang=en). Known FP sources: locale spelling (Cultural Programme), responsive nav dedup, FAQ detail mismatch.",
+      "knownIssues": [
+        {
+          "id": "sh-1",
+          "description": "FAQ says Lisbon coming soon, contradicts live pricing page showing active Lisbon pricing",
+          "matchPatterns": [
+            "Lisbon coming soon",
+            "coming soon"
+          ],
+          "category": "Facts & Consistency",
+          "expectedSeverity": "medium",
+          "page_url_pattern": "/faq",
+          "source": "Fortress 31 Mar run \u2014 verified via Firecrawl"
+        },
+        {
+          "id": "sh-2",
+          "description": "FAQ says better rates on longer terms, not reflected on product pages",
+          "matchPatterns": [
+            "better rates",
+            "longer terms"
+          ],
+          "category": "Facts & Consistency",
+          "expectedSeverity": "low",
+          "page_url_pattern": "/faq",
+          "source": "Fortress 31 Mar run \u2014 verified via Firecrawl"
+        },
+        {
+          "id": "sh-3",
+          "description": "7x duplicate Referrals heading across pages",
+          "matchPatterns": [
+            "Referrals"
+          ],
+          "category": "Formatting",
+          "expectedSeverity": "low",
+          "page_url_pattern": "",
+          "source": "Fortress 31 Mar run \u2014 confirmed real"
+        },
+        {
+          "id": "sh-4",
+          "description": "Stray U+2028 line separator characters in contact address",
+          "matchPatterns": [
+            "\u2028",
+            "line separator"
+          ],
+          "category": "Language",
+          "expectedSeverity": "low",
+          "page_url_pattern": "/contact",
+          "source": "Fortress 31 Mar run \u2014 confirmed real"
+        }
+      ],
+      "falsePositivePatterns": [
+        {
+          "id": "sh-fp-1",
+          "pattern": "Cultural Programme|programme",
+          "reason": "British English site. \"Programme\" is correct spelling for lang=en-GB. Do not flag as American spelling error."
+        },
+        {
+          "id": "sh-fp-2",
+          "pattern": "duplicate nav|responsive nav|mobile nav",
+          "reason": "Responsive nav duplication. Mobile + desktop navs both in HTML. Not a content error."
+        },
+        {
+          "id": "sh-fp-3",
+          "pattern": "FAQ.*price|price.*FAQ|FAQ not.*exact",
+          "reason": "FAQ summarising pricing without repeating exact figures is intentional, not an inconsistency."
+        }
+      ]
     }
   ]
 }
