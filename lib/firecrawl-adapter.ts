@@ -495,7 +495,11 @@ export async function extractRenderedTextForUrl(url: string): Promise<string> {
  * When USE_PLAYWRIGHT_EXTRACTION=true, replaces the HTML compress step with
  * Playwright DOM extraction for cleaner, lower-token input.
  */
-export function formatFirecrawlForPrompt(manifest: AuditManifest): string {
+export function formatFirecrawlForPrompt(manifest: AuditManifest, options?: { useAnnotatedText?: boolean }): string {
+  // Allow caller to override the module-level USE_ANNOTATED_TEXT flag.
+  // Used by compare-pipelines.ts to run both modes on the same cached HTML.
+  const annotatedTextMode = options?.useAnnotatedText ?? USE_ANNOTATED_TEXT
+
   const { pages } = manifest
 
   if (pages.length === 0) {
@@ -522,7 +526,7 @@ export function formatFirecrawlForPrompt(manifest: AuditManifest): string {
       output += `**Description:** ${page.metadata.description}\n\n`
     }
 
-    if (USE_ANNOTATED_TEXT && page.html) {
+    if (annotatedTextMode && page.html) {
       // Annotated text path: strip noise then convert to semantic plain text.
       // 3-5x fewer tokens than compressed HTML while preserving structure.
       const chunks = htmlToAnnotatedTextChunks(stripHtmlNoise(page.html), page.url)
@@ -592,7 +596,7 @@ export function formatFirecrawlForPrompt(manifest: AuditManifest): string {
     // inline, so the manifest would be redundant and burn tokens.
     // Uses raw (pre-compression) HTML — element manifest must not be deduplicated
     // because nav links may differ per page even when text looks the same.
-    if (page.html && !USE_ANNOTATED_TEXT) {
+    if (page.html && !annotatedTextMode) {
       const elementManifest = extractElementManifestFromHtml(page.html, page.url)
       if (elementManifest) {
         output += `**Element Manifest (from HTML):**\n${elementManifest}\n\n`
