@@ -145,6 +145,11 @@ async function runPipeline(
       input: prompt,
       max_output_tokens: 8000,
       text: { format: { type: 'text' } },
+      // No reasoning on the auditor (reasoning: null). This is intentional for
+      // the liberal-auditor approach: cast a wide net without spending tokens on
+      // chain-of-thought, then let the checker (with reasoning: medium) filter.
+      // Production uses reasoning: { effort: 'low' }; null is even cheaper and
+      // acceptable here because the checker does the heavy verification.
       reasoning: null,
       store: true,
     })
@@ -198,7 +203,10 @@ async function runPipeline(
     const pageUrls = new Set(categoryIssues.map(i => i.page_url))
     const htmlContext = formatPagesForChecker(manifest, pageUrls)
     const prompt = buildCheckerPrompt(htmlContext, categoryIssues, category)
-    const maxOutputTokens = Math.min(16000, Math.max(4000, categoryIssues.length * 150))
+    // Reasoning tokens count toward max_output_tokens in the Responses API, so
+    // we need a generous budget. With effort:'medium', the model may use 10-20k
+    // tokens on chain-of-thought alone before writing the JSON output.
+    const maxOutputTokens = Math.min(32000, Math.max(16000, categoryIssues.length * 500))
 
     let response: any
     try {
@@ -219,16 +227,26 @@ async function runPipeline(
     let finalResponse = response
     let status = response.status as string
     let attempts = 0
-    while ((status === 'queued' || status === 'in_progress') && attempts < 120) {
+    console.log(`  [${mode}] [checker] ${category}: initial status=${status}, issues=${categoryIssues.length}`)
+    // 600 attempts (10 min) - checker with effort:'medium' reasoning on large
+    // issue sets can take significantly longer than the auditor. Three checker
+    // categories run in parallel, so API concurrency can also slow things down.
+    while ((status === 'queued' || status === 'in_progress') && attempts < 600) {
       await new Promise(resolve => setTimeout(resolve, 1000))
       finalResponse = await openai.responses.retrieve(response.id)
       status = finalResponse.status as string
       attempts++
     }
 
-    if (status !== 'completed') {
-      console.error(`  [${mode}] [checker] ${category}: polling failed - keeping all`)
+    // Both 'completed' and 'incomplete' have usable output_text.
+    // 'incomplete' means the model hit max_output_tokens - the JSON may be
+    // truncated but we still try to parse it before falling back.
+    if (status !== 'completed' && status !== 'incomplete') {
+      console.error(`  [${mode}] [checker] ${category}: polling failed after ${attempts} attempts (status: ${status}) - keeping all`)
       return categoryIssues
+    }
+    if (status === 'incomplete') {
+      console.warn(`  [${mode}] [checker] ${category}: response incomplete (max_output_tokens hit) - attempting partial parse`)
     }
 
     const outputText = (finalResponse.output_text || '').trim()

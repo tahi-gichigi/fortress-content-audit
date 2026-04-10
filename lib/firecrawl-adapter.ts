@@ -592,11 +592,10 @@ export function formatFirecrawlForPrompt(manifest: AuditManifest, options?: { us
     }
 
     // Append element manifest from HTML if available.
-    // Skipped in annotated text mode — the annotated text already surfaces links/buttons
-    // inline, so the manifest would be redundant and burn tokens.
-    // Uses raw (pre-compression) HTML — element manifest must not be deduplicated
-    // because nav links may differ per page even when text looks the same.
-    if (page.html && !annotatedTextMode) {
+    // The manifest is derived from raw HTML and is mode-independent - it provides
+    // structured link/button/widget data that complements both compressed HTML and
+    // annotated text content. Always included regardless of pipeline mode.
+    if (page.html) {
       const elementManifest = extractElementManifestFromHtml(page.html, page.url)
       if (elementManifest) {
         output += `**Element Manifest (from HTML):**\n${elementManifest}\n\n`
