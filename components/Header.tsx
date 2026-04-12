@@ -40,31 +40,37 @@ export default function Header({ rightContent }: HeaderProps) {
     return null
   }
 
+  // Homepage is the private alpha landing page - no nav links needed
+  const isHomepage = pathname === '/'
+
   return (
     <header className="border-b border-border">
       <nav className="container mx-auto px-6 py-6 flex items-center justify-between">
         <Link href="/" className="text-2xl font-serif font-semibold tracking-tight hover:opacity-80 transition-opacity">
           Fortress
         </Link>
-        <div className="flex items-center gap-4">
-          {rightContent ? (
-            rightContent
-          ) : (
-            <>
-              {isAuthenticated ? (
-                <>
-                  <Button variant="ghost" onClick={() => router.push('/dashboard')}>Dashboard</Button>
-                  <Button variant="ghost" onClick={() => router.push('/pricing')}>Pricing</Button>
-                </>
-              ) : (
-                <>
-                  <Button variant="ghost" onClick={() => router.push('/pricing')}>Pricing</Button>
-                  <Button onClick={() => router.push('/sign-up?mode=sign-in')}>Sign in</Button>
-                </>
-              )}
-            </>
-          )}
-        </div>
+        {/* Hide nav on homepage - private alpha, no public-facing links */}
+        {!isHomepage && (
+          <div className="flex items-center gap-4">
+            {rightContent ? (
+              rightContent
+            ) : (
+              <>
+                {isAuthenticated ? (
+                  <>
+                    <Button variant="ghost" onClick={() => router.push('/dashboard')}>Dashboard</Button>
+                    <Button variant="ghost" onClick={() => router.push('/pricing')}>Pricing</Button>
+                  </>
+                ) : (
+                  <>
+                    <Button variant="ghost" onClick={() => router.push('/pricing')}>Pricing</Button>
+                    <Button onClick={() => router.push('/sign-up?mode=sign-in')}>Sign in</Button>
+                  </>
+                )}
+              </>
+            )}
+          </div>
+        )}
       </nav>
     </header>
   )
